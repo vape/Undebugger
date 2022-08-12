@@ -1,6 +1,6 @@
 using Deszz.Undebugger.Model.Commands.Builtin;
-using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Deszz.Undebugger.UI.Menu.Commands
 {
@@ -8,7 +8,7 @@ namespace Deszz.Undebugger.UI.Menu.Commands
     public class ActionCommandView : CommandView<ActionCommandModel>
     {
         [SerializeField]
-        private TMP_Text nameText;
+        private Text nameText;
 
         protected override void OnSetup(ActionCommandModel model)
         {

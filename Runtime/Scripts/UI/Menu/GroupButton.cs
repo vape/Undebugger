@@ -1,5 +1,5 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace Deszz.Undebugger.UI.Menu
 {
@@ -10,7 +10,7 @@ namespace Deszz.Undebugger.UI.Menu
         public event ClickedDelegate Clicked;
 
         [SerializeField]
-        private TMP_Text nameText;
+        private Text nameText;
         [SerializeField]
         private GameObject selectionHighlight;
 
@@ -24,7 +24,7 @@ namespace Deszz.Undebugger.UI.Menu
         public void SetSelected(bool selected)
         {
             selectionHighlight.SetActive(selected);
-            nameText.fontStyle = selected ? (nameText.fontStyle | FontStyles.Bold) : (nameText.fontStyle & ~FontStyles.Bold);
+            nameText.fontStyle = selected ? FontStyle.Bold : FontStyle.Normal;
         }
 
         public void Init(int index, string name)

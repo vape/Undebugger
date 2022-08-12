@@ -1,14 +1,14 @@
 using Deszz.Undebugger.Model.Commands;
 using Deszz.Undebugger.UI.Layout;
-using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Deszz.Undebugger.UI.Menu.Commands
 {
     public class SegmentView : MonoBehaviour
     {
         [SerializeField]
-        private TMP_Text nameText;
+        private Text nameText;
         [SerializeField]
         private RectTransform container;
         [SerializeField]

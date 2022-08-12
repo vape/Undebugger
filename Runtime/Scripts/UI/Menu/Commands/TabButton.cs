@@ -1,5 +1,4 @@
 ﻿using Deszz.Undebugger.Model.Commands;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +11,7 @@ namespace Deszz.Undebugger.UI.Menu.Commands
         public event ClickedDelegate Clicked;
 
         [SerializeField]
-        private TMP_Text nameText;
+        private Text nameText;
         [SerializeField]
         private Outline selectionOutline;
 

@@ -1,5 +1,5 @@
-﻿using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace Deszz.Undebugger.UI.Menu
 {
@@ -17,7 +17,7 @@ namespace Deszz.Undebugger.UI.Menu
         [SerializeField]
         private TextAsset packageManifest;
         [SerializeField]
-        private TMP_Text versionString;
+        private Text versionString;
 
         private void Awake()
         {

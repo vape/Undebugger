@@ -10,7 +10,6 @@
     "url": "https://github.com/vape/Undebugger.git"
   },
   "dependencies": {
-    "com.unity.ugui": "1.0.0",
-    "com.unity.textmeshpro": "3.0.0"
+    "com.unity.ugui": "1.0.0"
   }
 }
