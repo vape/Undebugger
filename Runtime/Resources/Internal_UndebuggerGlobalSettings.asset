@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a83c296d0b46df4d9bdd3b79ae5d467, type: 3}
+  m_Name: Internal_UndebuggerGlobalSettings
+  m_EditorClassIdentifier: 
+  MenuTemplate: {fileID: 3829374466373750534, guid: 1ec655111fdaac640aac87e91186184a, type: 3}
+  CommandTemplates:
+  - {fileID: 3926971308746980534, guid: ab21aa225c3b212439907dc7113801e3, type: 3}
+  GroupTemplates:
+  - {fileID: 455843819065199182, guid: f8242881d7ab38449bacfb4dd53c8b2e, type: 3}
+  - {fileID: 7187552237939998813, guid: 5fff63337ef364a4b87ff11fa9611300, type: 3}
