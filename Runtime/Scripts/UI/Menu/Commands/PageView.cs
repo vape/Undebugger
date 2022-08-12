@@ -28,16 +28,6 @@ namespace Deszz.Undebugger.UI.Menu.Commands
             }
         }
 
-        public void Layout()
-        {
-            for (int i = 0; i < segments.Length; i++)
-            {
-                segments[i].Layout();
-            }
-
-            layout.Layout();
-        }
-
         private void Deinit()
         {
             if (segments != null)

@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Deszz.Undebugger.UI.Layout
 {
     [RequireComponent(typeof(RectTransform))]
-    public class VerticalListLayout : MonoBehaviour
+    internal class VerticalListLayout : LayoutRoot
     {
         private struct ListElement
         {
@@ -14,33 +14,38 @@ namespace Deszz.Undebugger.UI.Layout
             public float H;
         }
 
-        private bool layouting;
         private ListElement[] layout;
         private Vector2 size;
+        private RectTransform self;
+        private List<RectChild> childrens;
 
-        public void Layout()
+        public override void BuildHierarchyCache()
         {
-            if (layouting)
-            {
-                return;
-            }
+            base.BuildHierarchyCache();
 
-            layouting = true;
+            self = GetComponent<RectTransform>();
+            childrens = LayoutUtility.FindChildrens(self);
+        }
 
-            var self = GetComponent<RectTransform>();
-            var rects = LayoutUtility.FindChildrens(self);
+        public override void ResetHierarchyCache()
+        {
+            base.ResetHierarchyCache();
 
-            BuildLayout(rects, self);
+            self = null;
+            childrens = null;
+        }
 
-            for (int i = 0; i < rects.Count; ++i)
+        public override void DoLayout()
+        {
+            BuildLayout(childrens, self);
+
+            for (int i = 0; i < childrens.Count; ++i)
             {
                 layout[i].Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0f, layout[i].W);
                 layout[i].Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, layout[i].Y, layout[i].H);
             }
 
             self.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
-
-            layouting = false;
         }
 
         private void BuildLayout(List<RectChild> rects, RectTransform self)
@@ -58,7 +63,7 @@ namespace Deszz.Undebugger.UI.Layout
                 layout[i] = new ListElement()
                 {
                     W = width,
-                    H = rects[i].Dimensions.Height,
+                    H = Mathf.Max(rects[i].Rect.rect.height, rects[i].Dimensions.MinHeight),
                     Y = offset,
                     Rect = rects[i].Rect
                 };

@@ -5,7 +5,7 @@ using UnityEngine;
 namespace Deszz.Undebugger.UI.Layout
 {
     [RequireComponent(typeof(RectTransform))]
-    public class FlexibleGrid : MonoBehaviour
+    internal class FlexibleGrid : LayoutRoot
     {
         [Flags]
         public enum AxisMask
@@ -38,23 +38,30 @@ namespace Deszz.Undebugger.UI.Layout
         [SerializeField]
         private AxisMask autoSize;
 
-        private bool layouting;
         private GridElement[] layout;
         private Vector2 size;
+        private RectTransform self;
+        private List<RectChild> childrens;
 
-        public void Layout()
+        public override void BuildHierarchyCache()
         {
-            if (layouting)
-            {
-                return;
-            }
+            base.BuildHierarchyCache();
 
-            layouting = true;
+            self = GetComponent<RectTransform>();
+            childrens = LayoutUtility.FindChildrens(self);
+        }
 
-            var self = GetComponent<RectTransform>();
-            var rects = LayoutUtility.FindChildrens(self);
+        public override void ResetHierarchyCache()
+        {
+            base.ResetHierarchyCache();
 
-            BuildLayout(rects, self);
+            self = null;
+            childrens = null;
+        }
+
+        public override void DoLayout()
+        {
+            BuildLayout(childrens, self);
 
             if ((autoSize & AxisMask.Vertical) > 0)
             {
@@ -66,13 +73,11 @@ namespace Deszz.Undebugger.UI.Layout
                 self.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
             }
 
-            for (int i = 0; i < rects.Count; ++i)
+            for (int i = 0; i < childrens.Count; ++i)
             {
                 layout[i].Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, layout[i].X, layout[i].W);
                 layout[i].Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, layout[i].Y, layout[i].H);
             }
-
-            layouting = false;
         }
 
         private void BuildLayout(List<RectChild> rects, RectTransform self)
@@ -132,7 +137,7 @@ namespace Deszz.Undebugger.UI.Layout
                     continue;
                 }
 
-                var height = rects[i].Dimensions.Height;
+                var height = rects[i].Dimensions.MinHeight;
                 if (height > currentRowHeight)
                 {
                     currentRowHeight = height;

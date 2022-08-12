@@ -1,5 +1,6 @@
 ﻿using Deszz.Undebugger.Model;
 using Deszz.Undebugger.Model.Commands;
+using Deszz.Undebugger.UI.Layout;
 using UnityEngine;
 
 namespace Deszz.Undebugger.UI.Menu.Commands
@@ -22,26 +23,6 @@ namespace Deszz.Undebugger.UI.Menu.Commands
         private CommandsGroupModel model;
         private CommandViewFactory commandViewFactory;
         private PageView pageView;
-        private bool layoutDirty;
-
-        private void SetLayoutDirty()
-        {
-            layoutDirty = true;
-        }
-
-        private void Update()
-        {
-            if (layoutDirty)
-            {
-                pageView.Layout();
-                layoutDirty = false;
-            }
-        }
-
-        private void OnRectTransformDimensionsChange()
-        {
-            SetLayoutDirty();
-        }
 
         public override void Load(MenuModel menuModel, MenuContext menuViewContext)
         {
@@ -67,7 +48,7 @@ namespace Deszz.Undebugger.UI.Menu.Commands
         {
             if (pageView != null)
             {
-                Destroy(pageView.gameObject);
+                DestroyImmediate(pageView.gameObject);
                 pageView = null;
             }
 
@@ -82,7 +63,7 @@ namespace Deszz.Undebugger.UI.Menu.Commands
                 tabButtons[i].SetSelected(i == page);
             }
 
-            SetLayoutDirty();
+            LayoutUtility.SetLayoutDirty(transform, LayoutDirtyFlag.All);
         }
 
         private void CreateTabButtons()

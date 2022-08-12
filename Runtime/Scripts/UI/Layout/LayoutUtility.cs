@@ -14,13 +14,20 @@ namespace Deszz.Undebugger.UI.Layout
     {
         public bool Ignored;
         public float MinWidth;
-        public float Width;
         public float MinHeight;
-        public float Height;
     }
 
     public static class LayoutUtility
     {
+        public static void SetLayoutDirty(Transform transform, LayoutDirtyFlag flag = LayoutDirtyFlag.All)
+        {
+            var master = transform.GetComponentInParent<LayoutMaster>();
+            if (master != null)
+            {
+                master.SetDirty(flag);
+            }
+        }
+
         public static List<RectChild> FindChildrens(Transform self)
         {
             var rects = new List<RectChild>();
@@ -73,8 +80,6 @@ namespace Deszz.Undebugger.UI.Layout
 
             return new RectDimensions()
             {
-                Width = w,
-                Height = h,
                 MinWidth = minw,
                 MinHeight = minh,
                 Ignored = ignored

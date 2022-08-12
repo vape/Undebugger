@@ -32,11 +32,6 @@ namespace Deszz.Undebugger.UI.Menu.Commands
             }
         }
 
-        public void Layout()
-        {
-            layout.Layout();
-        }
-
         private void Deinit()
         {
             if (commands != null)

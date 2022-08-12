@@ -1,4 +1,5 @@
 using Deszz.Undebugger.Model;
+using Deszz.Undebugger.UI.Layout;
 using UnityEngine;
 
 namespace Deszz.Undebugger.UI.Menu
@@ -20,7 +21,7 @@ namespace Deszz.Undebugger.UI.Menu
         [SerializeField]
         private RectTransform groupButtonContainer;
         [SerializeField]
-        private RectTransform groupContainer;
+        private LayoutMaster groupContainer;
 
         private MenuModel model;
         private MenuContext context;
@@ -42,6 +43,11 @@ namespace Deszz.Undebugger.UI.Menu
             CloseRequested = null;
         }
 
+        private void OnRectTransformDimensionsChange()
+        {
+            groupContainer.SetDirty(LayoutDirtyFlag.Layout);
+        }
+
         public void Close()
         {
             CloseRequested?.Invoke(this);
@@ -51,7 +57,7 @@ namespace Deszz.Undebugger.UI.Menu
         {
             if (activeGroupView != null)
             {
-                Destroy(activeGroupView.gameObject);
+                DestroyImmediate(activeGroupView.gameObject);
                 activeGroupView = null;
             }
 
@@ -65,7 +71,7 @@ namespace Deszz.Undebugger.UI.Menu
                 return;
             }
 
-            var view = Instantiate(context.Settings.GroupTemplates[group], groupContainer);
+            var view = Instantiate(context.Settings.GroupTemplates[group], groupContainer.transform);
             view.Load(model, context);
 
             activeGroupView = view;
@@ -74,6 +80,8 @@ namespace Deszz.Undebugger.UI.Menu
             {
                 groupButtons[i].SetSelected(i == group);
             }
+
+            groupContainer.SetDirty();
         }
 
         private void InitializeGroupButtons()
