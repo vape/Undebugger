@@ -15,6 +15,13 @@ namespace Deszz.Undebugger.UI.Layout
             Vertical = 2
         }
 
+        [Serializable]
+        public struct RectSpacing
+        {
+            public float Horizontal;
+            public float Vertical;
+        }
+
         private struct GridElement
         {
             public RectTransform Rect;
@@ -26,6 +33,8 @@ namespace Deszz.Undebugger.UI.Layout
 
         [SerializeField]
         private RectOffset padding;
+        [SerializeField]
+        private RectSpacing spacing;
         [SerializeField]
         private AxisMask autoSize;
 
@@ -82,7 +91,8 @@ namespace Deszz.Undebugger.UI.Layout
             void adjustRowDimensions(int last, int count)
             {
                 var first = last - count;
-                var extraWidth = maxWidth - currentRowWidth;
+                // add horizontal spacing here to compensate extra space added to the end of a row
+                var extraWidth = maxWidth - currentRowWidth + spacing.Horizontal;
                 var offset = 0f;
                 
                 if (extraWidth <= 0)
@@ -92,7 +102,7 @@ namespace Deszz.Undebugger.UI.Layout
 
                 for (int i = first; i < last; ++i)
                 {
-                    var extraElementWidth = (layout[i].W / currentRowWidth) * extraWidth;
+                    var extraElementWidth = ((layout[i].W + spacing.Horizontal) / currentRowWidth) * extraWidth;
 
                     layout[i].H = currentRowHeight;
                     layout[i].W += extraElementWidth;
@@ -106,7 +116,7 @@ namespace Deszz.Undebugger.UI.Layout
 
             void nextRow()
             {
-                currentTopOffset += currentRowHeight;
+                currentTopOffset += currentRowHeight + spacing.Vertical;
                 currentElementsInRow = 0;
                 currentRowWidth = 0;
                 currentRowHeight = 0;
@@ -138,7 +148,7 @@ namespace Deszz.Undebugger.UI.Layout
                 };
 
                 currentElementsInRow++;
-                currentRowWidth += layout[i].W;
+                currentRowWidth += layout[i].W + spacing.Horizontal;
             }
 
             adjustRowDimensions(rects.Count, currentElementsInRow);

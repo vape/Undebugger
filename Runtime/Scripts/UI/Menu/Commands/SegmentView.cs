@@ -1,11 +1,14 @@
 using Deszz.Undebugger.Model.Commands;
 using Deszz.Undebugger.UI.Layout;
+using TMPro;
 using UnityEngine;
 
 namespace Deszz.Undebugger.UI.Menu.Commands
 {
     public class SegmentView : MonoBehaviour
     {
+        [SerializeField]
+        private TMP_Text nameText;
         [SerializeField]
         private RectTransform container;
         [SerializeField]
@@ -17,6 +20,7 @@ namespace Deszz.Undebugger.UI.Menu.Commands
         {
             Deinit();
 
+            nameText.text = model.Name == null ? "Unnamed" : model.Name;
             commands = new CommandView[model.Commands.Count];
 
             for (int i = 0; i < model.Commands.Count; ++i)
