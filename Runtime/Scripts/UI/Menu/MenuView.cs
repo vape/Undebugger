@@ -21,7 +21,7 @@ namespace Deszz.Undebugger.UI.Menu
         [SerializeField]
         private RectTransform groupButtonContainer;
         [SerializeField]
-        private LayoutMaster groupContainer;
+        private Transform groupContainer;
 
         private MenuModel model;
         private MenuContext context;
@@ -41,11 +41,6 @@ namespace Deszz.Undebugger.UI.Menu
         private void OnDestroy()
         {
             CloseRequested = null;
-        }
-
-        private void OnRectTransformDimensionsChange()
-        {
-            groupContainer.SetDirty(LayoutDirtyFlag.Layout);
         }
 
         public void Close()
@@ -81,7 +76,7 @@ namespace Deszz.Undebugger.UI.Menu
                 groupButtons[i].SetSelected(i == group);
             }
 
-            groupContainer.SetDirty();
+            LayoutUtility.SetLayoutDirty(groupContainer, LayoutDirtyFlag.All);
         }
 
         private void InitializeGroupButtons()

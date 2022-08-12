@@ -75,6 +75,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3829374466373750533}
   - component: {fileID: 3829374466373750534}
+  - component: {fileID: 2452536934237853961}
   m_Layer: 5
   m_Name: Menu View
   m_TagString: Untagged
@@ -119,7 +120,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   groupButtonTemplate: {fileID: 2823488375340526321, guid: f9ea6d68e1c5efe48b3da3c51782c758, type: 3}
   groupButtonContainer: {fileID: 3869053405799616987}
-  groupContainer: {fileID: 8724364623915566243}
+  groupContainer: {fileID: 5084036466930080757}
+--- !u!114 &2452536934237853961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3829374466373750532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fa9d69d1b9d4e114e8a5625587446769, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3829374466553632867
 GameObject:
   m_ObjectHideFlags: 0
@@ -131,6 +144,7 @@ GameObject:
   - component: {fileID: 3829374466553632868}
   - component: {fileID: 3829374466553632870}
   - component: {fileID: 3829374466553632869}
+  - component: {fileID: 6158042206181454137}
   m_Layer: 5
   m_Name: Back
   m_TagString: Untagged
@@ -196,6 +210,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6158042206181454137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3829374466553632867}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fec2ac8ce32a3f46a37746c18e1f6a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activeSides: 2147483647
 --- !u!1 &3928367020549587407
 GameObject:
   m_ObjectHideFlags: 0
@@ -282,6 +309,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5084036466930080757}
   - component: {fileID: 8724364623915566243}
+  - component: {fileID: 6655253139534253708}
   m_Layer: 5
   m_Name: Group Container
   m_TagString: Untagged
@@ -321,6 +349,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e4ae64848cd014a49a4d654503f7a3b1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6655253139534253708
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5907250052804371147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ffe75110fbc0c4741b0f80c026af6fdd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  master: {fileID: 8724364623915566243}
 --- !u!1 &5932044023974313518
 GameObject:
   m_ObjectHideFlags: 0

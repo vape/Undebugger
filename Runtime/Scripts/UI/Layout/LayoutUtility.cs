@@ -28,6 +28,16 @@ namespace Deszz.Undebugger.UI.Layout
             }
         }
 
+        public static void SetLayoutDirtyAndForceUpdate(Transform transform, LayoutDirtyFlag flag = LayoutDirtyFlag.All)
+        {
+            var master = transform.GetComponentInParent<LayoutMaster>();
+            if (master != null)
+            {
+                master.SetDirty(flag);
+                master.ForceRefresh();
+            }
+        }
+
         public static List<RectChild> FindChildrens(Transform self)
         {
             var rects = new List<RectChild>();

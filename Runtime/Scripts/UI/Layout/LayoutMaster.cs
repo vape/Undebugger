@@ -30,7 +30,17 @@ namespace Deszz.Undebugger.UI.Layout
             dirtyFlag |= flag;
         }
 
+        public void ForceRefresh()
+        {
+            ProcessDirtyFlag();
+        }
+
         private void Update()
+        {
+            ProcessDirtyFlag();
+        }
+
+        private void ProcessDirtyFlag()
         {
             if (dirtyFlag != LayoutDirtyFlag.None)
             {
