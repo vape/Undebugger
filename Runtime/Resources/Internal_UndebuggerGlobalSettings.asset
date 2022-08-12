@@ -15,6 +15,8 @@ MonoBehaviour:
   MenuTemplate: {fileID: 3829374466373750534, guid: 1ec655111fdaac640aac87e91186184a, type: 3}
   CommandTemplates:
   - {fileID: 3926971308746980534, guid: ab21aa225c3b212439907dc7113801e3, type: 3}
+  - {fileID: 8114689995897010121, guid: c6c58de943ba20143a332ff4ce396e48, type: 3}
+  - {fileID: 3745503251564724418, guid: d5ed389046614fd40a23651a3be71c60, type: 3}
   GroupTemplates:
   - {fileID: 455843819065199182, guid: f8242881d7ab38449bacfb4dd53c8b2e, type: 3}
   - {fileID: 7187552237939998813, guid: 5fff63337ef364a4b87ff11fa9611300, type: 3}

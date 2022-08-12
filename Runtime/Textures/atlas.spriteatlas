@@ -40,10 +40,16 @@ SpriteAtlas:
   m_PackedSprites:
   - {fileID: 21300000, guid: cbb353205c2897f459cc60c61bf3abc3, type: 3}
   - {fileID: 21300000, guid: adfcb262f0d23e04d80d852fcba5f023, type: 3}
+  - {fileID: 21300000, guid: 28e2edd610bbe6b499d65159b6e069f8, type: 3}
+  - {fileID: 21300000, guid: 90e4afb976556b84a98c84119709dd12, type: 3}
+  - {fileID: 21300000, guid: 3994f19b80666794881ab54745e2997e, type: 3}
   - {fileID: 21300000, guid: 0083cfecbf3ef424689b3764c8f92d9a, type: 3}
   m_PackedSpriteNamesToIndex:
   - circle
   - close
+  - left
+  - checkmark
+  - right
   - square
   m_RenderDataMap: {}
   m_Tag: atlas
