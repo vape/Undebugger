@@ -16,14 +16,12 @@ namespace Deszz.Undebugger.UI.Layout
 
         private ListElement[] layout;
         private Vector2 size;
-        private RectTransform self;
         private List<RectChild> childrens;
 
         public override void BuildHierarchyCache()
         {
             base.BuildHierarchyCache();
 
-            self = GetComponent<RectTransform>();
             childrens = LayoutUtility.FindChildrens(self);
         }
 
@@ -31,12 +29,13 @@ namespace Deszz.Undebugger.UI.Layout
         {
             base.ResetHierarchyCache();
 
-            self = null;
             childrens = null;
         }
 
         public override void DoLayout()
         {
+            base.DoLayout();
+
             BuildLayout(childrens, self);
 
             for (int i = 0; i < childrens.Count; ++i)
@@ -46,6 +45,8 @@ namespace Deszz.Undebugger.UI.Layout
             }
 
             self.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
+
+            OnLayoutChanged();
         }
 
         private void BuildLayout(List<RectChild> rects, RectTransform self)
@@ -63,7 +64,7 @@ namespace Deszz.Undebugger.UI.Layout
                 layout[i] = new ListElement()
                 {
                     W = width,
-                    H = Mathf.Max(rects[i].Rect.rect.height, rects[i].Dimensions.MinHeight),
+                    H = Mathf.Max(rects[i].Rect.rect.height, rects[i].MinHeight),
                     Y = offset,
                     Rect = rects[i].Rect
                 };

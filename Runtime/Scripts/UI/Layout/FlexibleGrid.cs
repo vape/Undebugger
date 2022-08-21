@@ -1,20 +1,13 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Deszz.Undebugger.UI.Layout
 {
     [RequireComponent(typeof(RectTransform))]
     internal class FlexibleGrid : LayoutRoot
     {
-        [Flags]
-        public enum AxisMask
-        {
-            None = 0,
-            Horizontal = 1,
-            Vertical = 2
-        }
-
         [Serializable]
         public struct RectSpacing
         {
@@ -36,18 +29,16 @@ namespace Deszz.Undebugger.UI.Layout
         [SerializeField]
         private RectSpacing spacing;
         [SerializeField]
-        private AxisMask autoSize;
+        private LayoutAxis autoSize;
 
         private GridElement[] layout;
         private Vector2 size;
-        private RectTransform self;
         private List<RectChild> childrens;
 
         public override void BuildHierarchyCache()
         {
             base.BuildHierarchyCache();
 
-            self = GetComponent<RectTransform>();
             childrens = LayoutUtility.FindChildrens(self);
         }
 
@@ -55,20 +46,21 @@ namespace Deszz.Undebugger.UI.Layout
         {
             base.ResetHierarchyCache();
 
-            self = null;
             childrens = null;
         }
 
         public override void DoLayout()
         {
+            base.DoLayout();
+
             BuildLayout(childrens, self);
 
-            if ((autoSize & AxisMask.Vertical) > 0)
+            if ((autoSize & LayoutAxis.Vertical) > 0)
             {
                 self.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
             }
 
-            if ((autoSize & AxisMask.Horizontal) > 0)
+            if ((autoSize & LayoutAxis.Horizontal) > 0)
             {
                 self.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
             }
@@ -78,6 +70,8 @@ namespace Deszz.Undebugger.UI.Layout
                 layout[i].Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, layout[i].X, layout[i].W);
                 layout[i].Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, layout[i].Y, layout[i].H);
             }
+
+            OnLayoutChanged();
         }
 
         private void BuildLayout(List<RectChild> rects, RectTransform self)
@@ -129,7 +123,7 @@ namespace Deszz.Undebugger.UI.Layout
             
             for (int i = 0; i < rects.Count; i++)
             {
-                if (currentElementsInRow > 0 && currentRowWidth + rects[i].Dimensions.MinWidth > maxWidth)
+                if (currentElementsInRow > 0 && currentRowWidth + rects[i].MinWidth > maxWidth)
                 {
                     adjustRowDimensions(i, currentElementsInRow);
                     --i;
@@ -137,7 +131,7 @@ namespace Deszz.Undebugger.UI.Layout
                     continue;
                 }
 
-                var height = rects[i].Dimensions.MinHeight;
+                var height = rects[i].MinHeight;
                 if (height > currentRowHeight)
                 {
                     currentRowHeight = height;
@@ -146,7 +140,7 @@ namespace Deszz.Undebugger.UI.Layout
                 layout[i] = new GridElement()
                 {
                     Rect = rects[i].Rect,
-                    W = rects[i].Dimensions.MinWidth,
+                    W = rects[i].MinWidth,
                     H = height,
                     X = padding.left + currentRowWidth,
                     Y = currentTopOffset
