@@ -11,18 +11,6 @@ namespace Deszz.Undebugger
 {
     internal static class UndebuggerUtility
     {
-        public static MenuModel BuildModel()
-        {
-            var model = new MenuModel();
-
-            foreach (var handler in GameObject.FindObjectsOfType<MonoBehaviour>().OfType<IDebugMenuHandler>())
-            {
-                handler.OnBuildingModel(model);
-            }
-
-            return model;
-        }
-
         public static MenuView CreateMenu(MenuModel model, UndebuggerConfiguration configuration)
         {
             var settings = UndebuggerSettings.Instance;

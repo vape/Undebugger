@@ -1,3 +1,4 @@
+using Deszz.Undebugger.Builder;
 using Deszz.Undebugger.UI.Menu;
 using System.Threading;
 using System.Threading.Tasks;
@@ -72,7 +73,7 @@ namespace Deszz.Undebugger
             {
                 if (!created && (action & ActivationTriggerAction.Open) != 0)
                 {
-                    menu = UndebuggerUtility.CreateMenu(UndebuggerUtility.BuildModel(), configuration);
+                    menu = UndebuggerUtility.CreateMenu(ModelBuilder.Build(), configuration);
                     menu.CloseRequested += CloseRequestedHandler;
 
                     created = true;
