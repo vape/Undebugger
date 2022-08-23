@@ -1,5 +1,4 @@
 ﻿using Deszz.Undebugger.Model;
-using Deszz.Undebugger.UI.Layout;
 using UnityEngine;
 
 namespace Deszz.Undebugger.UI.Menu.Status

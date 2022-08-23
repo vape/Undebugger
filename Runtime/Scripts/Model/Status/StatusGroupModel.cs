@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Deszz.Undebugger.Model.Status
 {
-    public class StatusGroupModel
+    public class StatusGroupModel : IGroupModel
     {
-        public List<StatusSegmentModel> Segments = new List<StatusSegmentModel>();
+        public List<IStatusSegmentDriver> Segments = new List<IStatusSegmentDriver>();
+
+        public void Sort()
+        {
+            Segments.Sort(PriorityComparer.Instance);
+        }
     }
 }

@@ -31,6 +31,8 @@ namespace Deszz.Undebugger.UI.Menu
 
         public void Load(MenuModel model, MenuContext context)
         {
+            model.Sort();
+
             this.model = model;
             this.context = context;
 

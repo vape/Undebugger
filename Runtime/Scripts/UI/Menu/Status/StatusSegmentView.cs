@@ -16,7 +16,7 @@ namespace Deszz.Undebugger.UI.Menu.Status
         [SerializeField]
         private LayoutElement layoutElement;
 
-        private StatusSegmentModel model;
+        private IStatusSegmentDriver driver;
 
         private void OnEnable()
         {
@@ -28,22 +28,48 @@ namespace Deszz.Undebugger.UI.Menu.Status
             layout.LayoutChanged -= LayoutChangedHandler;
         }
 
+        private void OnDestroy()
+        {
+            Deinit();
+        }
+
+        private void Deinit()
+        {
+            if (driver != null)
+            {
+                driver.Changed -= DriverChangedHandler;
+            }
+        }
+
+        private void DriverChangedHandler()
+        {
+            RefreshText();
+        }
+
         private void LayoutChangedHandler()
         {
             layoutElement.minHeight = GetComponent<RectTransform>().rect.size.y;
         }
 
-        public void Init(StatusSegmentModel model)
+        public void Init(IStatusSegmentDriver driver)
         {
-            this.model = model;
+            Deinit();
 
-            title.text = model.Title;
-            text.text = model.Text;
+            this.driver = driver;
+            this.driver.Changed += DriverChangedHandler;
+
+            RefreshText();
 
             var dimensionsTracker = text.gameObject.AddComponent<RectTransformDimensionsTracker>();
             dimensionsTracker.DimensionsChanged += TextDimensionsChanged;
 
             SetDirtyLayout();
+        }
+
+        private void RefreshText()
+        {
+            title.text = driver.Title;
+            text.text = driver.Text;
         }
 
         private void TextDimensionsChanged()
