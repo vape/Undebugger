@@ -137,10 +137,16 @@ namespace Deszz.Undebugger.UI.Layout
                     currentRowHeight = height;
                 }
 
+                var width = rects[i].MinWidth;
+                if (currentElementsInRow == 0 && width > maxWidth)
+                {
+                    width = maxWidth;
+                }
+
                 layout[i] = new GridElement()
                 {
                     Rect = rects[i].Rect,
-                    W = rects[i].MinWidth,
+                    W = width,
                     H = height,
                     X = padding.left + currentRowWidth,
                     Y = currentTopOffset

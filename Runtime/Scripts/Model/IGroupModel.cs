@@ -2,6 +2,7 @@
 {
     public interface IGroupModel
     {
-        void Sort();
+        //TODO: generalize and rename to something like 'OnBeforePassedToView' (?)
+        void Sort(); 
     }
 }

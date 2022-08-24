@@ -106,6 +106,8 @@ namespace Deszz.Undebugger.UI.Menu
                 groupButtons[i].Init(i, context.Settings.GroupTemplates[i].GroupName);
                 groupButtons[i].Clicked += GroupButtonClickedHandler;
             }
+
+            LayoutUtility.SetLayoutDirty(groupButtonContainer, LayoutDirtyFlag.All);
         }
 
         private void GroupButtonClickedHandler(int index)
