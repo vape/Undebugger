@@ -20,4 +20,5 @@ MonoBehaviour:
   GroupTemplates:
   - {fileID: 455843819065199182, guid: f8242881d7ab38449bacfb4dd53c8b2e, type: 3}
   - {fileID: 6338874795585390091, guid: 7ff576e083754334699bc9564f38aec6, type: 3}
+  - {fileID: 4410948777105512062, guid: 985cf136514c95c4fa12cdf7ae36e358, type: 3}
   - {fileID: 7187552237939998813, guid: 5fff63337ef364a4b87ff11fa9611300, type: 3}

@@ -36,6 +36,19 @@ namespace Deszz.Undebugger.UI.Layout
             }
         }
 
+        public static bool TryGetChildData(RectTransform rect, out RectChild child)
+        {
+            GetDimensions(rect, out var layoutElement, out float minWidth, out float minHeight);
+            if (layoutElement != null && layoutElement.ignoreLayout)
+            {
+                child = default;
+                return false;
+            }
+
+            child = new RectChild() { Rect = rect, LayoutElement = layoutElement, DefaultMinHeight = minHeight, DefaultMinWidth = minWidth };
+            return true;
+        }
+
         public static List<RectChild> FindChildrens(Transform self)
         {
             var rects = new List<RectChild>();
