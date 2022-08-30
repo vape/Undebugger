@@ -81,9 +81,9 @@ namespace Deszz.Undebugger
                 menu.name = settings.MenuTemplate.name;
                 menu.Load(model, new MenuContext() { Configuration = configuration, Settings = settings });
 
-                var window = sceneManager.GetWindowSystem().CreateWindow();
-                window.SetContent(menu);
-                window.SetMode(WindowMode.Maximized);
+                var window = sceneManager.GetWindowSystem().Create();
+                window.SetContent(menu.GetComponent<RectTransform>());
+                window.SetState(WindowState.Maximized);
 
                 return window;
             }

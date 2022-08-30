@@ -209,6 +209,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3829374466373750533}
   - component: {fileID: 3829374466373750534}
+  - component: {fileID: 7392974256695241048}
   m_Layer: 5
   m_Name: Menu View
   m_TagString: Untagged
@@ -256,6 +257,20 @@ MonoBehaviour:
   groupContainer: {fileID: 5084036466930080757}
   groupButtonsWrapper: {fileID: 8075121212821096923}
   windowButtonsContainer: {fileID: 2877229473558667438}
+--- !u!114 &7392974256695241048
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3829374466373750532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9052a9712f122f54aaf0ac9e07e60f97, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  backgroundSafeAreaIgnore: {fileID: 6158042206181454137}
+  layoutMaster: {fileID: 8724364623915566243}
 --- !u!1 &3829374466553632867
 GameObject:
   m_ObjectHideFlags: 0
@@ -268,7 +283,6 @@ GameObject:
   - component: {fileID: 3829374466553632870}
   - component: {fileID: 3829374466553632869}
   - component: {fileID: 6158042206181454137}
-  - component: {fileID: 8949556757173703253}
   m_Layer: 5
   m_Name: Back
   m_TagString: Untagged
@@ -347,19 +361,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeSides: 2147483647
---- !u!114 &8949556757173703253
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3829374466553632867}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9052a9712f122f54aaf0ac9e07e60f97, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  safeAreaIgnore: {fileID: 6158042206181454137}
 --- !u!1 &4419643674974196507
 GameObject:
   m_ObjectHideFlags: 0

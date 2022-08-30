@@ -6,33 +6,6 @@ using UnityEngine;
 
 namespace Deszz.Undebugger
 {
-    [Serializable]
-    internal class UndebuggerIcons
-    {
-        [Serializable]
-        private struct IconData
-        {
-            public string Name;
-            public Sprite Sprite;
-        }
-
-        [SerializeField]
-        private IconData[] icons;
-
-        public Sprite GetIcon(string name)
-        {
-            for (int i = 0; i < icons.Length; i++)
-            {
-                if (icons[i].Name == name)
-                {
-                    return icons[i].Sprite;
-                }
-            }
-
-            return null;
-        }
-    }
-
     // [CreateAssetMenu(fileName = SettingsName, menuName = "Deszz/Undebugger/Internal/Settings")]
     internal class UndebuggerSettings : ScriptableObject
     {
@@ -53,10 +26,9 @@ namespace Deszz.Undebugger
 
         private static UndebuggerSettings instance;
 
-        public Window WindowTemplate;
+        public WindowSystemSettings WindowSettings;
         public MenuView MenuTemplate;
         public CommandView[] CommandTemplates;
         public GroupView[] GroupTemplates;
-        public UndebuggerIcons Icons;
     }
 }

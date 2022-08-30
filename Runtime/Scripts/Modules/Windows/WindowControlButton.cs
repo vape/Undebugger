@@ -4,7 +4,7 @@ using UnityEngine.UI;
 
 namespace Deszz.Undebugger.UI.Windows
 {
-    public class WindowHeaderButton : MonoBehaviour
+    public class WindowControlButton : MonoBehaviour
     {
         [SerializeField]
         private Image icon;

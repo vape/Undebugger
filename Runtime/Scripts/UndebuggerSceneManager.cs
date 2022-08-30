@@ -130,7 +130,15 @@ namespace Deszz.Undebugger
             safeArea = safeAreaObject.AddComponent<SafeArea>();
 
             canvasObject.AddComponent<GraphicRaycaster>();
-            windowSystem = WindowSystem.Initialize(safeAreaRect);
+            windowSystem = canvasObject.AddComponent<WindowSystem>();
+
+            var windowsContainer = new GameObject("Windows");
+            var windowsContainerRect = windowsContainer.AddComponent<RectTransform>();
+            windowsContainerRect.SetParent(safeAreaRect);
+            windowsContainerRect.Expand();
+
+            windowSystem.Container = windowsContainerRect;
+            windowSystem.Initialize(UndebuggerSettings.Instance.WindowSettings);
         }
     }
 }

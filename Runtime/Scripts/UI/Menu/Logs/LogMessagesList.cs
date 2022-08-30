@@ -145,9 +145,13 @@ namespace Deszz.Undebugger.UI.Menu.Logs
             var view = Instantiate(bigMessageViewTemplate, bigMessageViewContainer);
             view.Setup(messages[index]);
 
-            var window = WindowSystem.Instance.CreateWindow();
-            window.SetContent(view);
-            window.SetMode(WindowMode.Windowed);
+            var windowSystem = FindObjectOfType<WindowSystem>();
+            if (windowSystem != null)
+            {
+                var window = windowSystem.Create();
+                window.SetContent(view.GetComponent<RectTransform>());
+                window.SetState(WindowState.Windowed);
+            }
         }
 
         private void Update()

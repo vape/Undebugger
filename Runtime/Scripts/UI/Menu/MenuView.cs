@@ -119,12 +119,12 @@ namespace Deszz.Undebugger.UI.Menu
             this.window = window;
         }
 
-        public void RemovingFromWindow()
+        public void RemovedFromWindow(Window window)
         {
             this.window = null;
         }
 
-        public void AddWindowButtons(WindowHeaderButton[] buttons)
+        public void AttachWindowButtons(WindowControlButton[] buttons)
         {
             for (int i = 0; i < buttons.Length; ++i)
             {
@@ -135,7 +135,7 @@ namespace Deszz.Undebugger.UI.Menu
             groupButtonsWrapper.offsetMin = new Vector2(windowButtonsContainer.rect.width, groupButtonsWrapper.offsetMin.y);
         }
 
-        public void RemoveAllWindowButtons()
+        public void DetachWindowButtons()
         {
             for (int i = windowButtonsContainer.childCount - 1; i >= 0; --i)
             {
