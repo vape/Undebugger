@@ -1,4 +1,5 @@
 ﻿using Deszz.Undebugger.UI.Layout;
+using Deszz.Undebugger.UI.Windows;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -24,7 +25,6 @@ namespace Deszz.Undebugger.UI.Menu.Logs
         private Dictionary<int, LogMessageView> existingViews = new Dictionary<int, LogMessageView>(16);
         private HashSet<int> visibleMessages = new HashSet<int>(16);
         private HashSet<int> viewsToRemove = new HashSet<int>(16);
-        private LogMessageBigView bigMessageView;
 
         private void OnEnable()
         {
@@ -142,13 +142,12 @@ namespace Deszz.Undebugger.UI.Menu.Logs
 
         private void MessageViewClicked(int index)
         {
-            if (bigMessageView != null)
-            {
-                Destroy(bigMessageView.gameObject);
-            }
+            var view = Instantiate(bigMessageViewTemplate, bigMessageViewContainer);
+            view.Setup(messages[index]);
 
-            bigMessageView = Instantiate(bigMessageViewTemplate, bigMessageViewContainer);
-            bigMessageView.Setup(messages[index]);
+            var window = WindowSystem.Instance.CreateWindow();
+            window.SetContent(view);
+            window.SetMode(WindowMode.Windowed);
         }
 
         private void Update()

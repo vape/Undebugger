@@ -23,10 +23,5 @@ namespace Deszz.Undebugger.UI.Menu.Logs
             time.text = message.Time.ToString("HH:mm:ss.ffff");
             stacktrace.text = message.StackTrace;
         }
-
-        public void OnCloseClick()
-        {
-            Destroy(gameObject);
-        }
     }
 }

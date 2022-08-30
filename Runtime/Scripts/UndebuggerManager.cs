@@ -1,7 +1,6 @@
 using Deszz.Undebugger.Builder;
 using Deszz.Undebugger.UI.Menu;
-using System.Threading;
-using System.Threading.Tasks;
+using Deszz.Undebugger.UI.Windows;
 using UnityEngine;
 
 namespace Deszz.Undebugger
@@ -33,9 +32,13 @@ namespace Deszz.Undebugger
             Instance = gameObject.AddComponent<UndebuggerManager>();
         }
 
-        private SemaphoreSlim instanceAccess = new SemaphoreSlim(1, 1);
-        private MenuView menu;
-        private bool created;
+        private UndebuggerSceneManager sceneManager;
+        private Window menuWindow;
+
+        private void Awake()
+        {
+            sceneManager = new UndebuggerSceneManager();
+        }
 
         private void Update()
         {
@@ -50,63 +53,39 @@ namespace Deszz.Undebugger
                 }
             }
 
-            if (triggerAction != ActivationTriggerAction.None)
+            if (menuWindow != null && (triggerAction & ActivationTriggerAction.Close) != 0)
             {
-#pragma warning disable CS4014
-                ToggleMenuAsync(triggerAction);
-#pragma warning restore CS4014
+                menuWindow.Close();
+            }
+            else if (menuWindow == null && (triggerAction & ActivationTriggerAction.Open) != 0)
+            {
+                menuWindow = CreateMenu();
+                menuWindow.Closing += WindowClosingHandler;
             }
         }
 
-        private void CloseRequestedHandler(MenuView view)
+        private void WindowClosingHandler(Window window)
         {
-#pragma warning disable CS4014
-            TryCloseAsync();
-#pragma warning restore CS4014
+            menuWindow.Closing -= WindowClosingHandler;
+            menuWindow = null;
         }
 
-        private async Task ToggleMenuAsync(ActivationTriggerAction action)
+        private Window CreateMenu()
         {
-            await instanceAccess.WaitAsync();
+            var model = ModelBuilder.Build();
+            var settings = UndebuggerSettings.Instance;
 
-            try
+            using (sceneManager.MakeActive())
             {
-                if (!created && (action & ActivationTriggerAction.Open) != 0)
-                {
-                    menu = UndebuggerUtility.CreateMenu(ModelBuilder.Build(), configuration);
-                    menu.CloseRequested += CloseRequestedHandler;
+                var menu = GameObject.Instantiate(settings.MenuTemplate, sceneManager.GetSafeArea().Rect);
+                menu.name = settings.MenuTemplate.name;
+                menu.Load(model, new MenuContext() { Configuration = configuration, Settings = settings });
 
-                    created = true;
-                }
-                else if (created && (action & ActivationTriggerAction.Close) != 0)
-                {
-                    menu.CloseRequested -= CloseRequestedHandler;
-                    await UndebuggerUtility.DestroyMenuAsync(menu);
-                    created = false;
-                }
-            }
-            finally
-            {
-                instanceAccess.Release();
-            }
-        }
+                var window = sceneManager.GetWindowSystem().CreateWindow();
+                window.SetContent(menu);
+                window.SetMode(WindowMode.Maximized);
 
-        private async Task TryCloseAsync()
-        {
-            await instanceAccess.WaitAsync();
-
-            try
-            {
-                if (created)
-                {
-                    menu.CloseRequested -= CloseRequestedHandler;
-                    await UndebuggerUtility.DestroyMenuAsync(menu);
-                    created = false;
-                }
-            }
-            finally
-            {
-                instanceAccess.Release();
+                return window;
             }
         }
     }

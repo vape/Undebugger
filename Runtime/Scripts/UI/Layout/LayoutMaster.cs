@@ -103,6 +103,11 @@ namespace Deszz.Undebugger.UI.Layout
             {
                 foreach (var root in kv.Value)
                 {
+                    if (root == null)
+                    {
+                        continue;
+                    }
+
                     yield return root;
                 }
             }

@@ -1,5 +1,6 @@
 using Deszz.Undebugger.Model;
 using Deszz.Undebugger.UI.Layout;
+using Deszz.Undebugger.UI.Windows;
 using UnityEngine;
 
 namespace Deszz.Undebugger.UI.Menu
@@ -10,24 +11,24 @@ namespace Deszz.Undebugger.UI.Menu
         internal UndebuggerSettings Settings;
     }
 
-    public class MenuView : MonoBehaviour
+    public class MenuView : MonoBehaviour, IWindowContent, IWindowButtonsContainer
     {
-        public delegate void CloseRequestedDelegate(MenuView view);
-
-        public event CloseRequestedDelegate CloseRequested;
-
         [SerializeField]
         private GroupButton groupButtonTemplate;
         [SerializeField]
         private RectTransform groupButtonContainer;
         [SerializeField]
         private Transform groupContainer;
+        [SerializeField]
+        private RectTransform groupButtonsWrapper;
+        [SerializeField]
+        private RectTransform windowButtonsContainer;
 
         private MenuModel model;
         private MenuContext context;
-
         private GroupButton[] groupButtons;
         private GroupView activeGroupView;
+        private Window window;
 
         public void Load(MenuModel model, MenuContext context)
         {
@@ -40,14 +41,12 @@ namespace Deszz.Undebugger.UI.Menu
             SetActiveGroup(0);
         }
 
-        private void OnDestroy()
-        {
-            CloseRequested = null;
-        }
-
         public void Close()
         {
-            CloseRequested?.Invoke(this);
+            if (window != null)
+            {
+                window.Close();
+            }
         }
 
         public void SetActiveGroup(int group)
@@ -113,6 +112,38 @@ namespace Deszz.Undebugger.UI.Menu
         private void GroupButtonClickedHandler(int index)
         {
             SetActiveGroup(index);
+        }
+
+        public void AddingToWindow(Window window)
+        {
+            this.window = window;
+        }
+
+        public void RemovingFromWindow()
+        {
+            this.window = null;
+        }
+
+        public void AddWindowButtons(WindowHeaderButton[] buttons)
+        {
+            for (int i = 0; i < buttons.Length; ++i)
+            {
+                buttons[i].transform.SetParent(windowButtonsContainer);
+            }
+
+            LayoutUtility.SetLayoutDirtyAndForceUpdate(windowButtonsContainer, LayoutDirtyFlag.All);
+            groupButtonsWrapper.offsetMin = new Vector2(windowButtonsContainer.rect.width, groupButtonsWrapper.offsetMin.y);
+        }
+
+        public void RemoveAllWindowButtons()
+        {
+            for (int i = windowButtonsContainer.childCount - 1; i >= 0; --i)
+            {
+                DestroyImmediate(windowButtonsContainer.GetChild(i).gameObject);
+            }
+
+            LayoutUtility.SetLayoutDirtyAndForceUpdate(windowButtonsContainer, LayoutDirtyFlag.All);
+            groupButtonsWrapper.offsetMin = new Vector2(windowButtonsContainer.rect.width, groupButtonsWrapper.offsetMin.y);
         }
     }
 }

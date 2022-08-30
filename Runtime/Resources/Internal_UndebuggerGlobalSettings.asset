@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a83c296d0b46df4d9bdd3b79ae5d467, type: 3}
   m_Name: Internal_UndebuggerGlobalSettings
   m_EditorClassIdentifier: 
+  WindowTemplate: {fileID: 4672117489946900115, guid: 4d569b3aec8699448ad11414d71c352e, type: 3}
   MenuTemplate: {fileID: 3829374466373750534, guid: 1ec655111fdaac640aac87e91186184a, type: 3}
   CommandTemplates:
   - {fileID: 3926971308746980534, guid: ab21aa225c3b212439907dc7113801e3, type: 3}
@@ -22,3 +23,11 @@ MonoBehaviour:
   - {fileID: 6338874795585390091, guid: 7ff576e083754334699bc9564f38aec6, type: 3}
   - {fileID: 4410948777105512062, guid: 985cf136514c95c4fa12cdf7ae36e358, type: 3}
   - {fileID: 7187552237939998813, guid: 5fff63337ef364a4b87ff11fa9611300, type: 3}
+  Icons:
+    icons:
+    - Name: close
+      Sprite: {fileID: 21300000, guid: adfcb262f0d23e04d80d852fcba5f023, type: 3}
+    - Name: enlarge
+      Sprite: {fileID: 21300000, guid: 93c496de2a8dd39439a66c9ed433e917, type: 3}
+    - Name: compress
+      Sprite: {fileID: 21300000, guid: 7aba86c0eff3c704a89b25104a056fe2, type: 3}

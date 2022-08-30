@@ -2,11 +2,13 @@
 
 namespace Deszz.Undebugger.UI.Layout
 {
-    internal class SafeArea : MonoBehaviour
+    public class SafeArea : MonoBehaviour
     {
         public delegate void DimentionsChangedDelegate(SafeArea safeArea);
 
         public event DimentionsChangedDelegate DimensionsChanged;
+
+        public RectTransform Rect => rect;
 
         public virtual Rect SafeAreaRect => Screen.safeArea;
         public virtual Rect ScreenRect => canvas.pixelRect;

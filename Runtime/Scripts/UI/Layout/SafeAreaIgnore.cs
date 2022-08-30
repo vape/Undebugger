@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Deszz.Undebugger.UI.Layout
 {
-    internal class SafeAreaIgnore : MonoBehaviour
+    public class SafeAreaIgnore : MonoBehaviour
     {
         [Flags]
         public enum Side : int
@@ -36,7 +36,7 @@ namespace Deszz.Undebugger.UI.Layout
         private SafeArea safeArea;
         private bool hasSafeArea;
 
-        private void Awake()
+        private void OnEnable()
         {
             rect = GetComponent<RectTransform>();
             safeArea = transform.GetComponentInParent<SafeArea>();
@@ -50,7 +50,7 @@ namespace Deszz.Undebugger.UI.Layout
             }
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
             if (hasSafeArea)
             {

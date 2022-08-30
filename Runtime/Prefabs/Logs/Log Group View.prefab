@@ -103,6 +103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6d7f3d019c156ac4bb69ee9dd6797438, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  expand: 1
   viewport: {fileID: 3832881807497456534}
   rect: {fileID: 4262708813561636108}
   template: {fileID: 2909230889965390476, guid: c90058bc50d834943b9690d0d15755c1, type: 3}
