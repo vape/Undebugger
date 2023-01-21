@@ -96,7 +96,7 @@ namespace Deszz.Undebugger.Builder
                         var parameters = methods[k].GetParameters();
                         if (parameters.Length != 1 || parameters[0].ParameterType != typeof(MenuModel))
                         {
-                            L.Error($"Method {methods[k].Name} has wrong signature, expected {nameof(MenuModel)} as single parameter");
+                            Debug.LogError($"Method {methods[k].Name} has wrong signature, expected {nameof(MenuModel)} as single parameter");
                             continue;
                         }
 

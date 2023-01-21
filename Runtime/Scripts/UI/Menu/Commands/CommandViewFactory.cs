@@ -1,6 +1,7 @@
 ﻿using Deszz.Undebugger.Model.Commands;
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace Deszz.Undebugger.UI.Menu.Commands
 {
@@ -22,7 +23,7 @@ namespace Deszz.Undebugger.UI.Menu.Commands
                 }
                 else
                 {
-                    L.Warning($"No model is assigned to {type.Name} view");
+                    Debug.LogWarning($"No model is assigned to {type.Name} view");
                 }
             }
         }
