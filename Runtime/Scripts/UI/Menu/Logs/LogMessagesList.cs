@@ -150,6 +150,7 @@ namespace Deszz.Undebugger.UI.Menu.Logs
 
             var view = Instantiate(fullMessageTemplate, fullMessageContainer);
             view.Setup(messages[index]);
+            view.transform.SetAsFirstSibling();
         }
 
         public void CloseFullMessage()

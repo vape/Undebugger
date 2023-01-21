@@ -166,8 +166,8 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 75, y: 75}
-  m_Pivot: {x: 1, y: 0}
+  m_SizeDelta: {x: 70, y: 70}
+  m_Pivot: {x: 1, y: 1}
 --- !u!222 &5169629302228879406
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.26415092, g: 0.09344962, b: 0.09344962, a: 0.6392157}
+  m_Color: {r: 0.5, g: 0.15, b: 0.15, a: 0.7490196}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -318,7 +318,7 @@ MonoBehaviour:
   viewport: {fileID: 3832881807497456534}
   rect: {fileID: 4262708813561636108}
   template: {fileID: 2909230889965390476, guid: c90058bc50d834943b9690d0d15755c1, type: 3}
-  messageHeight: 130
+  messageHeight: 110
   fullMessageContainer: {fileID: 7816911568617072490}
   fullMessageTemplate: {fileID: 2909230889965390476, guid: 54cef2c0899edb54ca01503038ec9fd8, type: 3}
 --- !u!222 &1494361406158518550

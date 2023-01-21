@@ -12,8 +12,6 @@ namespace Deszz.Undebugger.UI.Menu.Logs
         public RectTransform Rect => rect;
 
         [SerializeField]
-        private Text time;
-        [SerializeField]
         private Sprite[] icons;
         [SerializeField]
         private Image icon;
@@ -48,7 +46,6 @@ namespace Deszz.Undebugger.UI.Menu.Logs
             messageText.text = message.Message;
             icon.sprite = icons[(int)message.Type];
             background.color = backColors[index % backColors.Length];
-            time.text = message.Time.ToString("HH:mm:ss.ffff");
         }
     }
 }
