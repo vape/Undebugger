@@ -22,17 +22,58 @@ namespace Undebugger
 
         private static MenuTriggerAction CloseByEscape(bool isOpen)
         {
+#if ENABLE_INPUT_SYSTEM
+            return
+                isOpen && UnityEngine.InputSystem.Keyboard.current.escapeKey.wasReleasedThisFrame ?
+                MenuTriggerAction.Close :
+                MenuTriggerAction.None;
+#else
             return isOpen && Input.GetKeyUp(KeyCode.Escape) ? MenuTriggerAction.Close : MenuTriggerAction.None;
+#endif
         }
 
         private static MenuTriggerAction ToggleByF1(bool isOpen)
         {
+#if ENABLE_INPUT_SYSTEM
+            return
+                UnityEngine.InputSystem.Keyboard.current.f1Key.wasReleasedThisFrame ?
+                    isOpen ?
+                    MenuTriggerAction.Close :
+                    MenuTriggerAction.Open :
+                MenuTriggerAction.None;
+#else
             return Input.GetKeyUp(KeyCode.F1) ? (isOpen ? MenuTriggerAction.Close : MenuTriggerAction.Open) : MenuTriggerAction.None;
+#endif
         }
 
         private static MenuTriggerAction ToggleByFourFingers(bool isOpen)
         {
+#if ENABLE_INPUT_SYSTEM
+            if (UnityEngine.InputSystem.Touchscreen.current == null)
+            {
+                return MenuTriggerAction.None;
+            }
+
+            var touchesCount = 0;
+
+            for (int i = 0; i < UnityEngine.InputSystem.Touchscreen.current.touches.Count; ++i)
+            {
+                if (UnityEngine.InputSystem.Touchscreen.current.touches[i].isInProgress)
+                {
+                    touchesCount++;
+                }
+            }
+
+            return
+                touchesCount == 4 ?
+                    isOpen ?
+                    MenuTriggerAction.Close :
+                    MenuTriggerAction.Open :
+                MenuTriggerAction.None;
+
+#else
             return Input.touchCount == 4 ? (isOpen ? MenuTriggerAction.Close : MenuTriggerAction.Open) : MenuTriggerAction.None;
+#endif
         }
 
         public static UndebuggerManager Instance
