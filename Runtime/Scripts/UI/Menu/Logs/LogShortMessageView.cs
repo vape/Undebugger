@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace Deszz.Undebugger.UI.Menu.Logs
 {
     [RequireComponent(typeof(RectTransform))]
-    public class LogMessageView : MonoBehaviour
+    public class LogShortMessageView : MonoBehaviour
     {
         public event Action<int> Clicked;
 

@@ -1,7 +1,5 @@
 ﻿using Deszz.Undebugger.UI.Menu;
 using Deszz.Undebugger.UI.Menu.Commands;
-using Deszz.Undebugger.UI.Windows;
-using System;
 using UnityEngine;
 
 namespace Deszz.Undebugger
@@ -26,7 +24,6 @@ namespace Deszz.Undebugger
 
         private static UndebuggerSettings instance;
 
-        public WindowSystemSettings WindowSettings;
         public MenuView MenuTemplate;
         public CommandView[] CommandTemplates;
         public GroupView[] GroupTemplates;

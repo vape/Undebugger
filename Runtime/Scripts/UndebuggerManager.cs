@@ -1,6 +1,5 @@
 using Deszz.Undebugger.Builder;
 using Deszz.Undebugger.UI.Menu;
-using Deszz.Undebugger.UI.Windows;
 using UnityEngine;
 
 namespace Deszz.Undebugger
@@ -32,8 +31,8 @@ namespace Deszz.Undebugger
             Instance = gameObject.AddComponent<UndebuggerManager>();
         }
 
+        private MenuView menuView;
         private UndebuggerSceneManager sceneManager;
-        private Window menuWindow;
 
         private void Awake()
         {
@@ -53,24 +52,17 @@ namespace Deszz.Undebugger
                 }
             }
 
-            if (menuWindow != null && (triggerAction & ActivationTriggerAction.Close) != 0)
+            if (menuView != null && (triggerAction & ActivationTriggerAction.Close) != 0)
             {
-                menuWindow.Close();
+                Destroy(menuView.gameObject);
             }
-            else if (menuWindow == null && (triggerAction & ActivationTriggerAction.Open) != 0)
+            else if (menuView == null && (triggerAction & ActivationTriggerAction.Open) != 0)
             {
-                menuWindow = CreateMenu();
-                menuWindow.Closing += WindowClosingHandler;
+                menuView = CreateMenu();
             }
         }
 
-        private void WindowClosingHandler(Window window)
-        {
-            menuWindow.Closing -= WindowClosingHandler;
-            menuWindow = null;
-        }
-
-        private Window CreateMenu()
+        private MenuView CreateMenu()
         {
             var model = ModelBuilder.Build();
             var settings = UndebuggerSettings.Instance;
@@ -81,11 +73,7 @@ namespace Deszz.Undebugger
                 menu.name = settings.MenuTemplate.name;
                 menu.Load(model, new MenuContext() { Configuration = configuration, Settings = settings });
 
-                var window = sceneManager.GetWindowSystem().Create();
-                window.SetContent(menu.GetComponent<RectTransform>());
-                window.SetState(WindowState.Maximized);
-
-                return window;
+                return menu;
             }
         }
     }

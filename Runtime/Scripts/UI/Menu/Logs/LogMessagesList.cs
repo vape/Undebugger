@@ -1,5 +1,4 @@
 ﻿using Deszz.Undebugger.UI.Layout;
-using Deszz.Undebugger.UI.Windows;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,16 +12,16 @@ namespace Deszz.Undebugger.UI.Menu.Logs
         [SerializeField]
         private RectTransform rect;
         [SerializeField]
-        private LogMessageView template;
+        private LogShortMessageView template;
         [SerializeField]
         private float messageHeight;
         [SerializeField]
-        private Transform bigMessageViewContainer;
+        private Transform fullMessageContainer;
         [SerializeField]
-        private LogMessageBigView bigMessageViewTemplate;
+        private LogFullMessageView fullMessageTemplate;
 
         private List<LogMessage> messages;
-        private Dictionary<int, LogMessageView> existingViews = new Dictionary<int, LogMessageView>(16);
+        private Dictionary<int, LogShortMessageView> existingViews = new Dictionary<int, LogShortMessageView>(16);
         private HashSet<int> visibleMessages = new HashSet<int>(16);
         private HashSet<int> viewsToRemove = new HashSet<int>(16);
 
@@ -142,16 +141,31 @@ namespace Deszz.Undebugger.UI.Menu.Logs
 
         private void MessageViewClicked(int index)
         {
-            var view = Instantiate(bigMessageViewTemplate, bigMessageViewContainer);
-            view.Setup(messages[index]);
-
-            var windowSystem = FindObjectOfType<WindowSystem>();
-            if (windowSystem != null)
+            if (fullMessageContainer.gameObject.activeSelf)
             {
-                var window = windowSystem.Create();
-                window.SetContent(view.GetComponent<RectTransform>());
-                window.SetState(WindowState.Windowed);
+                CloseFullMessage();
             }
+
+            fullMessageContainer.gameObject.SetActive(true);
+
+            var view = Instantiate(fullMessageTemplate, fullMessageContainer);
+            view.Setup(messages[index]);
+        }
+
+        public void CloseFullMessage()
+        {
+            if (!fullMessageContainer.gameObject.activeSelf)
+            {
+                return;
+            }
+
+            var messageView = fullMessageContainer.GetComponentInChildren<LogFullMessageView>();
+            if (messageView != null)
+            {
+                Destroy(messageView.gameObject);
+            }
+
+            fullMessageContainer.gameObject.SetActive(false);
         }
 
         private void Update()

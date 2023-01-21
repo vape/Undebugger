@@ -629,7 +629,7 @@ GameObject:
   - component: {fileID: 5152240406837031580}
   - component: {fileID: 2909230889965390476}
   m_Layer: 5
-  m_Name: Log Message Big View
+  m_Name: Log Full Message View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

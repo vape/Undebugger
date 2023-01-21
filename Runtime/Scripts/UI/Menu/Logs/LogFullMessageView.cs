@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 namespace Deszz.Undebugger.UI.Menu.Logs
 {
-    public class LogMessageBigView : MonoBehaviour
+    public class LogFullMessageView : MonoBehaviour
     {
         [SerializeField]
         private Text time;

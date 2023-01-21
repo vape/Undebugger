@@ -1,6 +1,5 @@
 using Deszz.Undebugger.Model;
 using Deszz.Undebugger.UI.Layout;
-using Deszz.Undebugger.UI.Windows;
 using UnityEngine;
 
 namespace Deszz.Undebugger.UI.Menu
@@ -11,7 +10,7 @@ namespace Deszz.Undebugger.UI.Menu
         internal UndebuggerSettings Settings;
     }
 
-    public class MenuView : MonoBehaviour, IWindowContent, IWindowButtonsContainer
+    public class MenuView : MonoBehaviour
     {
         [SerializeField]
         private GroupButton groupButtonTemplate;
@@ -21,14 +20,11 @@ namespace Deszz.Undebugger.UI.Menu
         private Transform groupContainer;
         [SerializeField]
         private RectTransform groupButtonsWrapper;
-        [SerializeField]
-        private RectTransform windowButtonsContainer;
 
         private MenuModel model;
         private MenuContext context;
         private GroupButton[] groupButtons;
         private GroupView activeGroupView;
-        private Window window;
 
         public void Load(MenuModel model, MenuContext context)
         {
@@ -39,14 +35,6 @@ namespace Deszz.Undebugger.UI.Menu
 
             InitializeGroupButtons();
             SetActiveGroup(0);
-        }
-
-        public void Close()
-        {
-            if (window != null)
-            {
-                window.Close();
-            }
         }
 
         public void SetActiveGroup(int group)
@@ -112,38 +100,6 @@ namespace Deszz.Undebugger.UI.Menu
         private void GroupButtonClickedHandler(int index)
         {
             SetActiveGroup(index);
-        }
-
-        public void AddingToWindow(Window window)
-        {
-            this.window = window;
-        }
-
-        public void RemovedFromWindow(Window window)
-        {
-            this.window = null;
-        }
-
-        public void AttachWindowButtons(WindowControlButton[] buttons)
-        {
-            for (int i = 0; i < buttons.Length; ++i)
-            {
-                buttons[i].transform.SetParent(windowButtonsContainer);
-            }
-
-            LayoutUtility.SetLayoutDirtyAndForceUpdate(windowButtonsContainer, LayoutDirtyFlag.All);
-            groupButtonsWrapper.offsetMin = new Vector2(windowButtonsContainer.rect.width, groupButtonsWrapper.offsetMin.y);
-        }
-
-        public void DetachWindowButtons()
-        {
-            for (int i = windowButtonsContainer.childCount - 1; i >= 0; --i)
-            {
-                DestroyImmediate(windowButtonsContainer.GetChild(i).gameObject);
-            }
-
-            LayoutUtility.SetLayoutDirtyAndForceUpdate(windowButtonsContainer, LayoutDirtyFlag.All);
-            groupButtonsWrapper.offsetMin = new Vector2(windowButtonsContainer.rect.width, groupButtonsWrapper.offsetMin.y);
         }
     }
 }

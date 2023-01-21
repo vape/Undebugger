@@ -1,6 +1,5 @@
 ﻿using Deszz.Undebugger.UI;
 using Deszz.Undebugger.UI.Layout;
-using Deszz.Undebugger.UI.Windows;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -38,7 +37,6 @@ namespace Deszz.Undebugger
         }
 
         private Scene scene;
-        private WindowSystem windowSystem;
         private Canvas canvas;
         private SafeArea safeArea;
 
@@ -46,12 +44,6 @@ namespace Deszz.Undebugger
         {
             EnsureSceneLoaded();
             return new ActivationToken(scene, SceneManager.GetActiveScene());
-        }
-
-        public WindowSystem GetWindowSystem()
-        {
-            EnsureSceneLoaded();
-            return windowSystem;
         }
 
         public Canvas GetCanvas()
@@ -70,11 +62,11 @@ namespace Deszz.Undebugger
         {
             if (!scene.IsValid() || !scene.isLoaded)
             {
-                scene = CreateScene(out canvas, out windowSystem, out safeArea);
+                scene = CreateScene(out canvas, out safeArea);
             }
         }
 
-        private static Scene CreateScene(out Canvas canvas, out WindowSystem windowSystem, out SafeArea safeArea)
+        private static Scene CreateScene(out Canvas canvas, out SafeArea safeArea)
         {
             var activeEventSystem = GameObject.FindObjectOfType<EventSystem>();
             var currentScene = SceneManager.GetActiveScene();
@@ -82,7 +74,7 @@ namespace Deszz.Undebugger
             var debugMenuScene = SceneManager.CreateScene("Undebugger");
             SceneManager.SetActiveScene(debugMenuScene);
 
-            CreateCanvas(out canvas, out windowSystem, out safeArea);
+            CreateCanvas(out canvas, out safeArea);
 
             if (activeEventSystem == null)
             {
@@ -111,7 +103,7 @@ namespace Deszz.Undebugger
             return eventSystem;
         }
 
-        private static void CreateCanvas(out Canvas canvas, out WindowSystem windowSystem, out SafeArea safeArea)
+        private static void CreateCanvas(out Canvas canvas, out SafeArea safeArea)
         {
             var canvasObject = new GameObject("Canvas");
 
@@ -130,15 +122,6 @@ namespace Deszz.Undebugger
             safeArea = safeAreaObject.AddComponent<SafeArea>();
 
             canvasObject.AddComponent<GraphicRaycaster>();
-            windowSystem = canvasObject.AddComponent<WindowSystem>();
-
-            var windowsContainer = new GameObject("Windows");
-            var windowsContainerRect = windowsContainer.AddComponent<RectTransform>();
-            windowsContainerRect.SetParent(safeAreaRect);
-            windowsContainerRect.Expand();
-
-            windowSystem.Container = windowsContainerRect;
-            windowSystem.Initialize(UndebuggerSettings.Instance.WindowSettings);
         }
     }
 }
