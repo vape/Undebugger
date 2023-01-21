@@ -18,18 +18,20 @@ namespace Undebugger.UI.Menu.Commands
         private PageView pageTemplate;
         [SerializeField]
         private RectTransform pageContainer;
+        [SerializeField]
+        private CommandView[] commandTemplates;
 
         private TabButton[] tabButtons;
         private CommandsGroupModel model;
         private CommandViewFactory commandViewFactory;
         private PageView pageView;
 
-        public override void Load(MenuModel menuModel, MenuContext menuViewContext)
+        public override void Load(MenuModel menuModel)
         {
-            base.Load(menuModel, menuViewContext);
+            base.Load(menuModel);
 
             model = menuModel.Commands;
-            commandViewFactory = new CommandViewFactory(menuViewContext.Settings.CommandTemplates);
+            commandViewFactory = new CommandViewFactory(commandTemplates);
 
             CreateTabButtons();
             SetPage(0);

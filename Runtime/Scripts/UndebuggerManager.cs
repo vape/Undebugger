@@ -1,7 +1,7 @@
-using Undebugger.Builder;
-using Undebugger.UI.Menu;
 using System;
 using System.Collections.Generic;
+using Undebugger.Builder;
+using Undebugger.UI.Menu;
 using UnityEngine;
 
 namespace Undebugger
@@ -18,6 +18,8 @@ namespace Undebugger
 
     public class UndebuggerManager : MonoBehaviour
     {
+        private const string MenuViewTemplateName = "Undebugger Menu View";
+
         private static MenuTriggerAction CloseByEscape(bool isOpen)
         {
             return isOpen && Input.GetKeyUp(KeyCode.Escape) ? MenuTriggerAction.Close : MenuTriggerAction.None;
@@ -58,6 +60,7 @@ namespace Undebugger
 
         private MenuView menuView;
         private UndebuggerSceneManager sceneManager;
+        private MenuView menuViewTemplate;
 
         private void Awake()
         {
@@ -108,14 +111,18 @@ namespace Undebugger
 
         private MenuView CreateMenu()
         {
+            if (menuViewTemplate == null)
+            {
+                menuViewTemplate = Resources.Load<MenuView>(MenuViewTemplateName);
+            }
+
             var model = ModelBuilder.Build();
-            var settings = UndebuggerSettings.Instance;
 
             using (sceneManager.MakeActive())
             {
-                var menu = GameObject.Instantiate(settings.MenuTemplate, sceneManager.GetSafeArea().Rect);
-                menu.name = settings.MenuTemplate.name;
-                menu.Load(model, new MenuContext() { Settings = settings });
+                var menu = GameObject.Instantiate(menuViewTemplate, sceneManager.GetSafeArea().Rect);
+                menu.name = menuViewTemplate.name;
+                menu.Load(model);
 
                 return menu;
             }

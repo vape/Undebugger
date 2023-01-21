@@ -4,11 +4,6 @@ using UnityEngine;
 
 namespace Undebugger.UI.Menu
 {
-    public struct MenuContext
-    {
-        internal UndebuggerSettings Settings;
-    }
-
     public class MenuView : MonoBehaviour
     {
         [SerializeField]
@@ -19,18 +14,18 @@ namespace Undebugger.UI.Menu
         private Transform groupContainer;
         [SerializeField]
         private RectTransform groupButtonsWrapper;
+        [SerializeField]
+        private GroupView[] groupTemplates;
 
         private MenuModel model;
-        private MenuContext context;
         private GroupButton[] groupButtons;
         private GroupView activeGroupView;
 
-        public void Load(MenuModel model, MenuContext context)
+        public void Load(MenuModel model)
         {
             model.Sort();
 
             this.model = model;
-            this.context = context;
 
             InitializeGroupButtons();
             SetActiveGroup(0);
@@ -44,7 +39,7 @@ namespace Undebugger.UI.Menu
                 activeGroupView = null;
             }
 
-            if (group < 0 || group >= context.Settings.GroupTemplates.Length)
+            if (group < 0 || group >= groupTemplates.Length)
             {
                 for (int i = 0; i < groupButtons.Length; ++i)
                 {
@@ -54,8 +49,8 @@ namespace Undebugger.UI.Menu
                 return;
             }
 
-            var view = Instantiate(context.Settings.GroupTemplates[group], groupContainer.transform);
-            view.Load(model, context);
+            var view = Instantiate(groupTemplates[group], groupContainer.transform);
+            view.Load(model);
 
             activeGroupView = view;
 
@@ -81,15 +76,15 @@ namespace Undebugger.UI.Menu
                 }
             }
 
-            if (groupButtons == null || groupButtons.Length != context.Settings.GroupTemplates.Length)
+            if (groupButtons == null || groupButtons.Length != groupTemplates.Length)
             {
-                groupButtons = new GroupButton[context.Settings.GroupTemplates.Length];
+                groupButtons = new GroupButton[groupTemplates.Length];
             }
 
-            for (int i = 0; i < context.Settings.GroupTemplates.Length; ++i)
+            for (int i = 0; i < groupTemplates.Length; ++i)
             {
                 groupButtons[i] = Instantiate(groupButtonTemplate, groupButtonContainer);
-                groupButtons[i].Init(i, context.Settings.GroupTemplates[i].GroupName);
+                groupButtons[i].Init(i, groupTemplates[i].GroupName);
                 groupButtons[i].Clicked += GroupButtonClickedHandler;
             }
 

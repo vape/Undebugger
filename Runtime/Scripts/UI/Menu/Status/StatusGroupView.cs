@@ -14,9 +14,9 @@ namespace Undebugger.UI.Menu.Status
 
         private StatusSegmentView[] segments;
 
-        public override void Load(MenuModel menuModel, MenuContext menuContext)
+        public override void Load(MenuModel menuModel)
         {
-            base.Load(menuModel, menuContext);
+            base.Load(menuModel);
 
             segments = new StatusSegmentView[menuModel.Status.Segments.Count];
 

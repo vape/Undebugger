@@ -7,7 +7,7 @@ namespace Undebugger.UI.Menu
     {
         public abstract string GroupName { get; }
 
-        public virtual void Load(MenuModel menuModel, MenuContext menuContext)
+        public virtual void Load(MenuModel menuModel)
         { }
     }
 }
