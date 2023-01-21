@@ -1,5 +1,5 @@
-﻿using Deszz.Undebugger.UI;
-using Deszz.Undebugger.UI.Layout;
+﻿using Undebugger.UI;
+using Undebugger.UI.Layout;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -7,9 +7,9 @@ using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace Deszz.Undebugger
+namespace Undebugger
 {
-    public class UndebuggerSceneManager
+    internal class UndebuggerSceneManager
     {
         public struct ActivationToken : IDisposable
         {

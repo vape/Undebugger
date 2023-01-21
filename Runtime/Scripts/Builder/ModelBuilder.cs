@@ -1,11 +1,11 @@
-﻿using Deszz.Undebugger.Model;
+﻿using Undebugger.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
 
-namespace Deszz.Undebugger.Builder
+namespace Undebugger.Builder
 {
     public static class ModelBuilder
     {

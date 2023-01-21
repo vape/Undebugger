@@ -1,7 +1,7 @@
-﻿using Deszz.Undebugger.Model;
+﻿using Undebugger.Model;
 using UnityEngine;
 
-namespace Deszz.Undebugger.UI.Menu.Status
+namespace Undebugger.UI.Menu.Status
 {
     public class StatusGroupView : GroupView
     {

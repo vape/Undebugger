@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Deszz.Undebugger.UI.Layout
+namespace Undebugger.UI.Layout
 {
     internal abstract class LayoutRoot : MonoBehaviour
     {

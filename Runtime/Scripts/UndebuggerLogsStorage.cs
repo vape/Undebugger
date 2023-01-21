@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Deszz.Undebugger
+namespace Undebugger
 {
     public struct LogMessage
     {

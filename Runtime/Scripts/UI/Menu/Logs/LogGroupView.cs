@@ -1,4 +1,4 @@
-﻿namespace Deszz.Undebugger.UI.Menu.Logs
+﻿namespace Undebugger.UI.Menu.Logs
 {
     public class LogGroupView : GroupView
     {

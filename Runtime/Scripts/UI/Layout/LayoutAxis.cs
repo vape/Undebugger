@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Deszz.Undebugger.UI.Layout
+namespace Undebugger.UI.Layout
 {
     [Flags]
     public enum LayoutAxis

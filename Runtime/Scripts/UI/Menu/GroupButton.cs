@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Deszz.Undebugger.UI.Menu
+namespace Undebugger.UI.Menu
 {
     internal class GroupButton : MonoBehaviour
     {

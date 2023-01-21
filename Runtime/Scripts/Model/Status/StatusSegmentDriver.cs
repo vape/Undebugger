@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Deszz.Undebugger.Model.Status
+namespace Undebugger.Model.Status
 {
     public interface IStatusSegmentDriver : IPrioritized
     {
@@ -25,6 +25,7 @@ namespace Deszz.Undebugger.Model.Status
 
         public abstract string Text
         { get; }
+
         protected void OnChanged()
         {
             Changed?.Invoke();

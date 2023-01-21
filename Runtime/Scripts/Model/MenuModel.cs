@@ -1,7 +1,7 @@
-using Deszz.Undebugger.Model.Commands;
-using Deszz.Undebugger.Model.Status;
+using Undebugger.Model.Commands;
+using Undebugger.Model.Status;
 
-namespace Deszz.Undebugger.Model
+namespace Undebugger.Model
 {
     public class MenuModel
     {

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Deszz.Undebugger.Model.Status
+namespace Undebugger.Model.Status
 {
     public class StatusGroupModel : IGroupModel
     {

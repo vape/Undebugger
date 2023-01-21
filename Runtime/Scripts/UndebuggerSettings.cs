@@ -1,10 +1,10 @@
-﻿using Deszz.Undebugger.UI.Menu;
-using Deszz.Undebugger.UI.Menu.Commands;
+﻿using Undebugger.UI.Menu;
+using Undebugger.UI.Menu.Commands;
 using UnityEngine;
 
-namespace Deszz.Undebugger
+namespace Undebugger
 {
-    // [CreateAssetMenu(fileName = SettingsName, menuName = "Deszz/Undebugger/Internal/Settings")]
+    // [CreateAssetMenu(fileName = SettingsName, menuName = "Undebugger/Internal/Settings")]
     internal class UndebuggerSettings : ScriptableObject
     {
         public const string SettingsName = "Internal_UndebuggerGlobalSettings";

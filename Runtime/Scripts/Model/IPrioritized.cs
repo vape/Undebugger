@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Deszz.Undebugger.Model
+namespace Undebugger.Model
 {
     public interface IPrioritized
     {

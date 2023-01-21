@@ -1,8 +1,8 @@
-﻿using Deszz.Undebugger.Model.Commands.Builtin;
+﻿using Undebugger.Model.Commands.Builtin;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Deszz.Undebugger.UI.Menu.Commands
+namespace Undebugger.UI.Menu.Commands
 {
     [CommandView(typeof(CarouselCommandModel))]
     public class CarouselCommandView : CommandView<CarouselCommandModel>

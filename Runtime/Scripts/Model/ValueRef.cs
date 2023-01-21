@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Deszz.Undebugger.Model
+namespace Undebugger.Model
 {
     public delegate T ValueReferenceGetter<T>();
     public delegate void ValueReferenceSetter<T>(T value);

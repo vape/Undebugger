@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using UnityEngine;
 
-namespace Deszz.Undebugger.UI
+namespace Undebugger.UI
 {
     public static class UIUtility
     {

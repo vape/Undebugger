@@ -1,8 +1,8 @@
-using Deszz.Undebugger.Model.Commands;
+using Undebugger.Model.Commands;
 using System;
 using UnityEngine;
 
-namespace Deszz.Undebugger.UI.Menu.Commands
+namespace Undebugger.UI.Menu.Commands
 {
     [AttributeUsage(AttributeTargets.Class, AllowMultiple = true)]
     public class CommandViewAttribute : Attribute

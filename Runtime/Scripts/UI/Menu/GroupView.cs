@@ -1,7 +1,7 @@
-﻿using Deszz.Undebugger.Model;
+﻿using Undebugger.Model;
 using UnityEngine;
 
-namespace Deszz.Undebugger.UI.Menu
+namespace Undebugger.UI.Menu
 {
     public abstract class GroupView : MonoBehaviour
     {

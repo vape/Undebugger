@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Deszz.Undebugger.UI.Layout
+namespace Undebugger.UI.Layout
 {
     public struct RectChild
     {

@@ -1,8 +1,8 @@
-using Deszz.Undebugger.Model;
-using Deszz.Undebugger.UI.Layout;
+using Undebugger.Model;
+using Undebugger.UI.Layout;
 using UnityEngine;
 
-namespace Deszz.Undebugger.UI.Menu
+namespace Undebugger.UI.Menu
 {
     public struct MenuContext
     {

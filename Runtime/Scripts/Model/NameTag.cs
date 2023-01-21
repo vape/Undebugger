@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Deszz.Undebugger.Model
+namespace Undebugger.Model
 {
     public struct NameTag
     {

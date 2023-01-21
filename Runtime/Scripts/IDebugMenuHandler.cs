@@ -1,6 +1,6 @@
-﻿using Deszz.Undebugger.Model;
+﻿using Undebugger.Model;
 
-namespace Deszz.Undebugger
+namespace Undebugger
 {
     public interface IDebugMenuHandler
     {

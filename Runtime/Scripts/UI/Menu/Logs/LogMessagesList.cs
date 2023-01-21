@@ -1,8 +1,8 @@
-﻿using Deszz.Undebugger.UI.Layout;
+﻿using Undebugger.UI.Layout;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Deszz.Undebugger.UI.Menu.Logs
+namespace Undebugger.UI.Menu.Logs
 {
     [RequireComponent(typeof(RectTransform))]
     internal class LogMessagesList : LayoutRoot

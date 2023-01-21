@@ -1,9 +1,9 @@
-﻿using Deszz.Undebugger.Model.Commands;
+﻿using Undebugger.Model.Commands;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Deszz.Undebugger.UI.Menu.Commands
+namespace Undebugger.UI.Menu.Commands
 {
     public class CommandViewFactory
     {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Deszz.Undebugger.UI.Layout
+namespace Undebugger.UI.Layout
 {
     [RequireComponent(typeof(RectTransform))]
     internal class FlexibleGrid : LayoutRoot

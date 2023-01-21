@@ -1,9 +1,9 @@
-using Deszz.Undebugger.Model.Commands;
-using Deszz.Undebugger.UI.Layout;
+using Undebugger.Model.Commands;
+using Undebugger.UI.Layout;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Deszz.Undebugger.UI.Menu.Commands
+namespace Undebugger.UI.Menu.Commands
 {
     public class SegmentView : MonoBehaviour
     {

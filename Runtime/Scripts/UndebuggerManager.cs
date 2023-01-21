@@ -1,10 +1,10 @@
-using Deszz.Undebugger.Builder;
-using Deszz.Undebugger.UI.Menu;
+using Undebugger.Builder;
+using Undebugger.UI.Menu;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Deszz.Undebugger
+namespace Undebugger
 {
     [Flags]
     public enum MenuTriggerAction

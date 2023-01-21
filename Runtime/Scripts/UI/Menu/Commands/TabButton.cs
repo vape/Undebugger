@@ -1,8 +1,8 @@
-﻿using Deszz.Undebugger.Model.Commands;
+﻿using Undebugger.Model.Commands;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Deszz.Undebugger.UI.Menu.Commands
+namespace Undebugger.UI.Menu.Commands
 {
     public class TabButton : MonoBehaviour
     {

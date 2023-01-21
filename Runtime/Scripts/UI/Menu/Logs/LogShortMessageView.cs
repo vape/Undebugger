@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Deszz.Undebugger.UI.Menu.Logs
+namespace Undebugger.UI.Menu.Logs
 {
     [RequireComponent(typeof(RectTransform))]
     public class LogShortMessageView : MonoBehaviour

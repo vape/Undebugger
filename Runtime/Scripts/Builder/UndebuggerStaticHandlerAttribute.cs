@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Deszz.Undebugger.Builder
+namespace Undebugger.Builder
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class UndebuggerHandlerMethodAttribute : Attribute

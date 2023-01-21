@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Deszz.Undebugger.UI.Menu.Logs
+namespace Undebugger.UI.Menu.Logs
 {
     public class LogFullMessageView : MonoBehaviour
     {

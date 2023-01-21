@@ -1,9 +1,9 @@
-﻿using Deszz.Undebugger.Model.Status;
-using Deszz.Undebugger.UI.Layout;
+﻿using Undebugger.Model.Status;
+using Undebugger.UI.Layout;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Deszz.Undebugger.UI.Menu.Status
+namespace Undebugger.UI.Menu.Status
 {
     public class StatusSegmentView : MonoBehaviour
     {

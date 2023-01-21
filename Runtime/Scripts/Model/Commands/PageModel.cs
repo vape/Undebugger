@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace Deszz.Undebugger.Model.Commands
+namespace Undebugger.Model.Commands
 {
     public class PageModel : IPrioritized
     {

@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Deszz.Undebugger.UI.Layout
+namespace Undebugger.UI.Layout
 {
     public class SafeArea : MonoBehaviour
     {

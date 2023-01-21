@@ -1,4 +1,4 @@
-﻿namespace Deszz.Undebugger.Model.Commands.Builtin
+﻿namespace Undebugger.Model.Commands.Builtin
 {
     public class CarouselCommandModel : CommandModel
     {
