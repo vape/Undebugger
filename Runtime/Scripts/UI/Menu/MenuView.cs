@@ -6,7 +6,6 @@ namespace Deszz.Undebugger.UI.Menu
 {
     public struct MenuContext
     {
-        public UndebuggerConfiguration Configuration;
         internal UndebuggerSettings Settings;
     }
 
