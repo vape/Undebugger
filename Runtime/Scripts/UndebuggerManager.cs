@@ -20,6 +20,8 @@ namespace Undebugger
     {
         private const string MenuViewTemplateName = "Undebugger Menu View";
 
+        private static int lastTouchesCount = 0;
+
         private static MenuTriggerAction CloseByEscape(bool isOpen)
         {
 #if ENABLE_INPUT_SYSTEM
@@ -48,13 +50,13 @@ namespace Undebugger
 
         private static MenuTriggerAction ToggleByFourFingers(bool isOpen)
         {
+            var touchesCount = 0;
+
 #if ENABLE_INPUT_SYSTEM
             if (UnityEngine.InputSystem.Touchscreen.current == null)
             {
                 return MenuTriggerAction.None;
             }
-
-            var touchesCount = 0;
 
             for (int i = 0; i < UnityEngine.InputSystem.Touchscreen.current.touches.Count; ++i)
             {
@@ -63,17 +65,19 @@ namespace Undebugger
                     touchesCount++;
                 }
             }
+#else
+            touchesCount = Input.touchCount;
+#endif
+
+            var touchesCountChanged = lastTouchesCount != touchesCount;
+            lastTouchesCount = touchesCount;
 
             return
-                touchesCount == 4 ?
+                touchesCountChanged && touchesCount == 4 ?
                     isOpen ?
                     MenuTriggerAction.Close :
                     MenuTriggerAction.Open :
                 MenuTriggerAction.None;
-
-#else
-            return Input.touchCount == 4 ? (isOpen ? MenuTriggerAction.Close : MenuTriggerAction.Open) : MenuTriggerAction.None;
-#endif
         }
 
         public static UndebuggerManager Instance
