@@ -18,6 +18,8 @@ namespace Undebugger
 
     public class UndebuggerManager : MonoBehaviour
     {
+        public const string VersionString = "1.0.0";
+
         private const string MenuViewTemplateName = "Undebugger Menu View";
 
         private static int lastTouchesCount = 0;

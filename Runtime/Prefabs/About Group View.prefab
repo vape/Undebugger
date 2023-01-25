@@ -211,5 +211,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 670123f2ed1f71d49b08af05cc1db929, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  packageManifest: {fileID: 8385607101436470782, guid: 3414b6b7bd556314f9446a70153453e4, type: 3}
   versionString: {fileID: 6309249845368638467}
