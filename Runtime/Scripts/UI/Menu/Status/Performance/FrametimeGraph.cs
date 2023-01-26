@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Undebugger.Services.Performance;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Status.Performance
@@ -34,13 +35,13 @@ namespace Undebugger.UI.Menu.Status.Performance
         {
             const float snap = 30;
 
-            var monitor = UndebuggerPerformanceMonitor.Instance;
+            var monitor = PerformanceMonitorService.Instance;
             if (monitor == null)
             {
                 return;
             }
 
-            var fpsTarget = 1f / monitor.FrametimeTarget;
+            var fpsTarget = 1f / monitor.TargetFrameTime;
 
             TargetFPSHint = Mathf.Max(1, Mathf.Round(fpsTarget / snap)) * snap;
             MinFPSHint = TargetFPSHint / 2f;
@@ -56,7 +57,7 @@ namespace Undebugger.UI.Menu.Status.Performance
 
             PopulateBackground(ref rect, vh);
 
-            var monitor = UndebuggerPerformanceMonitor.Instance;
+            var monitor = PerformanceMonitorService.Instance;
             if (monitor != null)
             {
                 PopulateGraph(ref rect, monitor, vh);
@@ -89,10 +90,10 @@ namespace Undebugger.UI.Menu.Status.Performance
             vh.AddUIVertexQuad(quad);
         }
 
-        private void PopulateGraph(ref Rect rect, UndebuggerPerformanceMonitor monitor, VertexHelper vh)
+        private void PopulateGraph(ref Rect rect, PerformanceMonitorService monitor, VertexHelper vh)
         {
             var preferedBarsCount = (int)(rect.width / (minBarWidth + minSpaceBetweenBars));
-            var bars = Mathf.Min(monitor.Frametimes.Length, preferedBarsCount);
+            var bars = Mathf.Min(PerformanceMonitorService.FrameBufferSize, preferedBarsCount);
             var scale = preferedBarsCount / (float)bars;
             var offset = new Vector2(-rect.width * rectTransform.pivot.x, -rect.height * rectTransform.pivot.y);
 
@@ -103,9 +104,10 @@ namespace Undebugger.UI.Menu.Status.Performance
 
             for (int i = 0; i < bars; ++i)
             {
-                var idx = (monitor.FrametimesHead + i) % monitor.Frametimes.Length;
-                var color = Color.Lerp(goodFrameTimeColor, badFrameTimeColor, monitor.FrametimeTier[idx] * frameTimeColorSensitivity);
-                var value = monitor.Frametimes[idx] / midTime;
+                ref var frame = ref monitor.GetFrame(i);
+
+                var color = Color.Lerp(goodFrameTimeColor, badFrameTimeColor, frame.Tier * frameTimeColorSensitivity);
+                var value = frame.Time / midTime;
 
                 var x0 = offset.x + i * spaceBetweenBars + i * barWidth;
                 var y0 = offset.y;

@@ -83,16 +83,38 @@ namespace Undebugger
         }
 
         public static UndebuggerManager Instance
-        { get; private set; }
+        {
+            get
+            {
+                if (!created)
+                {
+                    Create();
+                }
+
+                return instance;
+            }
+        }
+
+        private static bool created;
+        private static UndebuggerManager instance;
 
         [RuntimeInitializeOnLoadMethod]
+        private static void InitializeOnLoad()
+        {
+            if (!created)
+            {
+                Create();
+            }
+        }
+
         private static void Create()
         {
             var gameObject = new GameObject("Undebugger");
             gameObject.hideFlags = HideFlags.NotEditable;
             DontDestroyOnLoad(gameObject);
 
-            Instance = gameObject.AddComponent<UndebuggerManager>();
+            instance = gameObject.AddComponent<UndebuggerManager>();
+            created = true;
         }
 
         public bool IsOpen

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Undebugger.Services.Performance;
+using UnityEngine;
 using UnityEngine.Profiling;
 using UnityEngine.UI;
 
@@ -39,7 +40,7 @@ namespace Undebugger.UI.Menu.Status.Performance
 
             if (Time.realtimeSinceStartup > nextStatsUpdate)
             {
-                var monitor = UndebuggerPerformanceMonitor.Instance;
+                var monitor = PerformanceMonitorService.Instance;
                 if (monitor != null)
                 {
                     UpdateQuickStats(monitor);
@@ -48,14 +49,14 @@ namespace Undebugger.UI.Menu.Status.Performance
             }
         }
 
-        private void UpdateQuickStats(UndebuggerPerformanceMonitor monitor)
+        private void UpdateQuickStats(PerformanceMonitorService monitor)
         {
             const int div = 1024 * 1024;
 
             var allocated = Profiler.GetTotalAllocatedMemoryLong() / div;
             var reserved = Profiler.GetTotalReservedMemoryLong() / div;
 
-            averageFps.text = $"Average FPS: {1f / monitor.MeanFrametime:0} ({monitor.MeanFrametime * 1000:0.0}ms)";
+            averageFps.text = $"Average FPS: {1f / monitor.MeanFrameTime:0} ({monitor.MeanFrameTime * 1000:0.0}ms)";
             memoryUsage.text = $"Memory (allocated/reserved): {allocated} MB / {reserved} MB";
         }
 

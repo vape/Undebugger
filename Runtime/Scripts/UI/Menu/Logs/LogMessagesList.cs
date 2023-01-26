@@ -1,5 +1,6 @@
-﻿using Undebugger.UI.Layout;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using Undebugger.Services.Log;
+using Undebugger.UI.Layout;
 using UnityEngine;
 
 namespace Undebugger.UI.Menu.Logs
@@ -27,7 +28,7 @@ namespace Undebugger.UI.Menu.Logs
 
         private void OnEnable()
         {
-            var count = UndebuggerLogsStorage.Instance.Count;
+            var count = LogStorageService.Instance.Count;
 
             if (messages == null)
             {
@@ -36,7 +37,7 @@ namespace Undebugger.UI.Menu.Logs
 
             for (int i = 0; i < count; ++i)
             {
-                AddMessage(UndebuggerLogsStorage.Instance.GetMessage(i));
+                AddMessage(LogStorageService.Instance.GetMessage(i));
             }
 
             UpdateTotalVerticalSize();
@@ -48,14 +49,14 @@ namespace Undebugger.UI.Menu.Logs
                 ScrollToEnd();
             }
 
-            UndebuggerLogsStorage.Instance.MessageAdded += AddMessageAndUpdateSize;
+            LogStorageService.Instance.MessageAdded += AddMessageAndUpdateSize;
         }
 
         private void OnDisable()
         {
             messages.Clear();
 
-            UndebuggerLogsStorage.Instance.MessageAdded -= AddMessageAndUpdateSize;
+            LogStorageService.Instance.MessageAdded -= AddMessageAndUpdateSize;
         }
 
         private void AddMessageAndUpdateSize(LogMessage message)

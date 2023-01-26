@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Undebugger.Services.Log;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Logs

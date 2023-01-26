@@ -11,9 +11,7 @@ namespace Undebugger.Builder
     {
         private static readonly string[] ignoredAssemblies = new string[]
         {
-            "UnityEngine",
             "System",
-            "UnityEditor",
             "Unity",
             "netstandart",
             "Microsoft",

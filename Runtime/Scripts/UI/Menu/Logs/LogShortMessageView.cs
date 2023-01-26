@@ -1,4 +1,5 @@
 ﻿using System;
+using Undebugger.Services.Log;
 using UnityEngine;
 using UnityEngine.UI;
 

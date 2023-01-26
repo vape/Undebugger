@@ -1,30 +1,23 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Undebugger
+namespace Undebugger.Services.Log
 {
-    public struct LogMessage
+    internal class LogStorageService
     {
-        public DateTimeOffset Time;
-        public string Message;
-        public string StackTrace;
-        public LogType Type;
-    }
+        public const int BufferSize = 1024;
 
-    public class UndebuggerLogsStorage : IDisposable
-    {
         public delegate void MessageAddedDelegate(LogMessage message);
 
-        public static UndebuggerLogsStorage Instance
+        public static LogStorageService Instance
         {
             get
             {
-                Initialize();
                 return instance;
             }
         }
 
-        private static UndebuggerLogsStorage instance;
+        private static LogStorageService instance;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterAssembliesLoaded)]
         private static void Initialize()
@@ -34,7 +27,7 @@ namespace Undebugger
                 return;
             }
 
-            instance = new UndebuggerLogsStorage(1024);
+            instance = new LogStorageService();
         }
 
         public event MessageAddedDelegate MessageAdded;
@@ -43,41 +36,22 @@ namespace Undebugger
         {
             get
             {
-                return head > tail ? size - head + tail : tail - head;
+                return head > tail ? messages.Length - head + tail : tail - head;
             }
         }
 
-        public int BufferSize => size;
-
-        private LogMessage[] messages;
-
-        private int size;
+        private LogMessage[] messages = new LogMessage[BufferSize];
         private int head;
         private int tail;
-        private bool disposed;
 
-        public UndebuggerLogsStorage(int bufferSize)
+        public LogStorageService()
         {
-            size = bufferSize;
-            messages = new LogMessage[bufferSize];
-            
             Application.logMessageReceived += AddMessage;
         }
 
         public LogMessage GetMessage(int index)
         {
-            return messages[(head + index) % size];
-        }
-
-        public void Dispose()
-        {
-            if (disposed)
-            {
-                return;
-            }
-
-            Application.logMessageReceived -= AddMessage;
-            disposed = true;
+            return messages[(head + index) % messages.Length];
         }
 
         private void AddMessage(string condition, string stackTrace, LogType type)
@@ -92,7 +66,7 @@ namespace Undebugger
                 Time = DateTimeOffset.Now
             };
 
-            tail = (tail + 1) % size;
+            tail = (tail + 1) % messages.Length;
             head = tail <= head ? tail + 1 : head;
 
             MessageAdded?.Invoke(messages[index]);
