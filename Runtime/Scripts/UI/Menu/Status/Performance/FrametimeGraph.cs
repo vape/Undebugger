@@ -5,9 +5,9 @@ namespace Undebugger.UI.Menu.Status.Performance
 {
     public class FrametimeGraph : Graphic
     {
-        public float TopFPS
+        public float MinFPSHint
         { get; private set; } = 30;
-        public float MidFPS
+        public float TargetFPSHint
         { get; private set; } = 60;
 
         [SerializeField]
@@ -42,8 +42,8 @@ namespace Undebugger.UI.Menu.Status.Performance
 
             var fpsTarget = 1f / monitor.FrametimeTarget;
 
-            MidFPS = Mathf.Max(1, Mathf.Round(fpsTarget / snap)) * snap;
-            TopFPS = MidFPS / 2f;
+            TargetFPSHint = Mathf.Max(1, Mathf.Round(fpsTarget / snap)) * snap;
+            MinFPSHint = TargetFPSHint / 2f;
 
             SetVerticesDirty();
         }
@@ -99,7 +99,7 @@ namespace Undebugger.UI.Menu.Status.Performance
             var spaceBetweenBars = minSpaceBetweenBars * scale;
             var barWidth = minBarWidth * scale;
             var barHeight = rect.height / 2;
-            var midTime = 1f / MidFPS;
+            var midTime = 1f / TargetFPSHint;
 
             for (int i = 0; i < bars; ++i)
             {

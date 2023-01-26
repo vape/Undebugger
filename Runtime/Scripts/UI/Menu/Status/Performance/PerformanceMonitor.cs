@@ -30,7 +30,7 @@ namespace Undebugger.UI.Menu.Status.Performance
 
         private void Update()
         {
-            var fps = (int)graph.MidFPS;
+            var fps = (int)graph.TargetFPSHint;
             if (fps != previousFps)
             {
                 UpdateGraphHints();
@@ -61,8 +61,8 @@ namespace Undebugger.UI.Menu.Status.Performance
 
         private void UpdateGraphHints()
         {
-            graphMidHint.text = $"FPS:{graph.MidFPS:0}({(1f / graph.MidFPS) * 1000:0.0}ms)";
-            graphTopHint.text = $"FPS:{graph.TopFPS:0}({(1f / graph.TopFPS) * 1000:0.0}ms)";
+            graphMidHint.text = $"FPS:{graph.TargetFPSHint:0}({(1f / graph.TargetFPSHint) * 1000:0.0}ms)";
+            graphTopHint.text = $"FPS:{graph.MinFPSHint:0}({(1f / graph.MinFPSHint) * 1000:0.0}ms)";
         }
     }
 }
