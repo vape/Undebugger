@@ -6,26 +6,29 @@ using UnityEngine;
 namespace Undebugger.UI.Menu.Logs
 {
     [RequireComponent(typeof(RectTransform))]
-    internal class LogMessagesList : LayoutRoot
+    internal class MessagesListView : LayoutRoot
     {
         [SerializeField]
         private RectTransform viewport;
         [SerializeField]
         private RectTransform rect;
         [SerializeField]
-        private LogShortMessageView template;
+        private SmallMessageView template;
         [SerializeField]
         private float messageHeight;
-        [SerializeField]
-        private Transform fullMessageContainer;
-        [SerializeField]
-        private LogFullMessageView fullMessageTemplate;
 
-        private List<LogShortMessageView> pool = new List<LogShortMessageView>(capacity: 32);
-        private Dictionary<int, LogShortMessageView> views = new Dictionary<int, LogShortMessageView>(capacity: 32);
+        [Header("Expanded")]
+        [SerializeField]
+        private Transform expandedMessageContainer;
+        [SerializeField]
+        private ExpandedMessageView expandedMessageTemplate;
+
+        private List<SmallMessageView> pool = new List<SmallMessageView>(capacity: 32);
+        private Dictionary<int, SmallMessageView> views = new Dictionary<int, SmallMessageView>(capacity: 32);
         private HashSet<int> purgatory = new HashSet<int>(capacity: 32);
         private int visibleMinIndex;
         private int visibleMaxIndex;
+        private ExpandedMessageView expandedMessage;
 
         private void OnEnable()
         {
@@ -38,15 +41,15 @@ namespace Undebugger.UI.Menu.Logs
                 ScrollToEnd();
             }
 
-            LogStorageService.Instance.MessageAdded += AddMessageAndUpdateSize;
+            LogStorageService.Instance.MessageAdded += MessageAddedHandler;
         }
 
         private void OnDisable()
         {
-            LogStorageService.Instance.MessageAdded -= AddMessageAndUpdateSize;
+            LogStorageService.Instance.MessageAdded -= MessageAddedHandler;
         }
 
-        private void AddMessageAndUpdateSize(LogMessage message)
+        private void MessageAddedHandler(LogMessage message)
         {
             UpdateTotalVerticalSize();
 
@@ -105,7 +108,7 @@ namespace Undebugger.UI.Menu.Logs
                     }
                     
                     view.Setup(in message);
-                    view.Clicked += MessageViewClicked;
+                    view.Clicked += ExpandMessage;
                     views.Add(message.Id, view);
                 }
 
@@ -119,7 +122,7 @@ namespace Undebugger.UI.Menu.Logs
             {
                 if (views.TryGetValue(id, out var view))
                 {
-                    view.Clicked -= MessageViewClicked;
+                    view.Clicked -= ExpandMessage;
                     view.gameObject.SetActive(false);
                     pool.Add(view);
                     views.Remove(id);
@@ -127,39 +130,35 @@ namespace Undebugger.UI.Menu.Logs
             }
         }
 
-        private void MessageViewClicked(int id)
+        private void ExpandMessage(int id)
         {
+            if (expandedMessage != null)
+            {
+                CloseExpandedMessage();
+            }
+
             if (!LogStorageService.Instance.TryFindById(id, out var message))
             {
                 return;
             }
 
-            if (fullMessageContainer.gameObject.activeSelf)
-            {
-                CloseFullMessage();
-            }
+            expandedMessage = Instantiate(expandedMessageTemplate, expandedMessageContainer);
+            expandedMessage.Setup(message);
+            expandedMessage.CloseClicked += CloseExpandedMessage;
+            expandedMessageContainer.gameObject.SetActive(true);
 
-            fullMessageContainer.gameObject.SetActive(true);
-
-            var view = Instantiate(fullMessageTemplate, fullMessageContainer);
-            view.Setup(message);
-            view.transform.SetAsFirstSibling();
         }
 
-        public void CloseFullMessage()
+        public void CloseExpandedMessage()
         {
-            if (!fullMessageContainer.gameObject.activeSelf)
+            if (expandedMessage == null)
             {
                 return;
             }
 
-            var messageView = fullMessageContainer.GetComponentInChildren<LogFullMessageView>();
-            if (messageView != null)
-            {
-                Destroy(messageView.gameObject);
-            }
-
-            fullMessageContainer.gameObject.SetActive(false);
+            expandedMessage.CloseClicked -= CloseExpandedMessage;
+            Destroy(expandedMessage.gameObject);
+            expandedMessageContainer.gameObject.SetActive(false);
         }
 
         private void Update()

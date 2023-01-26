@@ -362,7 +362,7 @@ GameObject:
   - component: {fileID: 5152240406837031580}
   - component: {fileID: 2909230889965390476}
   m_Layer: 5
-  m_Name: Log Short Message View
+  m_Name: Small Message View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -417,3 +417,9 @@ MonoBehaviour:
   backColors:
   - {r: 0, g: 0, b: 0, a: 0.2509804}
   - {r: 0, g: 0, b: 0, a: 0.1254902}
+  warningColor:
+  - {r: 0.4, g: 0.4, b: 0.2, a: 0.2509804}
+  - {r: 0.4, g: 0.4, b: 0.2, a: 0.1254902}
+  errorColors:
+  - {r: 0.6, g: 0.15, b: 0.15, a: 0.2509804}
+  - {r: 0.6, g: 0.15, b: 0.15, a: 0.1254902}

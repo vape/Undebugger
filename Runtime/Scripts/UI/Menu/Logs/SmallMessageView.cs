@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Undebugger.UI.Menu.Logs
 {
     [RequireComponent(typeof(RectTransform))]
-    public class LogShortMessageView : MonoBehaviour
+    public class SmallMessageView : MonoBehaviour
     {
         public delegate void MessageClickedDelegate(int messageId);
 
@@ -26,6 +26,10 @@ namespace Undebugger.UI.Menu.Logs
         private Text messageText;
         [SerializeField]
         private Color[] backColors;
+        [SerializeField]
+        private Color[] warningColor;
+        [SerializeField]
+        private Color[] errorColors;
 
         private int messageId;
 
@@ -47,7 +51,15 @@ namespace Undebugger.UI.Menu.Logs
             messageId = message.Id;
             messageText.text = message.Message;
             icon.sprite = icons[(int)message.Type];
-            background.color = backColors[message.Id % backColors.Length];
+
+            var colors =
+                message.Type == LogType.Exception || message.Type == LogType.Error ?
+                errorColors :
+                message.Type == LogType.Warning ?
+                warningColor :
+                backColors;
+
+            background.color = colors[message.Id % backColors.Length];
         }
     }
 }

@@ -40,6 +40,13 @@ namespace Undebugger.Services.Log
             }
         }
 
+        public int TotalInfo
+        { get; private set; }
+        public int TotalErrors
+        { get; private set; }
+        public int TotalWarnings
+        { get; private set; }
+
         private LogMessage[] messages = new LogMessage[BufferSize];
         private int head;
         private int tail;
@@ -83,6 +90,20 @@ namespace Undebugger.Services.Log
                 Type = type,
                 Time = DateTimeOffset.Now
             };
+
+            switch (type)
+            {
+                case LogType.Exception:
+                case LogType.Error:
+                    TotalErrors++;
+                    break;
+                case LogType.Warning:
+                    TotalWarnings++;
+                    break;
+                default:
+                    TotalInfo++;
+                    break;
+            }
 
             tail = (tail + 1) % messages.Length;
             head = tail <= head ? tail + 1 : head;

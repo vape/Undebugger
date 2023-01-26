@@ -1,11 +1,14 @@
-﻿using Undebugger.Services.Log;
+﻿using System;
+using Undebugger.Services.Log;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Logs
 {
-    public class LogFullMessageView : MonoBehaviour
+    public class ExpandedMessageView : MonoBehaviour
     {
+        public Action CloseClicked;
+
         [SerializeField]
         private Text time;
         [SerializeField]
@@ -27,6 +30,11 @@ namespace Undebugger.UI.Menu.Logs
             icon.sprite = icons[(int)message.Type];
             time.text = message.Time.ToString("HH:mm:ss.ffff");
             stacktrace.text = message.StackTrace;
+        }
+
+        public void OnCloseClicked()
+        {
+            CloseClicked?.Invoke();
         }
 
         public void SendByEmail()
