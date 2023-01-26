@@ -21,25 +21,14 @@ namespace Undebugger.UI.Menu.Logs
         [SerializeField]
         private LogFullMessageView fullMessageTemplate;
 
-        private List<LogMessage> messages;
-        private Dictionary<int, LogShortMessageView> existingViews = new Dictionary<int, LogShortMessageView>(16);
-        private HashSet<int> visibleMessages = new HashSet<int>(16);
-        private HashSet<int> viewsToRemove = new HashSet<int>(16);
+        private List<LogShortMessageView> pool = new List<LogShortMessageView>(capacity: 32);
+        private Dictionary<int, LogShortMessageView> views = new Dictionary<int, LogShortMessageView>(capacity: 32);
+        private HashSet<int> purgatory = new HashSet<int>(capacity: 32);
+        private int visibleMinIndex;
+        private int visibleMaxIndex;
 
         private void OnEnable()
         {
-            var count = LogStorageService.Instance.Count;
-
-            if (messages == null)
-            {
-                messages = new List<LogMessage>((int)(count * 1.2f));
-            }
-
-            for (int i = 0; i < count; ++i)
-            {
-                AddMessage(LogStorageService.Instance.GetMessage(i));
-            }
-
             UpdateTotalVerticalSize();
             UpdateVisibleMessages();
             UpdateViews();
@@ -54,17 +43,14 @@ namespace Undebugger.UI.Menu.Logs
 
         private void OnDisable()
         {
-            messages.Clear();
-
             LogStorageService.Instance.MessageAdded -= AddMessageAndUpdateSize;
         }
 
         private void AddMessageAndUpdateSize(LogMessage message)
         {
-            AddMessage(message);
             UpdateTotalVerticalSize();
 
-            if (rect.rect.height > viewport.rect.height && visibleMessages.Contains(messages.Count - 2))
+            if (rect.rect.height > viewport.rect.height && visibleMaxIndex > (LogStorageService.Instance.Count - 2))
             {
                 ScrollToEnd();
             }
@@ -75,73 +61,79 @@ namespace Undebugger.UI.Menu.Logs
             rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, -rect.rect.y - viewport.rect.height);
         }
 
-        private void AddMessage(LogMessage message)
-        {
-            messages.Add(message);
-        }
-
         private void UpdateTotalVerticalSize()
         {
-            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, messageHeight * messages.Count);
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, messageHeight * LogStorageService.Instance.Count);
         }
 
         private void UpdateVisibleMessages()
         {
-            visibleMessages.Clear();
+            var viewportMin = viewport.TransformPoint(viewport.rect.min).y - messageHeight;
+            var viewportMax = viewport.TransformPoint(viewport.rect.max).y + messageHeight;
 
-            var min = viewport.TransformPoint(viewport.rect.min).y - messageHeight;
-            var max = viewport.TransformPoint(viewport.rect.max).y + messageHeight;
+            var rectMin = rect.transform.InverseTransformPoint(0, viewportMin, 0).y;
+            var rectMax = rect.transform.InverseTransformPoint(0, viewportMax, 0).y;
 
-            for (int i = 0; i < messages.Count; ++i)
-            {
-                var y = rect.transform.TransformPoint(new Vector2(0, -messageHeight * i)).y;
-                
-                if (y >= min && y < max)
-                {
-                    visibleMessages.Add(i);
-                }
-            }
+            visibleMaxIndex = Mathf.Min(LogStorageService.Instance.Count, Mathf.RoundToInt(rectMin / -messageHeight));
+            visibleMinIndex = Mathf.Max(0, Mathf.RoundToInt(rectMax / -messageHeight));
         }
 
         private void UpdateViews()
         {
-            foreach (var key in existingViews.Keys)
+            purgatory.Clear();
+
+            foreach (var kv in views)
             {
-                if (!visibleMessages.Contains(key))
-                {
-                    viewsToRemove.Add(key);
-                }
+                purgatory.Add(kv.Key);
             }
 
-            foreach (var index in viewsToRemove)
+            for (int i = visibleMinIndex; i < visibleMaxIndex; ++i)
             {
-                existingViews[index].Clicked -= MessageViewClicked;
-                Destroy(existingViews[index].gameObject);
-                existingViews.Remove(index);
-            }
+                ref var message = ref LogStorageService.Instance.GetMessage(i);
 
-            viewsToRemove.Clear();
-
-            foreach (var index in visibleMessages)
-            {
-                if (existingViews.ContainsKey(index))
+                if (!views.TryGetValue(message.Id, out var view))
                 {
-                    continue;
+                    if (pool.Count > 0)
+                    {
+                        view = pool[pool.Count - 1];
+                        view.gameObject.SetActive(true);
+                        pool.RemoveAt(pool.Count - 1);
+                    }
+                    else
+                    {
+                        view = Instantiate(template, transform);
+                    }
+                    
+                    view.Setup(in message);
+                    view.Clicked += MessageViewClicked;
+                    views.Add(message.Id, view);
                 }
-
-                var view = Instantiate(template, transform);
-                view.SetValue(messages[index], index);
-                view.Clicked += MessageViewClicked;
 
                 view.Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0f, rect.rect.width);
-                view.Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, messageHeight * index, messageHeight);
+                view.Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, messageHeight * i, messageHeight);
 
-                existingViews.Add(index, view);
+                purgatory.Remove(message.Id);
+            }
+
+            foreach (var id in purgatory)
+            {
+                if (views.TryGetValue(id, out var view))
+                {
+                    view.Clicked -= MessageViewClicked;
+                    view.gameObject.SetActive(false);
+                    pool.Add(view);
+                    views.Remove(id);
+                }
             }
         }
 
-        private void MessageViewClicked(int index)
+        private void MessageViewClicked(int id)
         {
+            if (!LogStorageService.Instance.TryFindById(id, out var message))
+            {
+                return;
+            }
+
             if (fullMessageContainer.gameObject.activeSelf)
             {
                 CloseFullMessage();
@@ -150,7 +142,7 @@ namespace Undebugger.UI.Menu.Logs
             fullMessageContainer.gameObject.SetActive(true);
 
             var view = Instantiate(fullMessageTemplate, fullMessageContainer);
-            view.Setup(messages[index]);
+            view.Setup(message);
             view.transform.SetAsFirstSibling();
         }
 
@@ -193,10 +185,15 @@ namespace Undebugger.UI.Menu.Logs
         {
             base.DoLayout();
 
-            foreach (var kv in existingViews)
+            for (int i = visibleMinIndex; i < visibleMaxIndex; ++i)
             {
-                kv.Value.Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0f, rect.rect.width);
-                kv.Value.Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, messageHeight * kv.Key, messageHeight);
+                ref var message = ref LogStorageService.Instance.GetMessage(i);
+
+                if (views.TryGetValue(message.Id, out var view))
+                {
+                    view.Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0f, rect.rect.width);
+                    view.Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, messageHeight * i, messageHeight);
+                }
             }
         }
     }

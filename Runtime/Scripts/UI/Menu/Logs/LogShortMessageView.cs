@@ -8,7 +8,9 @@ namespace Undebugger.UI.Menu.Logs
     [RequireComponent(typeof(RectTransform))]
     public class LogShortMessageView : MonoBehaviour
     {
-        public event Action<int> Clicked;
+        public delegate void MessageClickedDelegate(int messageId);
+
+        public event MessageClickedDelegate Clicked;
 
         public RectTransform Rect => rect;
 
@@ -25,7 +27,7 @@ namespace Undebugger.UI.Menu.Logs
         [SerializeField]
         private Color[] backColors;
 
-        private int index;
+        private int messageId;
 
         private void OnValidate()
         {
@@ -37,16 +39,15 @@ namespace Undebugger.UI.Menu.Logs
 
         public void OnClick()
         {
-            Clicked?.Invoke(index);
+            Clicked?.Invoke(messageId);
         }
 
-        public void SetValue(LogMessage message, int index)
+        public void Setup(in LogMessage message)
         {
-            this.index = index;
-
+            messageId = message.Id;
             messageText.text = message.Message;
             icon.sprite = icons[(int)message.Type];
-            background.color = backColors[index % backColors.Length];
+            background.color = backColors[message.Id % backColors.Length];
         }
     }
 }

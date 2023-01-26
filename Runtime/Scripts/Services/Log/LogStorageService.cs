@@ -43,23 +43,41 @@ namespace Undebugger.Services.Log
         private LogMessage[] messages = new LogMessage[BufferSize];
         private int head;
         private int tail;
+        private int idgen;
 
         public LogStorageService()
         {
             Application.logMessageReceived += AddMessage;
         }
 
-        public LogMessage GetMessage(int index)
+        public bool TryFindById(int id, out LogMessage message)
         {
-            return messages[(head + index) % messages.Length];
+            for (int i = 0; i < messages.Length; ++i)
+            {
+                if (messages[i].Id == id)
+                {
+                    message = messages[i];
+                    return true;
+                }
+            }
+
+            message = default;
+            return false;
+        }
+
+        public ref LogMessage GetMessage(int index)
+        {
+            return ref messages[(head + index) % messages.Length];
         }
 
         private void AddMessage(string condition, string stackTrace, LogType type)
         {
             var index = tail;
+            var id = ++idgen;
 
             messages[index] = new LogMessage()
             {
+                Id = id,
                 Message = condition,
                 StackTrace = stackTrace,
                 Type = type,
