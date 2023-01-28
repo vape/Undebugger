@@ -62,7 +62,7 @@ namespace Undebugger.UI.Menu.Commands
 
             for (int i = 0; i < tabButtons.Length; ++i)
             {
-                tabButtons[i].SetSelected(i == page);
+                tabButtons[i].Selected = i == page;
             }
 
             LayoutUtility.SetLayoutDirty(transform, LayoutDirtyFlag.All);
