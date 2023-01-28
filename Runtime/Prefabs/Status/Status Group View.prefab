@@ -870,7 +870,7 @@ MonoBehaviour:
     m_Bottom: 15
   spacing:
     Horizontal: 15
-    Vertical: 15
+    Vertical: 10
   autoSize: 2
 --- !u!1 &5118347943570329542
 GameObject:

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using Undebugger.Builder.BuiltinStatusSegments;
 
 namespace Undebugger.Builder
 {
@@ -40,6 +41,10 @@ namespace Undebugger.Builder
             {
                 staticHandlers[i].Invoke(null, param);
             }
+
+            model.Status.Segments.Add(DeviceInfoStatusSegment.Instance);
+            model.Status.Segments.Add(SystemInfoStatusSegment.Instance);
+            model.Status.Segments.Add(ApplicationInfoStatusSegment.Instance);
 
             return model;
         }

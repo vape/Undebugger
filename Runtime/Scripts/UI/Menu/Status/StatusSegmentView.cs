@@ -68,7 +68,7 @@ namespace Undebugger.UI.Menu.Status
             var dimensionsTracker = text.gameObject.AddComponent<RectTransformDimensionsTracker>();
             dimensionsTracker.DimensionsChanged += TextDimensionsChanged;
 
-            SetFoldout(false);
+            SetFoldout(Preferences.GetStatusSegmentFoldout(driver.PersistentId, defaultValue: false));
         }
 
         public void SetFoldout(bool value)
@@ -88,6 +88,11 @@ namespace Undebugger.UI.Menu.Status
 
             foldButton.gameObject.SetActive(!folded);
             unfoldButton.gameObject.SetActive(folded);
+
+            if (driver != null)
+            {
+                Preferences.SetStatusSegmentFoldout(driver.PersistentId, value);
+            }
         }
 
         private void RefreshText()

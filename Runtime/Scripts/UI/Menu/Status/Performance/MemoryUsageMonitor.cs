@@ -33,8 +33,10 @@ namespace Undebugger.UI.Menu.Status.Performance
         {
             var monitor = Services.Performance.PerformanceMonitorService.Instance;
 
-            totalInfo.text = $"{Formatter.Format(monitor.AllocatedMemory)} / {Formatter.Format(monitor.ReservedMemory)}";
-            monoInfo.text = $"{Formatter.Format(monitor.MonoUsageMemory)} / {Formatter.Format(monitor.MonoHeapSize)}";
+            totalInfo.text = 
+                $"{UIUtility.ConvertBytesSizeToReadableString(monitor.AllocatedMemory)} / {UIUtility.ConvertBytesSizeToReadableString(monitor.ReservedMemory)}";
+            monoInfo.text = 
+                $"{UIUtility.ConvertBytesSizeToReadableString(monitor.MonoUsageMemory)} / {UIUtility.ConvertBytesSizeToReadableString(monitor.MonoHeapSize)}";
             totalUsageBar.Value = monitor.AllocatedMemory / (float)monitor.ReservedMemory;
             monoUsageBar.Value = monitor.MonoUsageMemory / (float)monitor.MonoHeapSize;
         }

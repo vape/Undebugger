@@ -16,21 +16,12 @@ namespace Undebugger.UI
             rect.offsetMax = Vector2.one;
         }
 
-        public static void Float(this RectTransform rect)
-        {
-            var size = rect.rect.size;
-
-            rect.anchorMin = rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.offsetMin = size * -rect.pivot;
-            rect.offsetMax = size * (Vector2.one - rect.pivot);
-        }
-
         public static string ConvertMegabyteSizeToReadableString(long size)
         {
             return ConvertBytesSizeToReadableString(size * 1024 * 1024);
         }
 
-        public static string ConvertBytesSizeToReadableString(long size, bool tryLocalizeUnit = false)
+        public static string ConvertBytesSizeToReadableString(long size)
         {
             var sign = size < 0 ? culture.NumberFormat.NegativeSign : "";
             size = size == long.MinValue ? System.Math.Abs(size + 1) : System.Math.Abs(size);
