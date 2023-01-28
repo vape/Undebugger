@@ -92,7 +92,7 @@ namespace Undebugger.Tests
 
         private void AssertRaw(CircularBuffer<int> buffer, int[] expected)
         {
-            var actual = buffer.GetArray();
+            var actual = buffer.GetRawArray();
 
             Assert.IsTrue(actual.SequenceEqual(expected), message: $"Raw expected {Format(expected)}, got {Format(actual)}");
         }

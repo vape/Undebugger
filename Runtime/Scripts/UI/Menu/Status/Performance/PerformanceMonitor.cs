@@ -1,6 +1,5 @@
 ﻿using Undebugger.Services.Performance;
 using UnityEngine;
-using UnityEngine.Profiling;
 using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Status.Performance
@@ -17,8 +16,6 @@ namespace Undebugger.UI.Menu.Status.Performance
         private Text graphTopHint;
         [SerializeField]
         private Text averageFps;
-        [SerializeField]
-        private Text memoryUsage;
 
         private float nextStatsUpdate;
         private int previousFps;
@@ -26,7 +23,6 @@ namespace Undebugger.UI.Menu.Status.Performance
         private void Awake()
         {
             averageFps.text = "...";
-            memoryUsage.text = "...";
         }
 
         private void Update()
@@ -51,13 +47,7 @@ namespace Undebugger.UI.Menu.Status.Performance
 
         private void UpdateQuickStats(PerformanceMonitorService monitor)
         {
-            const int div = 1024 * 1024;
-
-            var allocated = Profiler.GetTotalAllocatedMemoryLong() / div;
-            var reserved = Profiler.GetTotalReservedMemoryLong() / div;
-
             averageFps.text = $"Average FPS: {1f / monitor.MeanFrameTime:0} ({monitor.MeanFrameTime * 1000:0.0}ms)";
-            memoryUsage.text = $"Memory (allocated/reserved): {allocated} MB / {reserved} MB";
         }
 
         private void UpdateGraphHints()

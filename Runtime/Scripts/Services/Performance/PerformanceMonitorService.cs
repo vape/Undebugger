@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using Undebugger.Utility;
+using UnityEngine;
+using UnityEngine.Profiling;
 
 namespace Undebugger.Services.Performance
 {
     internal class PerformanceMonitorService : MonoBehaviour
     {
-        public const int FrameBufferSize = 120;
+        public const int FrameBufferSize = 210;
+        public const int AverageOverNFrames = 30;
 
         public static PerformanceMonitorService Instance
         {
@@ -30,36 +33,64 @@ namespace Undebugger.Services.Performance
             DontDestroyOnLoad(gameObject);
         }
 
+        public long ReservedMemory
+        {
+            get
+            {
+                return Profiler.GetTotalReservedMemoryLong();
+            }
+        }
+
+        public long AllocatedMemory
+        {
+            get
+            {
+                return Profiler.GetTotalAllocatedMemoryLong();
+            }
+        }
+
+        public long MonoHeapSize
+        {
+            get
+            {
+                return Profiler.GetMonoHeapSizeLong();
+            }
+        }
+
+        public long MonoUsageMemory
+        {
+            get
+            {
+                return Profiler.GetMonoUsedSizeLong();
+            }
+        }
+
         public float MeanFrameTime
         { get { return mean; } }
         public float TargetFrameTime
         { get { return target; } }
 
-        public Frame[] frames = new Frame[FrameBufferSize];
-        public int head;
-        public int tail;
+        private CircularBuffer<Frame> buffer = new CircularBuffer<Frame>(FrameBufferSize);
         public float mean;
         public float target;
 
         public ref Frame GetFrame(int index)
         {
-            return ref frames[(head + index) % frames.Length];
+            return ref buffer.Get(index);
         }
 
         private void Update()
         {
-            head = tail <= head ? tail + 1 : head;
-
-            var count = head > tail ? frames.Length - head + tail : tail - head;
             var time = Time.unscaledDeltaTime;
-            
-            mean = (time + ((count - 1) * mean)) / count;
+
+            mean = (time + ((AverageOverNFrames - 1) * mean)) / AverageOverNFrames;
             target = Application.targetFrameRate > 0 ? 1f / Application.targetFrameRate : mean;
 
-            frames[tail].Time = time;
-            frames[tail].Tier = target > time ? 0 : (time - target) / target;
-
-            tail = (tail + 1) % frames.Length;
+            buffer.PushFront(new Frame()
+            {
+                Time = time,
+                Tier = target > time ? 0 : (time - target) / target
+            });
         }
     }
 }

@@ -18,6 +18,8 @@ namespace Undebugger.UI.Menu.Status.Performance
         [SerializeField]
         private int frameWidth = 1;
         [SerializeField]
+        private int baseLineWidth = 1;
+        [SerializeField]
         private Color frameColor = Color.white;
         [SerializeField]
         private Color backgroundColor = Color.gray;
@@ -57,10 +59,13 @@ namespace Undebugger.UI.Menu.Status.Performance
 
             PopulateBackground(ref rect, vh);
 
-            var monitor = PerformanceMonitorService.Instance;
-            if (monitor != null)
+            if (PerformanceMonitorService.Instance != null
+#if UNITY_EDITOR
+                || !Application.isPlaying
+#endif
+                )
             {
-                PopulateGraph(ref rect, monitor, vh);
+                PopulateGraph(ref rect, vh);
             }
             
             PopulateFrame(ref rect, vh);
@@ -74,23 +79,54 @@ namespace Undebugger.UI.Menu.Status.Performance
 
         private void PopulateFrame(ref Rect rect, VertexHelper vh)
         {
-            FillQuad(ref quad, rect.x, rect.y, rect.x + frameWidth, rect.y + rect.height, frameColor);
-            vh.AddUIVertexQuad(quad);
+            if (frameWidth > 0)
+            {
+                FillQuad(ref quad,
+                rect.x,
+                rect.y,
+                rect.x + frameWidth,
+                rect.y + rect.height,
+                frameColor);
+                vh.AddUIVertexQuad(quad);
 
-            FillQuad(ref quad, rect.x + rect.width - frameWidth, rect.y, rect.x + rect.width, rect.y + rect.height, frameColor);
-            vh.AddUIVertexQuad(quad);
+                FillQuad(ref quad,
+                    rect.x + rect.width - frameWidth,
+                    rect.y,
+                    rect.x + rect.width,
+                    rect.y + rect.height,
+                    frameColor);
+                vh.AddUIVertexQuad(quad);
 
-            FillQuad(ref quad, rect.x + frameWidth, rect.y + rect.height - frameWidth, rect.x + rect.width - frameWidth, rect.y + rect.height, frameColor);
-            vh.AddUIVertexQuad(quad);
+                FillQuad(ref quad,
+                    rect.x + frameWidth,
+                    rect.y + rect.height - frameWidth,
+                    rect.x + rect.width - frameWidth,
+                    rect.y + rect.height,
+                    frameColor);
+                vh.AddUIVertexQuad(quad);
 
-            FillQuad(ref quad, rect.x + frameWidth, rect.y, rect.x + rect.width - frameWidth, rect.y + frameWidth, frameColor);
-            vh.AddUIVertexQuad(quad);
-
-            FillQuad(ref quad, rect.x + frameWidth, rect.y + rect.height / 2 - Mathf.Max(1, frameWidth / 2), rect.x + rect.width - frameWidth, rect.y + rect.height / 2 + frameWidth / 2, frameColor);
-            vh.AddUIVertexQuad(quad);
+                FillQuad(ref quad,
+                    rect.x + frameWidth,
+                    rect.y,
+                    rect.x + rect.width - frameWidth,
+                    rect.y + frameWidth,
+                    frameColor);
+                vh.AddUIVertexQuad(quad);
+            }
+            
+            if (baseLineWidth > 0)
+            {
+                FillQuad(ref quad,
+                rect.x + frameWidth,
+                rect.y + rect.height / 2 - Mathf.Max(1, baseLineWidth / 2),
+                rect.x + rect.width - frameWidth,
+                rect.y + rect.height / 2 + baseLineWidth / 2,
+                frameColor);
+                vh.AddUIVertexQuad(quad);
+            }
         }
 
-        private void PopulateGraph(ref Rect rect, PerformanceMonitorService monitor, VertexHelper vh)
+        private void PopulateGraph(ref Rect rect, VertexHelper vh)
         {
             var preferedBarsCount = (int)(rect.width / (minBarWidth + minSpaceBetweenBars));
             var bars = Mathf.Min(PerformanceMonitorService.FrameBufferSize, preferedBarsCount);
@@ -104,32 +140,38 @@ namespace Undebugger.UI.Menu.Status.Performance
 
             for (int i = 0; i < bars; ++i)
             {
-                ref var frame = ref monitor.GetFrame(i);
+                ref var frame = ref GetFrame(i);
 
                 var color = Color.Lerp(goodFrameTimeColor, badFrameTimeColor, frame.Tier * frameTimeColorSensitivity);
                 var value = frame.Time / midTime;
 
-                var x0 = offset.x + i * spaceBetweenBars + i * barWidth;
-                var y0 = offset.y;
+                var x0 = rect.x + i * spaceBetweenBars + i * barWidth;
+                var y0 = rect.y;
 
-                quad[0].position.x = x0;
-                quad[0].position.y = y0;
-                quad[0].color = color;
-
-                quad[1].position.x = x0 + barWidth;
-                quad[1].position.y = y0;
-                quad[1].color = color;
-
-                quad[2].position.x = x0 + barWidth;
-                quad[2].position.y = y0 + value * barHeight;
-                quad[2].color = color;
-
-                quad[3].position.x = x0;
-                quad[3].position.y = y0 + value * barHeight;
-                quad[3].color = color;
-
+                FillQuad(ref quad, x0, y0, x0 + barWidth, y0 + value * barHeight, color);
                 vh.AddUIVertexQuad(quad);
             }
+        }
+
+#if UNITY_EDITOR
+        private static Frame stubFrame;
+#endif
+
+        private static ref Frame GetFrame(int index)
+        {
+#if UNITY_EDITOR
+            const float Target = 0.016f;
+
+            if (!Application.isPlaying)
+            {
+                stubFrame.Time = 0.016f + 0.016f * Mathf.Sin(index / 10f);
+                stubFrame.Tier = Target > stubFrame.Time ? 0 : (stubFrame.Time - Target) / Target;
+
+                return ref stubFrame;
+            }
+#endif
+
+            return ref PerformanceMonitorService.Instance.GetFrame(index);
         }
 
         private static void FillQuad(ref UIVertex[] buffer, float x0, float y0, float x1, float y1, Color color)

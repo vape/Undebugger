@@ -65,7 +65,7 @@ namespace Undebugger.Services.Log
             for (int k = BuffersCount - 1; k >= 0; --k)
             {
                 var buffer = buffers[k];
-                var array = buffer.GetArray();
+                var array = buffer.GetRawArray();
                 var count = buffer.Count < array.Length ? buffer.Count : array.Length;
 
                 for (int i = 0; i < count; ++i)

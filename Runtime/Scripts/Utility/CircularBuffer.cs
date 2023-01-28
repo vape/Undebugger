@@ -93,9 +93,9 @@
             return ref data[(head + index) % Capacity];
         }
 
-        public ref readonly T[] GetArray()
+        public T[] GetRawArray()
         {
-            return ref data;
+            return data;
         }
     }
 }
