@@ -1,13 +1,25 @@
 ﻿using System;
+using Undebugger.Utility;
 using UnityEngine;
 
 namespace Undebugger.Services.Log
 {
+    [Flags]
+    public enum LogTypeMask
+    {
+        None = 0,
+        Info = 1,
+        Warning = 2,
+        Error = 4,
+        All = Info | Warning | Error
+    }
+
     internal class LogStorageService
     {
-        public const int BufferSize = 1024;
+        public const int Capacity = 1000;
+        public const int BuffersCount = (int)LogTypeMask.All;
 
-        public delegate void MessageAddedDelegate(LogMessage message);
+        public delegate void MessageAddedDelegate(in LogMessage message);
 
         public static LogStorageService Instance
         {
@@ -32,39 +44,37 @@ namespace Undebugger.Services.Log
 
         public event MessageAddedDelegate MessageAdded;
 
-        public int Count
-        {
-            get
-            {
-                return head > tail ? messages.Length - head + tail : tail - head;
-            }
-        }
-
-        public int TotalInfo
-        { get; private set; }
-        public int TotalErrors
-        { get; private set; }
-        public int TotalWarnings
-        { get; private set; }
-
-        private LogMessage[] messages = new LogMessage[BufferSize];
-        private int head;
-        private int tail;
+        private int totalInfo;
+        private int totalErrors;
+        private int totalWarnings;
+        private CircularBuffer<LogMessage>[] buffers = new CircularBuffer<LogMessage>[BuffersCount];
         private int idgen;
 
         public LogStorageService()
         {
+            for (int i = 0; i < buffers.Length; i++)
+            {
+                buffers[i] = new CircularBuffer<LogMessage>(Capacity);
+            }
+
             Application.logMessageReceived += AddMessage;
         }
 
         public bool TryFindById(int id, out LogMessage message)
         {
-            for (int i = 0; i < messages.Length; ++i)
+            for (int k = BuffersCount - 1; k >= 0; --k)
             {
-                if (messages[i].Id == id)
+                var buffer = buffers[k];
+                var array = buffer.GetArray();
+                var count = buffer.Count < array.Length ? buffer.Count : array.Length;
+
+                for (int i = 0; i < count; ++i)
                 {
-                    message = messages[i];
-                    return true;
+                    if (array[i].Id == id)
+                    {
+                        message = array[i];
+                        return true;
+                    }
                 }
             }
 
@@ -72,17 +82,45 @@ namespace Undebugger.Services.Log
             return false;
         }
 
-        public ref LogMessage GetMessage(int index)
+        private CircularBuffer<LogMessage> GetBuffer(LogTypeMask mask)
         {
-            return ref messages[(head + index) % messages.Length];
+            return buffers[(int)mask - 1];
+        }
+
+        public int GetTotalCount(LogTypeMask mask)
+        {
+            switch (mask)
+            {
+                case LogTypeMask.Info:
+                    return totalInfo;
+                case LogTypeMask.Warning:
+                    return totalWarnings;
+                case LogTypeMask.Error:
+                    return totalErrors;
+            }
+
+            return GetCount(mask);
+        }
+
+        public int GetCount(LogTypeMask mask)
+        {
+            if (mask == LogTypeMask.None)
+            {
+                return 0;
+            }
+
+            return GetBuffer(mask).Count;
+        }
+
+        public ref LogMessage GetMessage(LogTypeMask mask, int index)
+        {
+            return ref GetBuffer(mask).Get(index);
         }
 
         private void AddMessage(string condition, string stackTrace, LogType type)
         {
-            var index = tail;
             var id = ++idgen;
-
-            messages[index] = new LogMessage()
+            var message = new LogMessage()
             {
                 Id = id,
                 Message = condition,
@@ -91,24 +129,45 @@ namespace Undebugger.Services.Log
                 Time = DateTimeOffset.Now
             };
 
-            switch (type)
+            var mask = (int)GetMask(in type);
+
+            for (int i = 0; i < BuffersCount; ++i)
             {
-                case LogType.Exception:
-                case LogType.Error:
-                    TotalErrors++;
+                if ((mask & (i + 1)) != 0)
+                {
+                    buffers[i].PushFront(message);
+                }
+            }
+
+            switch (mask)
+            {
+                case (int)LogTypeMask.Error:
+                    totalErrors++;
                     break;
-                case LogType.Warning:
-                    TotalWarnings++;
+                case (int)LogTypeMask.Warning:
+                    totalWarnings++;
                     break;
                 default:
-                    TotalInfo++;
+                    totalInfo++;
                     break;
             }
 
-            tail = (tail + 1) % messages.Length;
-            head = tail <= head ? tail + 1 : head;
+            MessageAdded?.Invoke(in message);
+        }
 
-            MessageAdded?.Invoke(messages[index]);
+        public static LogTypeMask GetMask(in LogType type)
+        {
+            switch (type)
+            {
+                case LogType.Error:
+                case LogType.Exception:
+                case LogType.Assert:
+                    return LogTypeMask.Error;
+                case LogType.Warning:
+                    return LogTypeMask.Warning;
+                default:
+                    return LogTypeMask.Info;
+            }
         }
     }
 }

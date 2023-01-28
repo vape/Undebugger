@@ -2,6 +2,7 @@
 using Undebugger.Services.Log;
 using Undebugger.UI.Layout;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Logs
 {
@@ -16,6 +17,10 @@ namespace Undebugger.UI.Menu.Logs
         private SmallMessageView template;
         [SerializeField]
         private float messageHeight;
+        [SerializeField]
+        private ScrollStateHelper scrollStateHelper;
+        [SerializeField]
+        private ScrollRect scrollRect;
 
         [Header("Expanded")]
         [SerializeField]
@@ -23,18 +28,17 @@ namespace Undebugger.UI.Menu.Logs
         [SerializeField]
         private ExpandedMessageView expandedMessageTemplate;
 
-        private List<SmallMessageView> pool = new List<SmallMessageView>(capacity: 32);
-        private Dictionary<int, SmallMessageView> views = new Dictionary<int, SmallMessageView>(capacity: 32);
-        private HashSet<int> purgatory = new HashSet<int>(capacity: 32);
+        private List<SmallMessageView> pool = new List<SmallMessageView>(capacity: 48);
+        private Dictionary<int, SmallMessageView> views = new Dictionary<int, SmallMessageView>(capacity: 48);
+        private HashSet<int> purgatory = new HashSet<int>(capacity: 48);
         private int visibleMinIndex;
         private int visibleMaxIndex;
         private ExpandedMessageView expandedMessage;
+        private LogTypeMask mask = LogTypeMask.All;
 
         private void OnEnable()
         {
-            UpdateTotalVerticalSize();
-            UpdateVisibleMessages();
-            UpdateViews();
+            Rebuild();
 
             if (rect.rect.height > viewport.rect.height)
             {
@@ -49,11 +53,35 @@ namespace Undebugger.UI.Menu.Logs
             LogStorageService.Instance.MessageAdded -= MessageAddedHandler;
         }
 
-        private void MessageAddedHandler(LogMessage message)
+        public void SetMask(LogTypeMask mask)
+        {
+            this.mask = mask;
+
+            Rebuild();
+
+            if (rect.rect.height > viewport.rect.height)
+            {
+                ScrollToEnd();
+            }
+        }
+
+        public LogTypeMask GetMask()
+        {
+            return mask;
+        }
+
+        private void Rebuild()
+        {
+            UpdateTotalVerticalSize();
+            UpdateVisibleMessages();
+            UpdateViews();
+        }
+
+        private void MessageAddedHandler(in LogMessage message)
         {
             UpdateTotalVerticalSize();
 
-            if (rect.rect.height > viewport.rect.height && visibleMaxIndex > (LogStorageService.Instance.Count - 2))
+            if (rect.rect.height > viewport.rect.height && visibleMaxIndex > (LogStorageService.Instance.GetCount(mask) - 2))
             {
                 ScrollToEnd();
             }
@@ -61,12 +89,18 @@ namespace Undebugger.UI.Menu.Logs
 
         private void ScrollToEnd()
         {
+            if (scrollStateHelper.IsDragging)
+            {
+                return;
+            }
+
+            scrollRect.StopMovement();
             rect.anchoredPosition = new Vector2(rect.anchoredPosition.x, -rect.rect.y - viewport.rect.height);
         }
 
         private void UpdateTotalVerticalSize()
         {
-            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, messageHeight * LogStorageService.Instance.Count);
+            rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, messageHeight * LogStorageService.Instance.GetCount(mask));
         }
 
         private void UpdateVisibleMessages()
@@ -77,7 +111,7 @@ namespace Undebugger.UI.Menu.Logs
             var rectMin = rect.transform.InverseTransformPoint(0, viewportMin, 0).y;
             var rectMax = rect.transform.InverseTransformPoint(0, viewportMax, 0).y;
 
-            visibleMaxIndex = Mathf.Min(LogStorageService.Instance.Count, Mathf.RoundToInt(rectMin / -messageHeight));
+            visibleMaxIndex = Mathf.Min(LogStorageService.Instance.GetCount(mask), Mathf.RoundToInt(rectMin / -messageHeight));
             visibleMinIndex = Mathf.Max(0, Mathf.RoundToInt(rectMax / -messageHeight));
         }
 
@@ -92,7 +126,7 @@ namespace Undebugger.UI.Menu.Logs
 
             for (int i = visibleMinIndex; i < visibleMaxIndex; ++i)
             {
-                ref var message = ref LogStorageService.Instance.GetMessage(i);
+                ref var message = ref LogStorageService.Instance.GetMessage(mask, i);
 
                 if (!views.TryGetValue(message.Id, out var view))
                 {
@@ -112,6 +146,7 @@ namespace Undebugger.UI.Menu.Logs
                     views.Add(message.Id, view);
                 }
 
+                view.SetViewIndex(i);
                 view.Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, 0f, rect.rect.width);
                 view.Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, messageHeight * i, messageHeight);
 
@@ -186,7 +221,7 @@ namespace Undebugger.UI.Menu.Logs
 
             for (int i = visibleMinIndex; i < visibleMaxIndex; ++i)
             {
-                ref var message = ref LogStorageService.Instance.GetMessage(i);
+                ref var message = ref LogStorageService.Instance.GetMessage(mask, i);
 
                 if (views.TryGetValue(message.Id, out var view))
                 {

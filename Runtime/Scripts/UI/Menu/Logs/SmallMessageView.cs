@@ -51,15 +51,11 @@ namespace Undebugger.UI.Menu.Logs
             messageId = message.Id;
             messageText.text = message.Message;
             icon.sprite = icons[(int)message.Type];
+        }
 
-            var colors =
-                message.Type == LogType.Exception || message.Type == LogType.Error ?
-                errorColors :
-                message.Type == LogType.Warning ?
-                warningColor :
-                backColors;
-
-            background.color = colors[message.Id % backColors.Length];
+        public void SetViewIndex(int value)
+        {
+            background.color = backColors[value % backColors.Length];
         }
     }
 }
