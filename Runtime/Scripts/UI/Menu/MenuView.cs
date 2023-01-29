@@ -16,7 +16,9 @@ namespace Undebugger.UI.Menu
         private RectTransform groupButtonsWrapper;
         [SerializeField]
         private GroupView[] groupTemplates;
-
+        [SerializeField]
+        private MenuPool pool;
+        
         private MenuModel model;
         private GroupButton[] groupButtons;
         private GroupView activeGroupView;
@@ -35,7 +37,7 @@ namespace Undebugger.UI.Menu
         {
             if (activeGroupView != null)
             {
-                DestroyImmediate(activeGroupView.gameObject);
+                pool.AddOrDestroy(activeGroupView);
                 activeGroupView = null;
             }
 
@@ -49,10 +51,8 @@ namespace Undebugger.UI.Menu
                 return;
             }
 
-            var view = Instantiate(groupTemplates[group], groupContainer.transform);
-            view.Load(model);
-
-            activeGroupView = view;
+            activeGroupView = pool.GetOrInstantiate(groupTemplates[group], groupContainer.transform);
+            activeGroupView.Load(model);
 
             for (int i = 0; i < groupButtons.Length; ++i)
             {
@@ -71,7 +71,7 @@ namespace Undebugger.UI.Menu
                     if (groupButtons[i] != null)
                     {
                         groupButtons[i].Clicked -= GroupButtonClickedHandler;
-                        GameObject.Destroy(groupButtons[i].gameObject);
+                        pool.AddOrDestroy(groupButtons[i]);
                     }
                 }
             }
@@ -83,7 +83,7 @@ namespace Undebugger.UI.Menu
 
             for (int i = 0; i < groupTemplates.Length; ++i)
             {
-                groupButtons[i] = Instantiate(groupButtonTemplate, groupButtonContainer);
+                groupButtons[i] = pool.GetOrInstantiate(groupButtonTemplate, groupButtonContainer);
                 groupButtons[i].Init(i, groupTemplates[i].GroupName);
                 groupButtons[i].Clicked += GroupButtonClickedHandler;
             }

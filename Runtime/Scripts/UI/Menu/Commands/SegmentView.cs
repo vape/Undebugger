@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Undebugger.Model.Commands;
 using Undebugger.UI.Layout;
 using UnityEngine;
@@ -5,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Commands
 {
-    public class SegmentView : MonoBehaviour
+    public class SegmentView : MonoBehaviour, IPoolable, IPoolHandler
     {
         [SerializeField]
         private Text nameText;
@@ -14,34 +15,61 @@ namespace Undebugger.UI.Menu.Commands
         [SerializeField]
         private FlexibleGrid layout;
 
-        private CommandView[] commands;
+        private List<CommandView> commands;
+        private MenuPool pool;
+
+        public void UsePool(MenuPool pool)
+        {
+            this.pool = pool;
+        }
+
+        public void AddingToPool()
+        {
+            Deinit();
+        }
 
         public void Init(SegmentModel model, CommandViewFactory optionViewFactory)
         {
             Deinit();
 
+            if (commands == null)
+            {
+                commands = new List<CommandView>(capacity: model.Commands.Count);
+            }
+
             nameText.text = model.Name == null ? "Unnamed" : model.Name;
-            commands = new CommandView[model.Commands.Count];
 
             for (int i = 0; i < model.Commands.Count; ++i)
             {
                 var template = optionViewFactory.FindTemplate(model.Commands[i].GetType());
 
-                commands[i] = Instantiate(template, container);
-                commands[i].Setup(model.Commands[i]);
+                if (pool == null || !pool.TryGet(template.GetType(), out CommandView commandView, container))
+                {
+                    commandView = Instantiate(template, container);
+                }
+
+                commandView.Setup(model.Commands[i]);
+                commands.Add(commandView);
             }
         }
 
-        private void Deinit()
+        public void Deinit()
         {
             if (commands != null)
             {
-                for (int i = 0; i < commands.Length; ++i)
+                for (int i = 0; i < commands.Count; ++i)
                 {
-                    Destroy(commands[i].gameObject);
+                    if (pool != null)
+                    {
+                        pool.Add(commands[i]);
+                    }
+                    else
+                    {
+                        DestroyImmediate(commands[i].gameObject);
+                    }
                 }
 
-                commands = null;
+                commands.Clear();
             }
         }
     }

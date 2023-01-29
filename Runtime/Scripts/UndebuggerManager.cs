@@ -118,7 +118,7 @@ namespace Undebugger
         }
 
         public bool IsOpen
-        { get { return menuView != null; } }
+        { get { return menuView != null && menuView.gameObject.activeSelf; } }
         public List<MenuTriggerDelegate> Triggers
         { get; private set; } = new List<MenuTriggerDelegate>(capacity: 3)
         {
@@ -146,55 +146,56 @@ namespace Undebugger
                 triggerAction |= Triggers[i](isOpen);
             }
 
-            if (menuView != null && (triggerAction & MenuTriggerAction.Close) != 0)
+            if ((triggerAction & MenuTriggerAction.Close) != 0 && isOpen)
             {
-                TryDestroyMenu();
+                TryCloseMenu();
             }
-            else if (menuView == null && (triggerAction & MenuTriggerAction.Open) != 0)
+            else if ((triggerAction & MenuTriggerAction.Open) != 0 && !isOpen)
             {
-                TryCreateMenu();
+                TryOpenMenu();
             }
         }
 
-        public bool TryCreateMenu()
+        public bool TryOpenMenu()
         {
             if (IsOpen)
             {
                 return false;
             }
 
-            menuView = CreateMenu();
+            if (menuView == null)
+            {
+                if (menuViewTemplate == null)
+                {
+                    menuViewTemplate = Resources.Load<MenuView>(MenuViewTemplateName);
+                }
+
+                using (sceneManager.MakeActive())
+                {
+                    menuView = GameObject.Instantiate(menuViewTemplate, sceneManager.GetSafeArea().Rect);
+                    menuView.name = menuViewTemplate.name;
+                }
+            }
+            else
+            {
+                menuView.gameObject.SetActive(true);
+            }
+
+            var model = ModelBuilder.Build();
+            menuView.Load(model);
+
             return true;
         }
 
-        public bool TryDestroyMenu()
+        public bool TryCloseMenu()
         {
             if (!IsOpen)
             {
                 return false;
             }
 
-            Destroy(menuView.gameObject);
+            menuView.gameObject.SetActive(false);
             return true;
-        }
-
-        private MenuView CreateMenu()
-        {
-            if (menuViewTemplate == null)
-            {
-                menuViewTemplate = Resources.Load<MenuView>(MenuViewTemplateName);
-            }
-
-            var model = ModelBuilder.Build();
-
-            using (sceneManager.MakeActive())
-            {
-                var menu = GameObject.Instantiate(menuViewTemplate, sceneManager.GetSafeArea().Rect);
-                menu.name = menuViewTemplate.name;
-                menu.Load(model);
-
-                return menu;
-            }
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Undebugger.UI
         {
             if (UndebuggerManager.Instance != null)
             {
-                UndebuggerManager.Instance.TryDestroyMenu();
+                UndebuggerManager.Instance.TryCloseMenu();
             }
         }
     }

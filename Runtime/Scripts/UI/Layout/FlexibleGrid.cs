@@ -54,6 +54,7 @@ namespace Undebugger.UI.Layout
             base.DoLayout();
 
             BuildLayout(childrens, self);
+            OnBeginResize();
 
             if ((autoSize & LayoutAxis.Vertical) > 0)
             {
@@ -71,12 +72,13 @@ namespace Undebugger.UI.Layout
                 layout[i].Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, layout[i].Y, layout[i].H);
             }
 
+            OnEndResize();
             OnLayoutChanged();
         }
 
         private void BuildLayout(List<RectChild> rects, RectTransform self)
         {
-            if (layout == null || rects.Count < layout.Length)
+            if (layout == null || rects.Count != layout.Length)
             {
                 layout = new GridElement[rects.Count];
             }

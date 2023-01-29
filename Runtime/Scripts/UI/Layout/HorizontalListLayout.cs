@@ -37,6 +37,7 @@ namespace Undebugger.UI.Layout
             base.DoLayout();
 
             BuildLayout(childrens, self);
+            OnBeginResize();
 
             for (int i = 0; i < childrens.Count; ++i)
             {
@@ -46,6 +47,7 @@ namespace Undebugger.UI.Layout
 
             self.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
 
+            OnEndResize();
             OnLayoutChanged();
         }
 

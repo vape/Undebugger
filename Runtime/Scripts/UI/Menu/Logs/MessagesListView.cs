@@ -7,8 +7,10 @@ using UnityEngine.UI;
 namespace Undebugger.UI.Menu.Logs
 {
     [RequireComponent(typeof(RectTransform))]
-    internal class MessagesListView : LayoutRoot
+    internal class MessagesListView : LayoutRoot, IPoolHandler
     {
+        private const int InitialCapacity = 48;
+
         [SerializeField]
         private RectTransform viewport;
         [SerializeField]
@@ -28,9 +30,9 @@ namespace Undebugger.UI.Menu.Logs
         [SerializeField]
         private ExpandedMessageView expandedMessageTemplate;
 
-        private List<SmallMessageView> pool = new List<SmallMessageView>(capacity: 48);
-        private Dictionary<int, SmallMessageView> views = new Dictionary<int, SmallMessageView>(capacity: 48);
-        private HashSet<int> purgatory = new HashSet<int>(capacity: 48);
+        private MenuPool pool;
+        private Dictionary<int, SmallMessageView> views = new Dictionary<int, SmallMessageView>(capacity: InitialCapacity);
+        private HashSet<int> purgatory = new HashSet<int>(capacity: InitialCapacity);
         private int visibleMinIndex;
         private int visibleMaxIndex;
         private ExpandedMessageView expandedMessage;
@@ -51,6 +53,16 @@ namespace Undebugger.UI.Menu.Logs
         private void OnDisable()
         {
             LogStorageService.Instance.MessageAdded -= MessageAddedHandler;
+        }
+
+        public void UsePool(MenuPool pool)
+        {
+            this.pool = pool;
+
+            if (this.pool != null)
+            {
+                this.pool.Reserve(typeof(SmallMessageView), InitialCapacity);
+            }
         }
 
         public void SetMask(LogTypeMask mask)
@@ -130,19 +142,10 @@ namespace Undebugger.UI.Menu.Logs
 
                 if (!views.TryGetValue(message.Id, out var view))
                 {
-                    if (pool.Count > 0)
-                    {
-                        view = pool[pool.Count - 1];
-                        view.gameObject.SetActive(true);
-                        pool.RemoveAt(pool.Count - 1);
-                    }
-                    else
-                    {
-                        view = Instantiate(template, transform);
-                    }
-                    
+                    view = pool.GetOrInstantiate(template, transform);
                     view.Setup(in message);
                     view.Clicked += ExpandMessage;
+
                     views.Add(message.Id, view);
                 }
 
@@ -158,8 +161,8 @@ namespace Undebugger.UI.Menu.Logs
                 if (views.TryGetValue(id, out var view))
                 {
                     view.Clicked -= ExpandMessage;
-                    view.gameObject.SetActive(false);
-                    pool.Add(view);
+
+                    pool.AddOrDestroy(view);
                     views.Remove(id);
                 }
             }
@@ -177,7 +180,7 @@ namespace Undebugger.UI.Menu.Logs
                 return;
             }
 
-            expandedMessage = Instantiate(expandedMessageTemplate, expandedMessageContainer);
+            expandedMessage = pool.GetOrInstantiate(expandedMessageTemplate, expandedMessageContainer);
             expandedMessage.Setup(message);
             expandedMessage.CloseClicked += CloseExpandedMessage;
             expandedMessageContainer.gameObject.SetActive(true);
@@ -192,7 +195,8 @@ namespace Undebugger.UI.Menu.Logs
             }
 
             expandedMessage.CloseClicked -= CloseExpandedMessage;
-            Destroy(expandedMessage.gameObject);
+            pool.AddOrDestroy(expandedMessage);
+
             expandedMessageContainer.gameObject.SetActive(false);
         }
 

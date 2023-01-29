@@ -17,6 +17,13 @@ namespace Undebugger.UI.Menu.Logs
         [SerializeField]
         private MessagesListView messagesList;
 
+        public override void UsePool(MenuPool pool)
+        {
+            base.UsePool(pool);
+
+            messagesList.UsePool(pool);
+        }
+
         private void OnEnable()
         {
             Refresh();

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Status
 {
-    public class StatusSegmentView : MonoBehaviour
+    public class StatusSegmentView : MonoBehaviour, ILayoutResizeHandler
     {
         [SerializeField]
         private Text title;
@@ -22,24 +22,22 @@ namespace Undebugger.UI.Menu.Status
 
         private bool folded;
         private IStatusSegmentDriver driver;
+        private bool resizing;
 
         private void OnEnable()
         {
             layout.LayoutChanged += LayoutChangedHandler;
+
+            if (driver != null)
+            {
+                driver.Changed += DriverChangedHandler;
+            }
         }
 
         private void OnDisable()
         {
             layout.LayoutChanged -= LayoutChangedHandler;
-        }
-
-        private void OnDestroy()
-        {
-            Deinit();
-        }
-
-        private void Deinit()
-        {
+            
             if (driver != null)
             {
                 driver.Changed -= DriverChangedHandler;
@@ -58,7 +56,11 @@ namespace Undebugger.UI.Menu.Status
 
         public void Init(IStatusSegmentDriver driver)
         {
-            Deinit();
+            if (this.driver != null)
+            {
+                this.driver.Changed -= DriverChangedHandler;
+                this.driver = null;
+            }
 
             this.driver = driver;
             this.driver.Changed += DriverChangedHandler;
@@ -103,12 +105,18 @@ namespace Undebugger.UI.Menu.Status
 
         private void TextDimensionsChanged()
         {
-            SetLayoutDirty();
+            if (!resizing)
+            {
+                SetLayoutDirty();
+            }
         }
 
         private void OnRectTransformDimensionsChange()
         {
-            SetLayoutDirty();
+            if (!resizing)
+            {
+                SetLayoutDirty();
+            }
         }
 
         private void SetLayoutDirty()
@@ -119,6 +127,16 @@ namespace Undebugger.UI.Menu.Status
         private void SetLayoutHierarchyDirty()
         {
             Layout.LayoutUtility.SetLayoutDirty(transform, LayoutDirtyFlag.Layout | LayoutDirtyFlag.Hierarchy);
+        }
+
+        public void OnBeforeSizeChanged()
+        {
+            resizing = true;
+        }
+
+        public void OnAfterSizeChanged()
+        {
+            resizing = false;
         }
     }
 }

@@ -64,6 +64,21 @@ namespace Undebugger
             {
                 scene = CreateScene(out canvas, out safeArea);
             }
+
+            if (safeArea == null && canvas != null)
+            {
+                GameObject.DestroyImmediate(canvas.gameObject);
+            }
+
+            if (canvas == null)
+            {
+                var currentScene = SceneManager.GetActiveScene();
+                SceneManager.SetActiveScene(scene);
+
+                CreateCanvas(out canvas, out safeArea);
+
+                SceneManager.SetActiveScene(currentScene);
+            }
         }
 
         private static Scene CreateScene(out Canvas canvas, out SafeArea safeArea)

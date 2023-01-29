@@ -1,4 +1,5 @@
-﻿using Undebugger.Model;
+﻿using System.Collections.Generic;
+using Undebugger.Model;
 using UnityEngine;
 
 namespace Undebugger.UI.Menu.Status
@@ -12,18 +13,50 @@ namespace Undebugger.UI.Menu.Status
         [SerializeField]
         private Transform container;
 
-        private StatusSegmentView[] segments;
+        private List<StatusSegmentView> segments;
+
+        private void OnDestroy()
+        {
+            Unload();
+        }
+
+        public override void AddingToPool()
+        {
+            base.AddingToPool();
+
+            Unload();
+        }
 
         public override void Load(MenuModel menuModel)
         {
             base.Load(menuModel);
 
-            segments = new StatusSegmentView[menuModel.Status.Segments.Count];
+            Unload();
 
-            for (int i = 0; i < segments.Length; i++)
+            if (segments == null)
             {
-                segments[i] = Instantiate(segmentTemplate, container);
-                segments[i].Init(menuModel.Status.Segments[i]);
+                segments = new List<StatusSegmentView>(menuModel.Status.Segments.Count);
+            }
+
+            for (int i = 0; i < menuModel.Status.Segments.Count; i++)
+            {
+                var segment = pool.GetOrInstantiate(segmentTemplate, container);
+                segment.Init(menuModel.Status.Segments[i]);
+
+                segments.Add(segment);
+            }
+        }
+
+        public void Unload()
+        {
+            if (segments != null)
+            {
+                for (int i = 0; i < segments.Count; ++i)
+                {
+                    pool.AddOrDestroy(segments[i]);
+                }
+
+                segments.Clear();
             }
         }
     }

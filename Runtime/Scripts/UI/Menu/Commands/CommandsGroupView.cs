@@ -50,13 +50,13 @@ namespace Undebugger.UI.Menu.Commands
         {
             if (pageView != null)
             {
-                DestroyImmediate(pageView.gameObject);
+                pool.AddOrDestroy(pageView);
                 pageView = null;
             }
 
             if (page >= 0 && page < model.Pages.Count)
             {
-                pageView = Instantiate(pageTemplate, pageContainer);
+                pageView = pool.GetOrInstantiate(pageTemplate, pageContainer);
                 pageView.Init(model.Pages[page], commandViewFactory);
             }
 
@@ -77,7 +77,7 @@ namespace Undebugger.UI.Menu.Commands
                     if (tabButtons[i] != null)
                     {
                         tabButtons[i].Clicked -= TabButtonClickedHandler;
-                        GameObject.Destroy(tabButtons[i].gameObject);
+                        pool.AddOrDestroy(tabButtons[i]);
                     }
                 }
             }
@@ -89,7 +89,7 @@ namespace Undebugger.UI.Menu.Commands
 
             for (int i = 0; i < model.Pages.Count; ++i)
             {
-                tabButtons[i] = Instantiate(tabButtonTemplate, tabButtonsContainer);
+                tabButtons[i] = pool.GetOrInstantiate(tabButtonTemplate, tabButtonsContainer);
                 tabButtons[i].Init(model.Pages[i]);
                 tabButtons[i].Clicked += TabButtonClickedHandler;
             }

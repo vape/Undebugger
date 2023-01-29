@@ -1,10 +1,11 @@
+using System.Collections.Generic;
 using Undebugger.Model.Commands;
 using Undebugger.UI.Layout;
 using UnityEngine;
 
 namespace Undebugger.UI.Menu.Commands
 {
-    public class PageView : MonoBehaviour
+    internal class PageView : MonoBehaviour, IPoolable, IPoolHandler
     {
         [SerializeField]
         private RectTransform container;
@@ -13,31 +14,54 @@ namespace Undebugger.UI.Menu.Commands
         [SerializeField]
         private VerticalListLayout layout;
 
-        private SegmentView[] segments;
+        private List<SegmentView> segments;
+        private MenuPool pool;
 
-        public void Init(PageModel model, CommandViewFactory optionViewFactory)
+        public void UsePool(MenuPool pool)
+        {
+            this.pool = pool;
+        }
+
+        public void AddingToPool()
+        {
+            Deinit();
+        }
+
+        public void Init( PageModel model, CommandViewFactory optionViewFactory)
         {
             Deinit();
 
-            segments = new SegmentView[model.Segments.Count];
-
-            for (int i = 0; i < segments.Length; i++)
+            if (segments == null || model.Segments.Count / segments.Capacity >= 2)
             {
-                segments[i] = Instantiate(segmentTemplate, container);
-                segments[i].Init(model.Segments[i], optionViewFactory);
+                segments = new List<SegmentView>(model.Segments.Count);
             }
+
+            for (int i = 0; i < model.Segments.Count; i++)
+            {
+                var segment = pool.GetOrInstantiate(segmentTemplate, container);
+                segment.Init(model.Segments[i], optionViewFactory);
+
+                segments.Add(segment);
+            }
+
+            LayoutUtility.SetLayoutDirty(transform, LayoutDirtyFlag.All);
         }
 
         private void Deinit()
         {
             if (segments != null)
             {
-                for (int i = 0; i < segments.Length; ++i)
+                for (int i = 0; i < segments.Count; ++i)
                 {
-                    Destroy(segments[i].gameObject);
+                    if (segments[i] == null)
+                    {
+                        continue;
+                    }
+
+                    pool.Add(segments[i]);
                 }
 
-                segments = null;
+                segments.Clear();
             }
         }
     }
