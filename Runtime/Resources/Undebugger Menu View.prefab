@@ -433,6 +433,8 @@ MonoBehaviour:
   - {fileID: 6338874795585390091, guid: 7ff576e083754334699bc9564f38aec6, type: 3}
   - {fileID: 7187552237939998813, guid: 5fff63337ef364a4b87ff11fa9611300, type: 3}
   pool: {fileID: 6988875630988493044}
+  widgets:
+  - {fileID: 2133623272275128834, guid: b66aa0e888aad9046b3b4b79a0252b8d, type: 3}
 --- !u!1 &3829374466553632867
 GameObject:
   m_ObjectHideFlags: 0

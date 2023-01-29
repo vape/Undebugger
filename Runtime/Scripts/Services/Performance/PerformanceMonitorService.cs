@@ -28,9 +28,9 @@ namespace Undebugger.Services.Performance
             }
 
             var gameObject = new GameObject("Performance Monitor Service");
+            gameObject.transform.SetParent(UndebuggerManager.Instance.transform);
             gameObject.hideFlags = HideFlags.NotEditable;
             instance = gameObject.AddComponent<PerformanceMonitorService>();
-            DontDestroyOnLoad(gameObject);
         }
 
         public long ReservedMemory

@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Undebugger.Scripts.Services.UI;
+using UnityEngine;
 
 namespace Undebugger.UI
 {
@@ -6,9 +7,9 @@ namespace Undebugger.UI
     {
         public void TryClose()
         {
-            if (UndebuggerManager.Instance != null)
+            if (UIService.Instance != null)
             {
-                UndebuggerManager.Instance.TryCloseMenu();
+                UIService.Instance.CloseMenu();
             }
         }
     }

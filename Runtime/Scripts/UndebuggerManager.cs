@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using Undebugger.Builder;
-using Undebugger.UI.Menu;
+using Undebugger.Scripts.Services.UI;
 using UnityEngine;
 
 namespace Undebugger
@@ -19,8 +19,6 @@ namespace Undebugger
     public class UndebuggerManager : MonoBehaviour
     {
         public const string VersionString = "1.0.0";
-
-        private const string MenuViewTemplateName = "Undebugger Menu View";
 
         private static int lastTouchesCount = 0;
 
@@ -98,7 +96,7 @@ namespace Undebugger
         private static bool created;
         private static UndebuggerManager instance;
 
-        [RuntimeInitializeOnLoadMethod]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void InitializeOnLoad()
         {
             if (!created)
@@ -117,8 +115,6 @@ namespace Undebugger
             created = true;
         }
 
-        public bool IsOpen
-        { get { return menuView != null && menuView.gameObject.activeSelf; } }
         public List<MenuTriggerDelegate> Triggers
         { get; private set; } = new List<MenuTriggerDelegate>(capacity: 3)
         {
@@ -127,18 +123,9 @@ namespace Undebugger
             ToggleByFourFingers,
         };
 
-        private MenuView menuView;
-        private UndebuggerSceneManager sceneManager;
-        private MenuView menuViewTemplate;
-
-        private void Awake()
-        {
-            sceneManager = new UndebuggerSceneManager();
-        }
-
         private void Update()
         {
-            var isOpen = IsOpen;
+            var isOpen = UIService.Instance.IsMenuOpen;
             var triggerAction = MenuTriggerAction.None;
 
             for (int i = 0; i < Triggers.Count; i++)
@@ -148,54 +135,12 @@ namespace Undebugger
 
             if ((triggerAction & MenuTriggerAction.Close) != 0 && isOpen)
             {
-                TryCloseMenu();
+                UIService.Instance.CloseMenu();
             }
             else if ((triggerAction & MenuTriggerAction.Open) != 0 && !isOpen)
             {
-                TryOpenMenu();
+                UIService.Instance.OpenMenu(ModelBuilder.Build());
             }
-        }
-
-        public bool TryOpenMenu()
-        {
-            if (IsOpen)
-            {
-                return false;
-            }
-
-            if (menuView == null)
-            {
-                if (menuViewTemplate == null)
-                {
-                    menuViewTemplate = Resources.Load<MenuView>(MenuViewTemplateName);
-                }
-
-                using (sceneManager.MakeActive())
-                {
-                    menuView = GameObject.Instantiate(menuViewTemplate, sceneManager.GetSafeArea().Rect);
-                    menuView.name = menuViewTemplate.name;
-                }
-            }
-            else
-            {
-                menuView.gameObject.SetActive(true);
-            }
-
-            var model = ModelBuilder.Build();
-            menuView.Load(model);
-
-            return true;
-        }
-
-        public bool TryCloseMenu()
-        {
-            if (!IsOpen)
-            {
-                return false;
-            }
-
-            menuView.gameObject.SetActive(false);
-            return true;
         }
     }
 }

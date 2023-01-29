@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Status.Performance
 {
+    [RequireComponent(typeof(CanvasRenderer))]
+    [ExecuteAlways]
     public class FrametimeGraph : Graphic
     {
         public float MinFPSHint
@@ -131,7 +133,7 @@ namespace Undebugger.UI.Menu.Status.Performance
             var preferedBarsCount = (int)(rect.width / (minBarWidth + minSpaceBetweenBars));
             var bars = Mathf.Min(PerformanceMonitorService.FrameBufferSize, preferedBarsCount);
             var scale = preferedBarsCount / (float)bars;
-            var offset = new Vector2(-rect.width * rectTransform.pivot.x, -rect.height * rectTransform.pivot.y);
+            var frameOffset = Mathf.Max(0, PerformanceMonitorService.FrameBufferSize - preferedBarsCount);
 
             var spaceBetweenBars = minSpaceBetweenBars * scale;
             var barWidth = minBarWidth * scale;
@@ -140,7 +142,7 @@ namespace Undebugger.UI.Menu.Status.Performance
 
             for (int i = 0; i < bars; ++i)
             {
-                ref var frame = ref GetFrame(i);
+                ref var frame = ref GetFrame(frameOffset + i);
 
                 var color = Color.Lerp(goodFrameTimeColor, badFrameTimeColor, frame.Tier * frameTimeColorSensitivity);
                 var value = frame.Time / midTime;

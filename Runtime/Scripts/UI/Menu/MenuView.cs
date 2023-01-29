@@ -1,5 +1,7 @@
+using System;
 using Undebugger.Model;
 using Undebugger.UI.Layout;
+using Undebugger.UI.Widgets;
 using UnityEngine;
 
 namespace Undebugger.UI.Menu
@@ -18,10 +20,27 @@ namespace Undebugger.UI.Menu
         private GroupView[] groupTemplates;
         [SerializeField]
         private MenuPool pool;
-        
+        [SerializeField]
+        private Widget[] widgets;
+
         private MenuModel model;
         private GroupButton[] groupButtons;
         private GroupView activeGroupView;
+
+        internal bool TryFindWidgetTemplate(Type type, out Widget widget)
+        {
+            for (int i = 0; i < widgets.Length; ++i)
+            {
+                if (widgets[i].GetType() == type)
+                {
+                    widget = widgets[i];
+                    return true;
+                }
+            }
+
+            widget = default;
+            return false;
+        }
 
         public void Load(MenuModel model)
         {
