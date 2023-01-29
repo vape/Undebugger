@@ -42,7 +42,7 @@ namespace Undebugger.UI.Menu
                 return;
             }
 
-            if (pool == null || pool.transform == null)
+            if (pool == null)
             {
                 GameObject.DestroyImmediate(obj);
             }
@@ -55,7 +55,15 @@ namespace Undebugger.UI.Menu
 
     public class MenuPool : MonoBehaviour
     {
+        public bool IsDestroyed
+        { get; private set; }
+
         private Dictionary<Type, List<object>> pool = new Dictionary<Type, List<object>>(capacity: 16);
+
+        private void OnDestroy()
+        {
+            IsDestroyed = true;
+        }
 
         public void Reserve(Type type, int capacity)
         {
@@ -74,6 +82,11 @@ namespace Undebugger.UI.Menu
 
         public void Add(Component obj)
         {
+            if (IsDestroyed)
+            {
+                return;
+            }
+
             var type = obj.GetType();
 
             if (!pool.TryGetValue(type, out var list))
