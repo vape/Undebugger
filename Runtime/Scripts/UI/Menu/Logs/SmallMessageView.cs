@@ -19,7 +19,7 @@ namespace Undebugger.UI.Menu.Logs
         [SerializeField]
         private Image icon;
         [SerializeField]
-        private Image background;
+        private Graphic background;
         [SerializeField]
         private RectTransform rect;
         [SerializeField]
