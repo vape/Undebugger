@@ -1,4 +1,5 @@
 ﻿using Undebugger.Services.Performance;
+using Undebugger.UI.Elements;
 using UnityEngine;
 using UnityEngine.UI;
 

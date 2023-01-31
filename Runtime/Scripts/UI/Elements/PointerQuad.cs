@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Undebugger.UI
+namespace Undebugger.UI.Elements
 {
     internal class PointerQuad : Graphic
     {

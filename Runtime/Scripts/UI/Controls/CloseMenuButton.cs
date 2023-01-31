@@ -1,7 +1,7 @@
 ﻿using Undebugger.Scripts.Services.UI;
 using UnityEngine;
 
-namespace Undebugger.UI
+namespace Undebugger.UI.Controls
 {
     public class CloseMenuButton : MonoBehaviour
     {

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-namespace Undebugger.UI.Utility
+namespace Undebugger.UI.Elements
 {
     [RequireComponent(typeof(CanvasRenderer))]
     internal class HorizontalBar : Graphic

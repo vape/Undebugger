@@ -1,5 +1,4 @@
-﻿using Undebugger.UI.Utility;
-using Undebugger.Utility;
+﻿using Undebugger.UI.Elements;
 using UnityEngine;
 using UnityEngine.UI;
 

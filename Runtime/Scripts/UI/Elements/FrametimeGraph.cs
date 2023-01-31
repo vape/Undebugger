@@ -3,7 +3,7 @@ using Undebugger.Services.Performance;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Undebugger.UI.Menu.Status.Performance
+namespace Undebugger.UI.Elements
 {
     [RequireComponent(typeof(CanvasRenderer))]
     [ExecuteAlways]

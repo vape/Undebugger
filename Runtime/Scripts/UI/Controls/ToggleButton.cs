@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Undebugger.UI.Utility
+namespace Undebugger.UI.Controls
 {
     [RequireComponent(typeof(Button))]
     internal class ToggleButton : MonoBehaviour
