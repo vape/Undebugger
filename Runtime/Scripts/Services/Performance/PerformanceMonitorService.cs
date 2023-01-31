@@ -1,4 +1,12 @@
-﻿using Undebugger.Utility;
+﻿#if !UNITY_EDITOR && (UNITY_ANDROID || UNITY_IOS || UNITY_TVOS)
+#define MOBILE_PLATFORM
+#endif
+
+#if !UNITY_EDITOR && !MOBILE_PLATFORM
+#define VSYNC_SUPPORTED
+#endif
+
+using Undebugger.Utility;
 using UnityEngine;
 using UnityEngine.Profiling;
 
@@ -7,7 +15,8 @@ namespace Undebugger.Services.Performance
     internal class PerformanceMonitorService : MonoBehaviour
     {
         public const int FrameBufferSize = 210;
-        public const int AverageOverNFrames = 30;
+        public const int MeanOverNFrames = FrameBufferSize / 2;
+        public const int SmoothOverNFrames = 20;
 
         public static PerformanceMonitorService Instance
         {
@@ -65,14 +74,17 @@ namespace Undebugger.Services.Performance
             }
         }
 
+        public float SmoothedFrameTime
+        { get { return smoothed; } }
         public float MeanFrameTime
         { get { return mean; } }
         public float TargetFrameTime
         { get { return target; } }
 
         private CircularBuffer<Frame> buffer = new CircularBuffer<Frame>(FrameBufferSize);
-        public float mean;
-        public float target;
+        private float smoothed;
+        private float mean;
+        private float target;
 
         public ref Frame GetFrame(int index)
         {
@@ -83,14 +95,30 @@ namespace Undebugger.Services.Performance
         {
             var time = Time.unscaledDeltaTime;
 
-            mean = (time + ((AverageOverNFrames - 1) * mean)) / AverageOverNFrames;
-            target = Application.targetFrameRate > 0 ? 1f / Application.targetFrameRate : mean;
+            smoothed = (time + ((SmoothOverNFrames - 1) * smoothed)) / SmoothOverNFrames;
+            mean = (time + (MeanOverNFrames - 1) * mean) / MeanOverNFrames;
 
-            buffer.PushFront(new Frame()
+#if VSYNC_SUPPORTED
+            if (QualitySettings.vSyncCount > 0)
             {
-                Time = time,
-                Tier = target > time ? 0 : (time - target) / target
-            });
+                target = 1f / (Screen.currentResolution.refreshRate / QualitySettings.vSyncCount);
+            }
+            else 
+#endif
+            if (Application.targetFrameRate > 0)
+            {
+#if MOBILE_PLATFORM 
+                target = 1f / Mathf.Min(Application.targetFrameRate, Screen.currentResolution.refreshRate);
+#else
+                target = 1f / Application.targetFrameRate;
+#endif
+            }
+            else
+            {
+                target = mean;
+            }
+
+            buffer.PushFront(new Frame(time));
         }
     }
 }

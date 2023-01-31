@@ -1,4 +1,5 @@
-﻿using Undebugger.Services.Performance;
+﻿using System;
+using Undebugger.Services.Performance;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,10 +9,36 @@ namespace Undebugger.UI.Menu.Status.Performance
     [ExecuteAlways]
     public class FrametimeGraph : Graphic
     {
-        public float MinFPSHint
-        { get; private set; } = 30;
-        public float TargetFPSHint
-        { get; private set; } = 60;
+        private static readonly float[] steps = new float[]
+        {
+            1f / 15,
+            1f / 30,
+            1f / 60,
+            1f / 90,
+            1f / 120,
+            1f / 240,
+            1f / 300
+        };
+
+        private static UIVertex[] quad = new UIVertex[4];
+
+#if UNITY_EDITOR
+        private static Frame stubFrame;
+#endif
+
+        private static ref Frame GetFrame(int index)
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                stubFrame.Time = 0.016f + 0.008f * Mathf.Sin(index / 10f);
+
+                return ref stubFrame;
+            }
+#endif
+
+            return ref PerformanceMonitorService.Instance.GetFrame(index);
+        }
 
         [SerializeField]
         private int minBarWidth = 3;
@@ -22,54 +49,61 @@ namespace Undebugger.UI.Menu.Status.Performance
         [SerializeField]
         private int baseLineWidth = 1;
         [SerializeField]
-        private Color frameColor = Color.white;
+        private Color32 frameColor = Color.white;
         [SerializeField]
-        private Color backgroundColor = Color.gray;
+        private Color32 backgroundColor = Color.gray;
         [SerializeField]
-        private Color goodFrameTimeColor = Color.green;
-        [SerializeField]
-        private Color badFrameTimeColor = Color.red;
-        [SerializeField]
-        [Range(0.5f, 3f)]
-        private float frameTimeColorSensitivity = 1;
+        private Color32[] colors = new Color32[]
+        {
+            new Color32(0,   255, 255, 255),
+            new Color32(0,   255, 0,   255),
+            new Color32(255, 255, 0,   255),
+            new Color32(255, 0,   0,   255)
+        };
 
-        private UIVertex[] quad = new UIVertex[4];
+        private float[] colorSteps = new float[4];
+        private float targetFrameTime = 1f / 60f;
 
         private void Update()
         {
-            const float snap = 30;
+            var time = 0.01666f;
+            var step = 1;
 
             var monitor = PerformanceMonitorService.Instance;
-            if (monitor == null)
+            if (monitor != null)
             {
-                return;
+                time = monitor.TargetFrameTime;
+                step = 0;
+
+                while (step < steps.Length - 1 && time < steps[step])
+                {
+                    step++;
+                }
             }
 
-            var fpsTarget = 1f / monitor.TargetFrameTime;
+            targetFrameTime = Mathf.Round(time / steps[step]) * steps[step];
 
-            TargetFPSHint = Mathf.Max(1, Mathf.Round(fpsTarget / snap)) * snap;
-            MinFPSHint = TargetFPSHint / 2f;
+            colorSteps[0] = targetFrameTime / 2f;
+            colorSteps[1] = targetFrameTime;
+            colorSteps[2] = targetFrameTime * 1.5f;
+            colorSteps[3] = targetFrameTime * 3.0f;
 
             SetVerticesDirty();
         }
 
+        public float GetFrametimeAtStep(int step)
+        {
+            return targetFrameTime / 2 * Mathf.Pow(2, step);
+        }
+
         protected override void OnPopulateMesh(VertexHelper vh)
         {
-            vh.Clear();
-
             var rect = GetPixelAdjustedRect();
 
-            PopulateBackground(ref rect, vh);
+            vh.Clear();
 
-            if (PerformanceMonitorService.Instance != null
-#if UNITY_EDITOR
-                || !Application.isPlaying
-#endif
-                )
-            {
-                PopulateGraph(ref rect, vh);
-            }
-            
+            PopulateBackground(ref rect, vh);
+            PopulateGraphNew(ref rect, vh);
             PopulateFrame(ref rect, vh);
         }
 
@@ -115,68 +149,82 @@ namespace Undebugger.UI.Menu.Status.Performance
                     frameColor);
                 vh.AddUIVertexQuad(quad);
             }
-            
+
             if (baseLineWidth > 0)
             {
                 FillQuad(ref quad,
-                rect.x + frameWidth,
-                rect.y + rect.height / 2 - Mathf.Max(1, baseLineWidth / 2),
-                rect.x + rect.width - frameWidth,
-                rect.y + rect.height / 2 + baseLineWidth / 2,
-                frameColor);
+                    rect.x + frameWidth,
+                    rect.y + rect.height / 3 - Mathf.Max(1, baseLineWidth / 2),
+                    rect.x + rect.width - frameWidth,
+                    rect.y + rect.height / 3 + baseLineWidth / 2,
+                    frameColor);
+                vh.AddUIVertexQuad(quad);
+
+                FillQuad(ref quad,
+                    rect.x + frameWidth,
+                    rect.y + rect.height / 1.5f - Mathf.Max(1, baseLineWidth / 2),
+                    rect.x + rect.width - frameWidth,
+                    rect.y + rect.height / 1.5f + baseLineWidth / 2,
+                    frameColor);
                 vh.AddUIVertexQuad(quad);
             }
         }
 
-        private void PopulateGraph(ref Rect rect, VertexHelper vh)
+        private void PopulateGraphNew(ref Rect rect, VertexHelper vh)
         {
-            var preferedBarsCount = (int)(rect.width / (minBarWidth + minSpaceBetweenBars));
-            var bars = Mathf.Min(PerformanceMonitorService.FrameBufferSize, preferedBarsCount);
-            var scale = preferedBarsCount / (float)bars;
-            var frameOffset = Mathf.Max(0, PerformanceMonitorService.FrameBufferSize - preferedBarsCount);
+            var dtmaxlog2 = Mathf.Log(targetFrameTime * 4, 2);
+            var dtminlog2 = Mathf.Log(targetFrameTime / 2, 2);
 
-            var spaceBetweenBars = minSpaceBetweenBars * scale;
-            var barWidth = minBarWidth * scale;
-            var barHeight = rect.height / 2;
-            var midTime = 1f / TargetFPSHint;
+            var capacity = (int)(rect.width / (minBarWidth + minSpaceBetweenBars));
+            var count = Mathf.Min(PerformanceMonitorService.FrameBufferSize, capacity);
+            var scale = capacity / (float)count;
+            var space = minSpaceBetweenBars * scale;
+            var height = rect.height;
+            var width = minBarWidth * scale;
+            var offset = Mathf.Max(0, PerformanceMonitorService.FrameBufferSize - capacity);
 
-            for (int i = 0; i < bars; ++i)
+            for (int i = 0; i < count; ++i)
             {
-                ref var frame = ref GetFrame(frameOffset + i);
+                ref var frame = ref GetFrame(offset + i);
 
-                var color = Color.Lerp(goodFrameTimeColor, badFrameTimeColor, frame.Tier * frameTimeColorSensitivity);
-                var value = frame.Time / midTime;
+                var dtlog2 = Mathf.Log(frame.Time, 2);
+                var factor = Mathf.Clamp01((dtlog2 - dtminlog2) / (dtmaxlog2 - dtminlog2));
+                var color = TimeToColor(frame.Time);
 
-                var x0 = rect.x + i * spaceBetweenBars + i * barWidth;
+                var x0 = rect.x + i * space + i * width;
                 var y0 = rect.y;
 
-                FillQuad(ref quad, x0, y0, x0 + barWidth, y0 + value * barHeight, color);
+                var quadHeight = factor * height;
+                if (quadHeight < 2)
+                {
+                    quadHeight = 2;
+                }
+
+                FillQuad(ref quad, x0, y0, x0 + width, y0 + quadHeight, color);
                 vh.AddUIVertexQuad(quad);
             }
         }
 
-#if UNITY_EDITOR
-        private static Frame stubFrame;
-#endif
-
-        private static ref Frame GetFrame(int index)
+        private Color32 TimeToColor(float time)
         {
-#if UNITY_EDITOR
-            const float Target = 0.016f;
-
-            if (!Application.isPlaying)
+            if (time < colorSteps[0])
             {
-                stubFrame.Time = 0.016f + 0.016f * Mathf.Sin(index / 10f);
-                stubFrame.Tier = Target > stubFrame.Time ? 0 : (stubFrame.Time - Target) / Target;
-
-                return ref stubFrame;
+                return colors[0];
             }
-#endif
 
-            return ref PerformanceMonitorService.Instance.GetFrame(index);
+            for (int i = 1; i < colorSteps.Length; ++i)
+            {
+                if (time < colorSteps[i])
+                {
+                    var t = Mathf.InverseLerp(colorSteps[i - 1], colorSteps[i], time);
+                    return Color32.LerpUnclamped(colors[i - 1], colors[i], t);
+                }
+            }
+
+            return colors[3];
         }
 
-        private static void FillQuad(ref UIVertex[] buffer, float x0, float y0, float x1, float y1, Color color)
+        private static void FillQuad(ref UIVertex[] buffer, float x0, float y0, float x1, float y1, Color32 color)
         {
             buffer[0].position.x = x0;
             buffer[0].position.y = y0;

@@ -3,6 +3,10 @@
     public struct Frame
     {
         public float Time;
-        public float Tier;
+
+        public Frame(float time)
+        {
+            Time = time;
+        }
     }
 }

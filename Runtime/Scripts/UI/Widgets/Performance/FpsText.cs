@@ -59,16 +59,16 @@ namespace Undebugger.UI.Widgets.Performance
 
             if (PerformanceMonitorService.Instance != null)
             {
-                frametime = PerformanceMonitorService.Instance.MeanFrameTime;
+                frametime = PerformanceMonitorService.Instance.SmoothedFrameTime;
             }
 #if UNITY_EDITOR
             else if (!Application.isPlaying)
             {
-                frametime = 0.0087654f;
+                frametime = 1 / 123f;
             }
 #endif
 
-            var fps = (int)(1f / frametime);
+            var fps = Mathf.RoundToInt(1f / frametime);
             if (this.fps != fps)
             {
                 this.fps = fps;

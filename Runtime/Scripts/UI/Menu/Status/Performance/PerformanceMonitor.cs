@@ -27,7 +27,7 @@ namespace Undebugger.UI.Menu.Status.Performance
 
         private void Update()
         {
-            var fps = (int)graph.TargetFPSHint;
+            var fps = (int)(1f / graph.GetFrametimeAtStep(1));
             if (fps != previousFps)
             {
                 UpdateGraphHints();
@@ -52,8 +52,11 @@ namespace Undebugger.UI.Menu.Status.Performance
 
         private void UpdateGraphHints()
         {
-            graphMidHint.text = $"FPS:{graph.TargetFPSHint:0}({(1f / graph.TargetFPSHint) * 1000:0.0}ms)";
-            graphTopHint.text = $"FPS:{graph.MinFPSHint:0}({(1f / graph.MinFPSHint) * 1000:0.0}ms)";
+            var mid = graph.GetFrametimeAtStep(1);
+            var top = graph.GetFrametimeAtStep(2);
+
+            graphMidHint.text = $"FPS:{1f / mid:0}({(mid) * 1000:0.0}ms)";
+            graphTopHint.text = $"FPS:{1f / top:0}({(top) * 1000:0.0}ms)";
         }
     }
 }
