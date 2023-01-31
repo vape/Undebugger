@@ -1,16 +1,17 @@
 fileFormatVersion: 2
-guid: 0d3f6c6633af1a048b275be09f1f0852
+guid: ca1ef2d5eb192664eb088248f992092f
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
-  fontSize: 30
+  fontSize: 32
   forceTextureCase: 0
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
   fontNames:
-  - Pixeloid Mono
-  fallbackFontReferences: []
+  - Perfect DOS VGA 437
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 74a5091d8707f334b9a5c31ef71a64ba, type: 3}
   customCharacters: 
   fontRenderingMode: 2
   ascentCalculationMode: 1
