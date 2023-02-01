@@ -1,7 +1,6 @@
-﻿using Undebugger.Model.Status;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Undebugger.Builder.BuiltinStatusSegments
+namespace Undebugger.Model.Status.Builtin
 {
     internal class ApplicationInfoStatusSegment : StaticStatusSegmentDriver
     {

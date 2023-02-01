@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Undebugger.Builder;
+using Undebugger.Model.Builder;
 using Undebugger.Scripts.Services.UI;
 using UnityEngine;
 
@@ -93,6 +93,7 @@ namespace Undebugger
             }
         }
 
+        private static MenuModelBuilder builder;
         private static bool created;
         private static UndebuggerManager instance;
 
@@ -123,6 +124,12 @@ namespace Undebugger
             ToggleByFourFingers,
         };
 
+        private void Awake()
+        {
+            builder = new MenuModelBuilder();
+            builder.PreloadAsync();
+        }
+
         private void Update()
         {
             var isOpen = UIService.Instance.IsMenuOpen;
@@ -139,7 +146,7 @@ namespace Undebugger
             }
             else if ((triggerAction & MenuTriggerAction.Open) != 0 && !isOpen)
             {
-                UIService.Instance.OpenMenu(ModelBuilder.Build());
+                UIService.Instance.OpenMenu(builder.Build());
             }
         }
     }
