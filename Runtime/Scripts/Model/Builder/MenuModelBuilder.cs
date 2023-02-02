@@ -50,6 +50,10 @@ namespace Undebugger.Model.Builder
         {
             var model = new MenuModel();
 
+            model.Status.Segments.Add(Status.Builtin.ApplicationInfoStatusSegment.Instance);
+            model.Status.Segments.Add(Status.Builtin.SystemInfoStatusSegment.Instance);
+            model.Status.Segments.Add(Status.Builtin.DeviceInfoStatusSegment.Instance);
+
             AddBehaviourTypesOptions(model);
 
             lock (preloadingLock)
