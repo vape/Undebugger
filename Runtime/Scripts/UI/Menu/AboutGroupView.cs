@@ -12,7 +12,7 @@ namespace Undebugger.UI.Menu
 
         private void Awake()
         {
-            versionString.text = UndebuggerManager.VersionString;
+            versionString.text = UndebuggerRoot.Version;
         }
     }
 }

@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using Undebugger.Model.Builder;
+using Undebugger.Scripts.Services.UI;
+using UnityEngine;
+
+namespace Undebugger.Services.Trigger
+{
+    [Flags]
+    public enum MenuTriggerAction
+    {
+        None = 0,
+        Close = 1,
+        Open = 2
+    }
+
+    public delegate MenuTriggerAction MenuTriggerDelegate(bool isOpen);
+
+    public class MenuTriggerService : MonoBehaviour
+    {
+        public static MenuTriggerService Instance
+        {
+            get
+            {
+                return instance;
+            }
+        }
+
+        private static MenuTriggerService instance;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
+        private static void Initialize()
+        {
+            if (instance == null)
+            {
+                instance = UndebuggerRoot.CreateServiceInstance<MenuTriggerService>("Menu Trigger Service");
+            }
+        }
+
+        private List<MenuTriggerDelegate> triggers = new List<MenuTriggerDelegate>(capacity: 3);
+        private static MenuModelBuilder builder;
+
+        private void Awake()
+        {
+            builder = new MenuModelBuilder();
+            builder.PreloadAsync();
+
+            RegisterTrigger(CommonTrigger.CloseMenuWithEscapeKey);
+            RegisterTrigger(CommonTrigger.ToggleMenuWithFourFingersTap);
+            RegisterTrigger(CommonTrigger.ToggleMenuWithF1Key);
+        }
+
+        private void Update()
+        {
+            var isOpen = UIService.Instance.IsMenuOpen;
+            var triggerAction = MenuTriggerAction.None;
+
+            for (int i = 0; i < triggers.Count; i++)
+            {
+                triggerAction |= triggers[i](isOpen);
+            }
+
+            if ((triggerAction & MenuTriggerAction.Close) != 0 && isOpen)
+            {
+                UIService.Instance.CloseMenu();
+            }
+            else if ((triggerAction & MenuTriggerAction.Open) != 0 && !isOpen)
+            {
+                UIService.Instance.OpenMenu(builder.Build());
+            }
+        }
+
+        public void ClearTriggers()
+        {
+            triggers.Clear();
+        }
+
+        public void RegisterTrigger(MenuTriggerDelegate trigger)
+        {
+            if (trigger == null)
+            {
+                throw new ArgumentNullException(nameof(trigger));
+            }
+
+            triggers.Add(trigger);
+        }
+    }
+}

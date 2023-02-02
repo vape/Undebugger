@@ -27,15 +27,10 @@ namespace Undebugger.Scripts.Services.UI
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Initialize()
         {
-            if (instance != null)
+            if (instance == null)
             {
-                return;
+                instance = UndebuggerRoot.CreateServiceInstance<UIService>("UI Service");
             }
-
-            var gameObject = new GameObject("UI Service");
-            gameObject.transform.SetParent(UndebuggerManager.Instance.transform);
-            gameObject.hideFlags = HideFlags.NotEditable;
-            instance = gameObject.AddComponent<UIService>();
         }
 
         public bool IsMenuOpen

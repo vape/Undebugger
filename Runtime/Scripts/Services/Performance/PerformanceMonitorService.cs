@@ -31,15 +31,10 @@ namespace Undebugger.Services.Performance
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
         private static void Initialize()
         {
-            if (instance != null)
+            if (instance == null)
             {
-                return;
+                instance = UndebuggerRoot.CreateServiceInstance<PerformanceMonitorService>("Performance Monitor Service");
             }
-
-            var gameObject = new GameObject("Performance Monitor Service");
-            gameObject.transform.SetParent(UndebuggerManager.Instance.transform);
-            gameObject.hideFlags = HideFlags.NotEditable;
-            instance = gameObject.AddComponent<PerformanceMonitorService>();
         }
 
         public long ReservedMemory
