@@ -1,25 +1,21 @@
-﻿using System;
+﻿#if (UNITY_EDITOR || DEBUG || UNDEBUGGER) && !UNDEBUGGER_DISABLE
+#define UNDEBUGGER_ENABLED
+#endif
+
+using System;
 using Undebugger.Utility;
 using UnityEngine;
 
 namespace Undebugger.Services.Log
 {
-    [Flags]
-    public enum LogTypeMask
-    {
-        None = 0,
-        Info = 1,
-        Warning = 2,
-        Error = 4,
-        All = Info | Warning | Error
-    }
+    public delegate void MessageAddedDelegate(in LogMessage message);
+
+#if UNDEBUGGER_ENABLED
 
     internal class LogStorageService
     {
         public const int Capacity = 1000;
         public const int BuffersCount = (int)LogTypeMask.All;
-
-        public delegate void MessageAddedDelegate(in LogMessage message);
 
         public static LogStorageService Instance
         {
@@ -170,4 +166,42 @@ namespace Undebugger.Services.Log
             }
         }
     }
+
+#else
+
+    internal class LogStorageService
+    {
+        public const int Capacity = 1000;
+        public const int BuffersCount = (int)LogTypeMask.All;
+
+        public static readonly LogStorageService Instance = new LogStorageService();
+
+        private static LogMessage message;
+
+        public event MessageAddedDelegate MessageAdded;
+
+        public int GetTotalCount(LogTypeMask mask)
+        {
+            return 0;
+        }
+
+        public int GetCount(LogTypeMask mask)
+        {
+            return 0;
+        }
+
+        public ref LogMessage GetMessage(LogTypeMask mask, int index)
+        {
+            return ref message;
+        }
+
+        public bool TryFindById(int id, out LogMessage message)
+        {
+            message = default;
+            return false;
+        }
+    }
+
+#endif
 }
+

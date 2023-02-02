@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Undebugger.Services.Trigger
+﻿namespace Undebugger.Services.Trigger
 {
-    internal static class CommonTrigger
+    public static class CommonTriggers
     {
         private static int lastTouchesCount;
 

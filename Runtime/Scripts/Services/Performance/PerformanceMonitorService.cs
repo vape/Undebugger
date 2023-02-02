@@ -6,12 +6,18 @@
 #define VSYNC_SUPPORTED
 #endif
 
+#if (UNITY_EDITOR || DEBUG || UNDEBUGGER) && !UNDEBUGGER_DISABLE
+#define UNDEBUGGER_ENABLED
+#endif
+
 using Undebugger.Utility;
 using UnityEngine;
 using UnityEngine.Profiling;
 
 namespace Undebugger.Services.Performance
 {
+#if UNDEBUGGER_ENABLED
+
     internal class PerformanceMonitorService : MonoBehaviour
     {
         public const int FrameBufferSize = 210;
@@ -102,7 +108,7 @@ namespace Undebugger.Services.Performance
 #endif
             if (Application.targetFrameRate > 0)
             {
-#if MOBILE_PLATFORM 
+#if MOBILE_PLATFORM
                 target = 1f / Mathf.Min(Application.targetFrameRate, Screen.currentResolution.refreshRate);
 #else
                 target = 1f / Application.targetFrameRate;
@@ -116,4 +122,32 @@ namespace Undebugger.Services.Performance
             buffer.PushFront(new Frame(time));
         }
     }
+
+#else
+
+    internal class PerformanceMonitorService
+    {
+        public const int FrameBufferSize = 0;
+
+        public static readonly PerformanceMonitorService Instance = new PerformanceMonitorService();
+
+        private static Frame frame;
+
+        public long ReservedMemory => 0;
+        public long AllocatedMemory => 0;
+        public long MonoHeapSize => 0;
+        public long MonoUsageMemory => 0;
+
+        public readonly float SmoothedFrameTime = 0.016f;
+        public readonly float MeanFrameTime = 0.016f;
+        public readonly float TargetFrameTime = 0.016f;
+
+        public ref Frame GetFrame(int index)
+        {
+            return ref frame;
+        }
+    }
+
+#endif
 }
+

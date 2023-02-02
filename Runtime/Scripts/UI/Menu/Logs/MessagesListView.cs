@@ -31,12 +31,18 @@ namespace Undebugger.UI.Menu.Logs
         private ExpandedMessageView expandedMessageTemplate;
 
         private MenuPool pool;
-        private Dictionary<int, SmallMessageView> views = new Dictionary<int, SmallMessageView>(capacity: InitialCapacity);
-        private HashSet<int> purgatory = new HashSet<int>(capacity: InitialCapacity);
+        private Dictionary<int, SmallMessageView> views;
+        private HashSet<int> purgatory;
         private int visibleMinIndex;
         private int visibleMaxIndex;
         private ExpandedMessageView expandedMessage;
         private LogTypeMask mask = LogTypeMask.All;
+
+        private void Awake()
+        {
+            views = new Dictionary<int, SmallMessageView>(capacity: InitialCapacity);
+            purgatory = new HashSet<int>(capacity: InitialCapacity);
+        }
 
         private void OnEnable()
         {

@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿#if (UNITY_EDITOR || DEBUG || UNDEBUGGER) && !UNDEBUGGER_DISABLE
+#define UNDEBUGGER_ENABLED
+#endif
+
+using System.Collections.Generic;
 using Undebugger.Model;
 using Undebugger.UI;
 using Undebugger.UI.Layout;
@@ -10,6 +14,8 @@ using UnityEngine.UI;
 
 namespace Undebugger.Scripts.Services.UI
 {
+#if UNDEBUGGER_ENABLED
+
     internal class UIService : MonoBehaviour
     {
         private const string MenuViewTemplateName = "Undebugger Menu View";
@@ -180,4 +186,26 @@ namespace Undebugger.Scripts.Services.UI
             }
         }
     }
+
+#else
+
+    internal class UIService
+    {
+        public static readonly UIService Instance = new UIService();
+
+        public bool GetWidgetEnabled<T>()
+            where T : Widget
+        {
+            return false;
+        }
+
+        public void SetWidgetEnabled<T>(bool value)
+            where T : Widget
+        { }
+
+        public void CloseMenu()
+        { }
+    }
+
+#endif
 }

@@ -1,6 +1,6 @@
 ﻿namespace Undebugger.Services.Performance
 {
-    public struct Frame
+    internal struct Frame
     {
         public float Time;
 

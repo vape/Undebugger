@@ -1,7 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using Undebugger.Model.Builder;
+﻿#if (UNITY_EDITOR || DEBUG || UNDEBUGGER) && !UNDEBUGGER_DISABLE
+#define UNDEBUGGER_ENABLED
+#endif
+
 using Undebugger.Scripts.Services.UI;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using Undebugger.Model.Builder;
 using UnityEngine;
 
 namespace Undebugger.Services.Trigger
@@ -15,6 +20,8 @@ namespace Undebugger.Services.Trigger
     }
 
     public delegate MenuTriggerAction MenuTriggerDelegate(bool isOpen);
+
+#if UNDEBUGGER_ENABLED
 
     public class MenuTriggerService : MonoBehaviour
     {
@@ -45,9 +52,9 @@ namespace Undebugger.Services.Trigger
             builder = new MenuModelBuilder();
             builder.PreloadAsync();
 
-            RegisterTrigger(CommonTrigger.CloseMenuWithEscapeKey);
-            RegisterTrigger(CommonTrigger.ToggleMenuWithFourFingersTap);
-            RegisterTrigger(CommonTrigger.ToggleMenuWithF1Key);
+            RegisterTrigger(CommonTriggers.CloseMenuWithEscapeKey);
+            RegisterTrigger(CommonTriggers.ToggleMenuWithFourFingersTap);
+            RegisterTrigger(CommonTriggers.ToggleMenuWithF1Key);
         }
 
         private void Update()
@@ -85,4 +92,18 @@ namespace Undebugger.Services.Trigger
             triggers.Add(trigger);
         }
     }
+#else
+    public class MenuTriggerSerivce
+    {
+        public static readonly MenuTriggerSerivce Instance = new MenuTriggerSerivce();
+
+        [Conditional("UNDEBUGGER")]
+        public void RegisterTrigger(MenuTriggerDelegate trigger)
+        { }
+
+        [Conditional("UNDEBUGGER")]
+        public void ClearTriggers()
+        { }
+    }
+#endif
 }

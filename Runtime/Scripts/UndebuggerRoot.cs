@@ -1,10 +1,16 @@
-﻿using UnityEngine;
+﻿#if (UNITY_EDITOR || DEBUG || UNDEBUGGER) && !UNDEBUGGER_DISABLE
+#define UNDEBUGGER_ENABLED
+#endif
+
+using UnityEngine;
 
 namespace Undebugger
 {
     internal static class UndebuggerRoot
     {
         public const string Version = "1.0.0";
+
+#if UNDEBUGGER_ENABLED
 
         public static readonly GameObject Object;
         public static readonly Transform Transform;
@@ -26,5 +32,10 @@ namespace Undebugger
 
             return serviceObject.AddComponent<T>();
         }
+
+#endif
+
     }
 }
+
+
