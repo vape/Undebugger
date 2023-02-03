@@ -149,6 +149,15 @@ namespace Undebugger.Scripts.Services.UI
 
         private static EventSystem CreateEventSystem(Transform parent)
         {
+#if ENABLE_INPUT_SYSTEM
+            var eventSystemObject = new GameObject("Event System");
+            eventSystemObject.transform.SetParent(parent);
+
+            var eventSystem = eventSystemObject.AddComponent<EventSystem>();
+            var inputModule = eventSystemObject.AddComponent<UnityEngine.InputSystem.UI.InputSystemUIInputModule>();
+
+            return eventSystem;
+#else
             var eventSystemObject = new GameObject("Event System");
             eventSystemObject.transform.SetParent(parent);
 
@@ -156,6 +165,7 @@ namespace Undebugger.Scripts.Services.UI
             var inputModule = eventSystemObject.AddComponent<StandaloneInputModule>();
 
             return eventSystem;
+#endif
         }
 
         private static void CreateCanvas(Transform parent, out Canvas canvas, out SafeArea safeArea)
