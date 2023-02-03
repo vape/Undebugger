@@ -4,7 +4,7 @@ namespace Undebugger.Model.Commands.Builtin
 {
     public class ToggleCommandModel : CommandModel
     {
-        public static ToggleCommandModel CreateToggle(string name, object obj, string propertyName)
+        public static ToggleCommandModel Create(string name, object obj, string propertyName)
         {
             var type = obj.GetType();
 
