@@ -18,6 +18,7 @@ namespace Undebugger.Scripts.Services.UI
 
     internal class UIService : MonoBehaviour
     {
+        public const int CanvasOrder = 32000;
         private const string MenuViewTemplateName = "Undebugger Menu View";
 
         public static UIService Instance
@@ -164,7 +165,7 @@ namespace Undebugger.Scripts.Services.UI
 
             canvas = canvasObject.AddComponent<Canvas>();
             canvas.renderMode = RenderMode.ScreenSpaceOverlay;
-            canvas.sortingOrder = 32766;
+            canvas.sortingOrder = CanvasOrder;
 
             var scaler = canvasObject.AddComponent<CanvasScaler>();
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
@@ -191,6 +192,8 @@ namespace Undebugger.Scripts.Services.UI
 
     internal class UIService
     {
+        public const int CanvasOrder = 32000;
+
         public static readonly UIService Instance = new UIService();
 
         public bool GetWidgetEnabled<T>()

@@ -217,3 +217,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   expand: 0
+  bottomOffset: 250

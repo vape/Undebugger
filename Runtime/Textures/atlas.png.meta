@@ -144,7 +144,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 160
+        y: 252
         width: 4
         height: 4
       alignment: 0
@@ -165,7 +165,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 4
-        y: 100
+        y: 192
         width: 64
         height: 64
       alignment: 0
@@ -186,7 +186,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 68
-        y: 100
+        y: 192
         width: 64
         height: 64
       alignment: 0
@@ -207,7 +207,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 132
-        y: 100
+        y: 192
         width: 64
         height: 64
       alignment: 0
@@ -228,7 +228,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 196
-        y: 100
+        y: 192
         width: 64
         height: 64
       alignment: 0
@@ -249,7 +249,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 260
-        y: 100
+        y: 192
         width: 64
         height: 64
       alignment: 0
@@ -270,7 +270,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 324
-        y: 100
+        y: 192
         width: 64
         height: 64
       alignment: 0
@@ -291,7 +291,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 36
+        y: 128
         width: 64
         height: 64
       alignment: 0
@@ -312,7 +312,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 64
-        y: 36
+        y: 128
         width: 64
         height: 64
       alignment: 0
@@ -333,7 +333,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 128
-        y: 36
+        y: 128
         width: 64
         height: 64
       alignment: 0
@@ -354,7 +354,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 192
-        y: 0
+        y: 92
         width: 100
         height: 100
       alignment: 0
@@ -375,7 +375,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 292
-        y: 0
+        y: 92
         width: 100
         height: 100
       alignment: 0
@@ -387,6 +387,27 @@ TextureImporter:
       bones: []
       spriteID: ce9548f17e332b5479433e0371486f6a
       internalID: 683003327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: down
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 64
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: debe1340beed1354596fbb195c5e8fdf
+      internalID: 856947942
       vertices: []
       indices: 
       edges: []
@@ -414,6 +435,7 @@ TextureImporter:
       unpin: 612881042
       right: 943646482
       left: 965396301
+      down: 856947942
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

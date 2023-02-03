@@ -10,9 +10,9 @@ namespace Undebugger.UI.Menu.Commands
         [SerializeField]
         private Text nameText;
 
-        protected override void OnSetup(ActionCommandModel model)
+        protected override void Setup(ActionCommandModel model)
         {
-            base.OnSetup(model);
+            base.Setup(model);
 
             nameText.text = model.Name;
         }

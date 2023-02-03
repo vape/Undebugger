@@ -27,15 +27,15 @@ namespace Undebugger.UI.Menu.Commands
     {
         protected TModel model;
 
-        public override void Setup(CommandModel model)
+        public sealed override void Setup(CommandModel model)
         {
             base.Setup(model);
 
             this.model = model as TModel;
-            OnSetup(this.model);
+            Setup(this.model);
         }
 
-        protected virtual void OnSetup(TModel model)
+        protected virtual void Setup(TModel model)
         { }
     }
 }

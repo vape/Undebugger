@@ -4,17 +4,17 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Commands
 {
-    [CommandView(typeof(CarouselCommandModel))]
-    public class CarouselCommandView : CommandView<CarouselCommandModel>
+    [CommandView(typeof(BaseTextCommandModel))]
+    public class TextCommandView : CommandView<BaseTextCommandModel>
     {
         [SerializeField]
         private Text title;
         [SerializeField]
-        private Text valueText;
+        private InputField inputField;
         [SerializeField]
         private RectTransform content;
 
-        protected override void Setup(CarouselCommandModel model)
+        protected override void Setup(BaseTextCommandModel model)
         {
             base.Setup(model);
 
@@ -30,24 +30,12 @@ namespace Undebugger.UI.Menu.Commands
                 title.text = model.Title;
             }
 
-            RefreshValue();
+            inputField.contentType = model.ContentType;
         }
 
-        private void RefreshValue()
+        public void OnClick()
         {
-            valueText.text = model.Value.ToString();
-        }
-
-        public void NextClick()
-        {
-            model.Set(model.Index + 1);
-            RefreshValue();
-        }
-
-        public void PrevClick()
-        {
-            model.Set(model.Index - 1);
-            RefreshValue();
+            model.Apply(inputField.text);
         }
     }
 }

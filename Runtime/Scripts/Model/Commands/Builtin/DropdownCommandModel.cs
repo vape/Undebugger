@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Undebugger.Model.Commands.Builtin
 {
-    public class CarouselCommandModel : CommandModel
+    public class DropdownCommandModel : CommandModel
     {
-        public static CarouselCommandModel Create(NameTag title, object[] values, object current, Action<object> onChanged)
+        public static DropdownCommandModel Create(NameTag title, object[] values, object current, Action<object> onChanged)
         {
             var index = Array.IndexOf(values, current);
             if (index == -1)
@@ -20,15 +20,15 @@ namespace Undebugger.Model.Commands.Builtin
                 onChanged?.Invoke(values[index]);
             };
 
-            return new CarouselCommandModel(title, new ValueRef<int>(getIndex, setIndex), values);
+            return new DropdownCommandModel(title, new ValueRef<int>(getIndex, setIndex), values);
         }
 
-        public static CarouselCommandModel Create(object[] values, object current, Action<object> onChanged)
+        public static DropdownCommandModel Create(object[] values, object current, Action<object> onChanged)
         {
             return Create(default, values, current, onChanged);
         }
 
-        public static CarouselCommandModel Create<T>(NameTag title, T[] values, T current, Action<T> onChanged)
+        public static DropdownCommandModel Create<T>(NameTag title, T[] values, T current, Action<T> onChanged)
         {
             var objectValues = values.Cast<object>().ToArray();
 
@@ -38,7 +38,7 @@ namespace Undebugger.Model.Commands.Builtin
             });
         }
 
-        public static CarouselCommandModel Create<T>(T[] values, T current, Action<T> onChanged)
+        public static DropdownCommandModel Create<T>(T[] values, T current, Action<T> onChanged)
         {
             return Create(default, values, current, onChanged);
         }
@@ -49,17 +49,17 @@ namespace Undebugger.Model.Commands.Builtin
         public object Value => values[Index];
         public object[] Values => values;
         public int Index => index.Value;
-        
+
         private ValueRef<int> index;
         private object[] values;
 
-        public CarouselCommandModel(NameTag title, ValueRef<int> index, object[] values)
+        public DropdownCommandModel(NameTag title, ValueRef<int> index, object[] values)
             : this(index, values)
         {
             Title = title;
         }
 
-        public CarouselCommandModel(ValueRef<int> index, object[] values)
+        public DropdownCommandModel(ValueRef<int> index, object[] values)
         {
             this.index = index;
             this.values = values;

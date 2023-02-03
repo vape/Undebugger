@@ -12,9 +12,9 @@ namespace Undebugger.UI.Menu.Commands
         [SerializeField]
         public Toggle toggle;
 
-        protected override void OnSetup(ToggleCommandModel model)
+        protected override void Setup(ToggleCommandModel model)
         {
-            base.OnSetup(model);
+            base.Setup(model);
 
             toggle.SetIsOnWithoutNotify(model.Reference.Value);
             valueText.text = model.Name;

@@ -36,9 +36,16 @@ namespace Undebugger.UI.Menu.Commands
 
         public CommandView FindTemplate(Type modelType)
         {
-            if (templates.TryGetValue(modelType, out var template))
+            while (modelType != null && modelType != typeof(CommandModel))
             {
-                return template;
+                if (templates.TryGetValue(modelType, out var template))
+                {
+                    return template;
+                }
+                else
+                {
+                    modelType = modelType.BaseType;
+                }
             }
 
             return null;

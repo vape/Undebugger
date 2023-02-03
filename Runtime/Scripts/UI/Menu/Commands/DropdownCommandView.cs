@@ -1,20 +1,21 @@
-﻿using Undebugger.Model.Commands.Builtin;
+﻿using System.Linq;
+using Undebugger.Model.Commands.Builtin;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Commands
 {
-    [CommandView(typeof(CarouselCommandModel))]
-    public class CarouselCommandView : CommandView<CarouselCommandModel>
+    [CommandView(typeof(DropdownCommandModel))]
+    public class DropdownCommandView : CommandView<DropdownCommandModel>
     {
         [SerializeField]
         private Text title;
         [SerializeField]
-        private Text valueText;
+        private Dropdown dropdown;
         [SerializeField]
         private RectTransform content;
 
-        protected override void Setup(CarouselCommandModel model)
+        protected override void Setup(DropdownCommandModel model)
         {
             base.Setup(model);
 
@@ -30,23 +31,18 @@ namespace Undebugger.UI.Menu.Commands
                 title.text = model.Title;
             }
 
+            dropdown.options = model.Values.Select(v => new Dropdown.OptionData(v.ToString())).ToList();
             RefreshValue();
         }
 
         private void RefreshValue()
         {
-            valueText.text = model.Value.ToString();
+            dropdown.value = model.Index;
         }
 
-        public void NextClick()
+        public void OnChanged(int index)
         {
-            model.Set(model.Index + 1);
-            RefreshValue();
-        }
-
-        public void PrevClick()
-        {
-            model.Set(model.Index - 1);
+            model.Set(index);
             RefreshValue();
         }
     }

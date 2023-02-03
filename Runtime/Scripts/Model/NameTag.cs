@@ -8,7 +8,7 @@ namespace Undebugger.Model
         {
             get
             {
-                if (isConstant)
+                if (!isDynamic)
                 {
                     return constValue;
                 }
@@ -17,7 +17,7 @@ namespace Undebugger.Model
             }
         }
 
-        private bool isConstant;
+        private bool isDynamic;
         private readonly Func<string> getter;
         private readonly string constValue;
 
@@ -25,14 +25,14 @@ namespace Undebugger.Model
         {
             getter = null;
             constValue = name;
-            isConstant = true;
+            isDynamic = false;
         }
 
         public NameTag(Func<string> func)
         {
             constValue = null;
             getter = func;
-            isConstant = false;
+            isDynamic = true;
         }
 
         public static implicit operator NameTag(string constantString)

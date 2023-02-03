@@ -14,6 +14,9 @@ namespace Undebugger.UI.Layout
             public float H;
         }
 
+        [SerializeField]
+        private float bottomOffset;
+
         private ListElement[] layout;
         private Vector2 size;
         private List<RectChild> childrens;
@@ -74,7 +77,7 @@ namespace Undebugger.UI.Layout
                 offset += layout[i].H;
             }
 
-            size = new Vector2(width, offset);
+            size = new Vector2(width, offset + bottomOffset);
         }
     }
 }
