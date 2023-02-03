@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 
 namespace Undebugger.Model.Commands.Builtin
 {
@@ -36,6 +37,42 @@ namespace Undebugger.Model.Commands.Builtin
                 else
                 {
                     field.SetValue(obj, value);
+                }
+            };
+
+            return new ToggleCommandModel(name, new ValueRef<bool>(getter, setter));
+        }
+
+        public static ToggleCommandModel Create(string name, Type type, string propertyName)
+        {
+            PropertyInfo property = null;
+            FieldInfo field = null;
+
+            property = type.GetProperty(propertyName, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+
+            if (property == null)
+            {
+                field = type.GetField(propertyName, BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic);
+            }
+
+            ValueReferenceGetter<bool> getter = () =>
+            {
+                if (property != null)
+                {
+                    return (bool)property.GetValue(null);
+                }
+
+                return (bool)field.GetValue(null);
+            };
+            ValueReferenceSetter<bool> setter = (value) =>
+            {
+                if (property != null)
+                {
+                    property.SetValue(null, value);
+                }
+                else
+                {
+                    field.SetValue(null, value);
                 }
             };
 
