@@ -78,7 +78,7 @@ namespace Undebugger.UI.Menu
                 groupButtons[i].SetSelected(i == group);
             }
 
-            LayoutUtility.SetLayoutDirty(groupContainer, LayoutDirtyFlag.All);
+            LayoutUtility.SetLayoutDirty(groupContainer, LayoutDirtyFlag.All | LayoutDirtyFlag.DoubleLayoutUpdate);
         }
 
         private void InitializeGroupButtons()

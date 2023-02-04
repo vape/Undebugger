@@ -11,7 +11,8 @@ namespace Undebugger.UI.Layout
         None = 0,
         Layout = 1,
         Hierarchy = 2,
-        All = uint.MaxValue
+        DoubleLayoutUpdate = 4,
+        All = Layout | Hierarchy
     }
 
     internal class LayoutMaster : MonoBehaviour
@@ -54,7 +55,14 @@ namespace Undebugger.UI.Layout
                     DoLayout();
                 }
 
-                dirtyFlag = LayoutDirtyFlag.None;
+                if ((dirtyFlag | LayoutDirtyFlag.DoubleLayoutUpdate) != 0)
+                {
+                    dirtyFlag &= ~(LayoutDirtyFlag.DoubleLayoutUpdate | LayoutDirtyFlag.Hierarchy);
+                }
+                else
+                {
+                    dirtyFlag = LayoutDirtyFlag.None;
+                }
             }
         }
 
