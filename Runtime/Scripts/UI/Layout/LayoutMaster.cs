@@ -55,7 +55,7 @@ namespace Undebugger.UI.Layout
                     DoLayout();
                 }
 
-                if ((dirtyFlag | LayoutDirtyFlag.DoubleLayoutUpdate) != 0)
+                if ((dirtyFlag & LayoutDirtyFlag.DoubleLayoutUpdate) != 0)
                 {
                     dirtyFlag &= ~(LayoutDirtyFlag.DoubleLayoutUpdate | LayoutDirtyFlag.Hierarchy);
                 }
