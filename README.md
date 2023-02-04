@@ -48,7 +48,7 @@ This repository is itself a unity package so the easiest way to install it is to
 
 ## Usage
 
-By default, undebugger is included in every debug/development build. You can include it in release build by adding `UNDEBUGGER` to compilation symbols list. Also, you can exclude it from debug build with 'UNDEBUGGER_DISABLE'.
+By default, undebugger is included in every debug/development build. You can include it in release build by adding `UNDEBUGGER` to compilation symbols list. Also, you can exclude it from debug build with `UNDEBUGGER_DISABLE`.
 
 ### Extending menu
 
