@@ -3,6 +3,6 @@
 namespace Undebugger
 {
     [AttributeUsage(AttributeTargets.Property)]
-    public class DebugToggleAttribute : Attribute
+    public class UndebuggerToggleAttribute : Attribute
     { }
 }

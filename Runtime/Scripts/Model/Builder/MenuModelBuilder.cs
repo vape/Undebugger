@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
+using Undebugger.Model.Commands;
 using Undebugger.Model.Commands.Builtin;
 using UnityEngine;
 
@@ -68,7 +69,7 @@ namespace Undebugger.Model.Builder
                     AddStaticTypesOptions(model);
                 }
             }
-            
+
             return model;
         }
 
@@ -93,7 +94,7 @@ namespace Undebugger.Model.Builder
                 var type = behaviour.GetType();
                 if (!typeCache.TryGetValue(type, out var data))
                 {
-                    data = TypeDataBuilder.CreateForType(type, isStatic: false);
+                    data = TypeDataBuilder.CreateForType(type);
                     typeCache.Add(type, data);
                 }
 
@@ -108,36 +109,66 @@ namespace Undebugger.Model.Builder
 
         private static void AddTypeOptions(MenuModel model, TypeData type, object instance)
         {
-            var page =
-                type.PageOverride.Valid ?
-                model.Commands.FindOrCreatePage(type.PageOverride.Name, type.PageOverride.Priority) :
-                model.Commands.GetGlobalPage();
+            PageModel page = null;
+            SegmentModel segment = null;
 
-            var segment = page.FindOrCreateSegment(type.Name, priority: 0);
-
-            if (type.ActionMethods?.Count > 0)
+            void EnsureSegment()
             {
-                foreach (var action in type.ActionMethods)
+                if (page == null)
                 {
-                    segment.Commands.Add(CreateAction(action, instance));
+                    page = model.Commands.GetGlobalPage();
+                }
+
+                if (segment == null)
+                {
+                    var name = type.NameAttribute?.Name ?? type.Type.Name;
+                    var priority = type.PriorityAttribute?.Priority ?? 0;
+
+                    segment = page.FindOrCreateSegment(name, priority);
                 }
             }
 
-            if (type.ToggleProperties?.Count > 0)
+            if (type.Methods?.Count > 0)
             {
-                foreach (var toggle in type.ToggleProperties)
+                var handlerParam = new object[1] { model };
+
+                foreach (var method in type.Methods)
                 {
-                    segment.Commands.Add(CreateToggle(toggle, instance));
+                    switch (method.Type)
+                    {
+                        case MethodType.Action:
+                            EnsureSegment();
+                            segment.Commands.Add(CreateAction(method, instance));
+                            break;
+
+                        case MethodType.Handler:
+                            method.Info?.Invoke(instance, handlerParam);
+                            break;
+                    }
                 }
             }
 
-            if (type.HandlerMethods?.Count > 0)
+            if (type.Properties?.Count > 0)
             {
-                var param = new object[1] { model };
-
-                foreach (var handler in type.HandlerMethods)
+                foreach (var property in type.Properties)
                 {
-                    handler.Invoke(instance, param);
+                    switch (property.Type)
+                    {
+                        case PropertyType.Toggle:
+                            EnsureSegment();
+                            segment.Commands.Add(CreateToggle(property, type.Type, instance));
+                            break;
+
+                        case PropertyType.Dropdown:
+                            EnsureSegment();
+                            segment.Commands.Add(CreateDropdown(property, instance));
+                            break;
+
+                        case PropertyType.Carousel:
+                            EnsureSegment();
+                            segment.Commands.Add(CreateCarousel(property, instance));
+                            break;
+                    }
                 }
             }
         }
@@ -180,7 +211,7 @@ namespace Undebugger.Model.Builder
                         continue;
                     }
 
-                    var typeInfo = TypeDataBuilder.CreateForType(type, isStatic: true);
+                    var typeInfo = TypeDataBuilder.CreateForType(type);
                     if (typeInfo.IsDebugTarget)
                     {
                         data.Add(typeInfo);
@@ -191,15 +222,41 @@ namespace Undebugger.Model.Builder
             return data;
         }
 
-        private static ToggleCommandModel CreateToggle(PropertyInfo property, object instance)
+        private static ToggleCommandModel CreateToggle(PropertyData property, Type type, object instance)
         {
-            var valueRef = new ValueRef<bool>(() => (bool)property.GetValue(instance), (value) => property.SetValue(instance, value));
-            return new ToggleCommandModel(property.Name, valueRef);
+            if (instance == null)
+            {
+                return ToggleCommandModel.Create(property.NameAttribute?.Name ?? property.Info.Name, type, property.Info.Name);
+            }
+            else
+            {
+                return ToggleCommandModel.Create(property.NameAttribute?.Name ?? property.Info.Name, instance, property.Info.Name);
+            }
         }
 
-        private static ActionCommandModel CreateAction(MethodInfo method, object instance)
+        private static ActionCommandModel CreateAction(MethodData method, object instance)
         {
-            return new ActionCommandModel(method.Name, () => { method.Invoke(instance, null); });
+            return new ActionCommandModel(method.NameAttribute?.Name ?? method.Info.Name, () => { method.Info.Invoke(instance, null); });
+        }
+
+        private static DropdownCommandModel CreateDropdown(PropertyData property, object instance)
+        {
+            var current = property.Info.GetValue(instance);
+
+            return DropdownCommandModel.Create(property.NameAttribute?.Name ?? property.Info.Name, property.Values, current, (newValue) =>
+            {
+                property.Info.SetValue(instance, newValue);
+            });
+        }
+
+        private static CarouselCommandModel CreateCarousel(PropertyData property, object instance)
+        {
+            var current = property.Info.GetValue(instance);
+
+            return CarouselCommandModel.Create(property.NameAttribute?.Name ?? property.Info.Name, property.Values, current, (newValue) =>
+            {
+                property.Info.SetValue(instance, newValue);
+            });
         }
     }
 }

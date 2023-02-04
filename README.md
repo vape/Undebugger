@@ -55,25 +55,27 @@ By default, undebugger is included in every debug/development build. You can inc
 Every time menu is opened, it builds a model which consists of every modifiable property of the menu. For now, it's two: Commands and Statuses. You can hook your code into model building process in a few ways:
 
 1. Any components present on the scene derived from `MonoBehaviour` and implementing `IDebugMenuHandler` will have `OnBuildingModel` method called every time menu is opened. From here, you can modify the menu model as much as you want.
-2. All *static* classes as well as all components present on scene derived from 'MonoBehaviour' and having `DebugTarget` attribute will be also processed:
-    1. Properties or fields with `DebugToggle` attribute will be added as toggle commands
-    2. Methods with `DebugAction` attribute will be added as action commands
-    3. Methods with `DebugMenuHandler` attribute will be called the same way as `OnBuildingModel` is.
+2. All *static* classes as well as all components present on scene derived from `MonoBehaviour` and having `UndebuggerTarget` attribute will be also processed:
+    * Properties with `UndebuggerToggle` attribute will be added as toggle commands
+    * Properties with `UndebuggerDropdown` attribute will be added as dropdown commands
+    * Properties with `UndebuggerCarousel` attribute will be added as carousel commands
+    * Methods with `UndebuggerAction` attribute will be added as action commands
+    * Methods with `UndebuggerMenuHandler` attribute will be called the same way as `OnBuildingModel` is.
 
 The commands tab consists of pages, page consists of segments, segment consists of commands. Here is an example of how to add commands:
 
 ```C#
-[DebugTarget("Graphics", 1000)]
+[UndebuggerTarget]
 public static class GraphicsSettings
 {
     // attribute syntax
 
-    [DebugToggle]
+    [UndebuggerToggle]
     [Preserve]
     public static bool ShadowsEnabled
     { get; set; }
 
-    [DebugMenuHandler]
+    [UndebuggerMenuHandler]
     [Preserve]
     private static void PopulateDebugMenu(MenuModel model)
     {

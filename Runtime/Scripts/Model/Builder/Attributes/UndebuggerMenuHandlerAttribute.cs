@@ -3,6 +3,6 @@
 namespace Undebugger
 {
     [AttributeUsage(AttributeTargets.Method)]
-    public class DebugMenuHandlerAttribute : Attribute
+    public class UndebuggerMenuHandlerAttribute : Attribute
     { }
 }
