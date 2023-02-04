@@ -12,7 +12,7 @@
                 MenuTriggerAction.Close :
                 MenuTriggerAction.None;
 #else
-            return isOpen && Input.GetKeyUp(KeyCode.Escape) ? MenuTriggerAction.Close : MenuTriggerAction.None;
+            return isOpen && UnityEngine.Input.GetKeyUp(UnityEngine.KeyCode.Escape) ? MenuTriggerAction.Close : MenuTriggerAction.None;
 #endif
         }
 
@@ -26,7 +26,7 @@
                     MenuTriggerAction.Open :
                 MenuTriggerAction.None;
 #else
-            return Input.GetKeyUp(KeyCode.F1) ? (isOpen ? MenuTriggerAction.Close : MenuTriggerAction.Open) : MenuTriggerAction.None;
+            return UnityEngine.Input.GetKeyUp(UnityEngine.KeyCode.F1) ? (isOpen ? MenuTriggerAction.Close : MenuTriggerAction.Open) : MenuTriggerAction.None;
 #endif
         }
 
@@ -48,7 +48,7 @@
                 }
             }
 #else
-            touchesCount = Input.touchCount;
+            touchesCount = UnityEngine.Input.touchCount;
 #endif
 
             var touchesCountChanged = lastTouchesCount != touchesCount;

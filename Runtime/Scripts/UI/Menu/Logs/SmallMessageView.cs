@@ -26,10 +26,6 @@ namespace Undebugger.UI.Menu.Logs
         private Text messageText;
         [SerializeField]
         private Color[] backColors;
-        [SerializeField]
-        private Color[] warningColor;
-        [SerializeField]
-        private Color[] errorColors;
 
         private int messageId;
 

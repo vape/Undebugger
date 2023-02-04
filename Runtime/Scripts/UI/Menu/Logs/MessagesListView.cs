@@ -41,7 +41,12 @@ namespace Undebugger.UI.Menu.Logs
         private void Awake()
         {
             views = new Dictionary<int, SmallMessageView>(capacity: InitialCapacity);
+
+#if UNITY_2021_1_OR_NEWER
             purgatory = new HashSet<int>(capacity: InitialCapacity);
+#else
+            purgatory = new HashSet<int>();
+#endif
         }
 
         private void OnEnable()
