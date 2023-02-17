@@ -49,6 +49,11 @@ namespace Undebugger.Scripts.Services.UI
         private SafeArea safeArea;
         private List<Widget> activeWidgets;
 
+        private void Start()
+        {
+            SetWidgetEnabled<ErrorNotificationWidget>(true);
+        }
+
         public bool GetWidgetEnabled<T>()
             where T: Widget
         {

@@ -49,7 +49,12 @@ namespace Undebugger.UI.Menu
             this.model = model;
 
             InitializeGroupButtons();
-            SetActiveGroup(0);
+            SetActiveGroup(model.StartGroup);
+        }
+
+        public void SetActiveGroup(BuiltinGroup group)
+        {
+            SetActiveGroup(Math.Clamp((int)group, 0, groupTemplates.Length - 1));
         }
 
         public void SetActiveGroup(int group)

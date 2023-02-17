@@ -5,6 +5,7 @@ namespace Undebugger.Model
 {
     public class MenuModel
     {
+        public BuiltinGroup StartGroup = BuiltinGroup.Commands;
         public CommandsGroupModel Commands = new CommandsGroupModel();
         public StatusGroupModel Status = new StatusGroupModel();
 

@@ -485,7 +485,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51aaeff9250195b4e929f2093b980cd0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  groupButtonTemplate: {fileID: 2823488375340526321, guid: f9ea6d68e1c5efe48b3da3c51782c758, type: 3}
+  groupButtonTemplate: {fileID: 2823488375340526321, guid: f9ea6d68e1c5efe48b3da3c51782c758,
+    type: 3}
   groupButtonContainer: {fileID: 1848137607337411470}
   groupContainer: {fileID: 5084036466930080757}
   groupButtonsWrapper: {fileID: 8075121212821096923}
@@ -497,6 +498,7 @@ MonoBehaviour:
   pool: {fileID: 6988875630988493044}
   widgets:
   - {fileID: 2133623272275128834, guid: b66aa0e888aad9046b3b4b79a0252b8d, type: 3}
+  - {fileID: 710171181656503848, guid: 4a63ef0060a730f4e87cdd0f44aeeb46, type: 3}
 --- !u!1 &3829374466553632867
 GameObject:
   m_ObjectHideFlags: 0
