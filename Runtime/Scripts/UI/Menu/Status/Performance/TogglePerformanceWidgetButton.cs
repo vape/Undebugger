@@ -1,4 +1,4 @@
-﻿using Undebugger.Scripts.Services.UI;
+﻿using Undebugger.Services.UI;
 using Undebugger.UI.Widgets.Performance;
 using UnityEngine;
 using UnityEngine.UI;

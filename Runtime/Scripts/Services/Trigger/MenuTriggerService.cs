@@ -2,11 +2,11 @@
 #define UNDEBUGGER_ENABLED
 #endif
 
-using Undebugger.Scripts.Services.UI;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using Undebugger.Model.Builder;
+using Undebugger.Services.UI;
 using UnityEngine;
 
 namespace Undebugger.Services.Trigger

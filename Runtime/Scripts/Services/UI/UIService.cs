@@ -12,7 +12,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace Undebugger.Scripts.Services.UI
+namespace Undebugger.Services.UI
 {
 #if UNDEBUGGER_ENABLED
 
@@ -43,6 +43,22 @@ namespace Undebugger.Scripts.Services.UI
         public bool IsMenuOpen
         { get { return view != null && view.gameObject.activeSelf; } }
 
+        public bool ErrorNotificationWidgetEnabled
+        {
+            get
+            {
+                return Preferences.ErrorNotificationEnabled;
+            }
+            set
+            {
+                if (value != Preferences.ErrorNotificationEnabled)
+                {
+                    Preferences.ErrorNotificationEnabled = value;
+                    SetWidgetEnabled<ErrorNotificationWidget>(value);
+                }
+            }
+        }
+
         private MenuView template;
         private MenuView view;
         private Canvas canvas;
@@ -51,11 +67,11 @@ namespace Undebugger.Scripts.Services.UI
 
         private void Start()
         {
-            SetWidgetEnabled<ErrorNotificationWidget>(true);
+            SetWidgetEnabled<ErrorNotificationWidget>(ErrorNotificationWidgetEnabled);
         }
 
         public bool GetWidgetEnabled<T>()
-            where T: Widget
+            where T : Widget
         {
             if (activeWidgets == null)
             {
@@ -74,7 +90,7 @@ namespace Undebugger.Scripts.Services.UI
         }
 
         public void SetWidgetEnabled<T>(bool value)
-            where T: Widget
+            where T : Widget
         {
             if (activeWidgets == null)
             {
@@ -210,6 +226,9 @@ namespace Undebugger.Scripts.Services.UI
         public const int CanvasOrder = 32000;
 
         public static readonly UIService Instance = new UIService();
+
+        public bool ErrorNotificationWidgetEnabled
+        { get; set; }
 
         public bool GetWidgetEnabled<T>()
             where T : Widget
