@@ -54,7 +54,7 @@ namespace Undebugger.UI.Menu
 
         public void SetActiveGroup(BuiltinGroup group)
         {
-            SetActiveGroup(Math.Clamp((int)group, 0, groupTemplates.Length - 1));
+            SetActiveGroup(Mathf.Clamp((int)group, 0, groupTemplates.Length - 1));
         }
 
         public void SetActiveGroup(int group)

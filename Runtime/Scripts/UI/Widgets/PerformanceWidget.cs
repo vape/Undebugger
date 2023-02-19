@@ -1,37 +1,59 @@
-﻿using Undebugger.UI.Elements;
+﻿using System;
+using Undebugger.Services.Performance;
+using Undebugger.UI.Elements;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Undebugger.UI.Widgets.Performance
 {
     internal class PerformanceWidget : Widget
     {
         [SerializeField]
-        private FrametimeGraph graph;
-        [SerializeField]
-        private Text graphMidHint;
-        [SerializeField]
-        private Text graphTopHint;
+        private FastText fpsText;
 
         private int previousFps;
 
+        private void OnEnable()
+        {
+            fpsText.SetTextGetter(GetFramerateString);
+        }
+
+        private void OnDisable()
+        {
+            fpsText.SetTextGetter(null);
+        }
+
         private void Update()
         {
-            var fps = (int)(1f / graph.GetFrametimeAtStep(1));
+            var fps = GetCurrentFramerate();
             if (fps != previousFps)
             {
-                UpdateGraphHints();
+                fpsText.UpdateText();
                 previousFps = fps;
             }
         }
 
-        private void UpdateGraphHints()
+        private char[] GetFramerateString(out int start, out int length)
         {
-            var mid = graph.GetFrametimeAtStep(1);
-            var top = graph.GetFrametimeAtStep(2);
+            var buffer = FormatUtility.TempBuffer;
 
-            graphMidHint.text = $"{1f / mid:0}({(mid) * 1000:0}ms)";
-            graphTopHint.text = $"{1f / top:0}({(top) * 1000:0}ms)";
+            start = 0;
+            length = 0;
+
+            FormatUtility.WriteInt32(GetCurrentFramerate(), buffer, ref length);
+
+            return buffer;
+        }
+
+        private int GetCurrentFramerate()
+        {
+#if UNITY_EDITOR
+            if (PerformanceMonitorService.Instance == null)
+            {
+                return 1234;
+            }
+#endif
+
+            return Mathf.RoundToInt(1f / PerformanceMonitorService.Instance.SmoothedFrameTime);
         }
     }
 }

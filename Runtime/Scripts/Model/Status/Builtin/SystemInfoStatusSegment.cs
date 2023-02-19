@@ -36,10 +36,10 @@ namespace Undebugger.Model.Status.Builtin
 $@"<color={LabelColor}>OS:</color> ({SystemInfo.operatingSystemFamily}) {SystemInfo.operatingSystem}
 <color={LabelColor}>CPU Type:</color> {SystemInfo.processorType}
 <color={LabelColor}>CPU Count:</color> {SystemInfo.processorCount}
-<color={LabelColor}>System Memory:</color> {UIUtility.ConvertMegabyteSizeToReadableString(SystemInfo.systemMemorySize)}
+<color={LabelColor}>System Memory:</color> {FormatUtility.BytesToReadableString((long)SystemInfo.systemMemorySize * 1024 * 1024)}
 <color={LabelColor}>GPU Vendor:</color> {SystemInfo.graphicsDeviceVendor} (0x{SystemInfo.graphicsDeviceVendorID:X})
 <color={LabelColor}>GPU:</color> {SystemInfo.graphicsDeviceName}
-<color={LabelColor}>Graphics Memory:</color> {UIUtility.ConvertMegabyteSizeToReadableString(SystemInfo.graphicsMemorySize)}
+<color={LabelColor}>Graphics Memory:</color> {FormatUtility.BytesToReadableString((long)SystemInfo.graphicsMemorySize * 1024 * 1024)}
 <color={LabelColor}>Graphics API:</color> {SystemInfo.graphicsDeviceVersion}
 <color={LabelColor}>Display Resolution:</color> {Screen.currentResolution}
 <color={LabelColor}>DPI:</color> {Screen.dpi}";

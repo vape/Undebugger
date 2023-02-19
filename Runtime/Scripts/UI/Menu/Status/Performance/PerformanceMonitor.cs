@@ -1,63 +1,50 @@
-﻿using Undebugger.Services.Performance;
+﻿using System;
+using Undebugger.Services.Performance;
 using Undebugger.UI.Elements;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Status.Performance
 {
     public class PerformanceMonitor : MonoBehaviour
     {
-        public const float QuickStatsUpdateFrequency = 1f;
+        [SerializeField]
+        private FastText meanFpsText;
 
-        [SerializeField]
-        private FrametimeGraph graph;
-        [SerializeField]
-        private Text graphMidHint;
-        [SerializeField]
-        private Text graphTopHint;
-        [SerializeField]
-        private Text averageFps;
+        private int lastMeanFps;
 
-        private float nextStatsUpdate;
-        private int previousFps;
-
-        private void Awake()
+        private void OnEnable()
         {
-            averageFps.text = "...";
+            meanFpsText.SetTextGetter(GetMeanFpsString);
+        }
+
+        private void OnDisable()
+        {
+            meanFpsText.SetTextGetter(null);
         }
 
         private void Update()
         {
-            var fps = (int)(1f / graph.GetFrametimeAtStep(1));
-            if (fps != previousFps)
+            var meanFps = (int)(1f / PerformanceMonitorService.Instance.MeanFrameTime);
+            if (meanFps != lastMeanFps)
             {
-                UpdateGraphHints();
-                previousFps = fps;
-            }
-
-            if (Time.realtimeSinceStartup > nextStatsUpdate)
-            {
-                var monitor = PerformanceMonitorService.Instance;
-                if (monitor != null)
-                {
-                    UpdateQuickStats(monitor);
-                    nextStatsUpdate = Time.realtimeSinceStartup + QuickStatsUpdateFrequency;
-                }
+                meanFpsText.UpdateText();
+                lastMeanFps = meanFps;
             }
         }
 
-        private void UpdateQuickStats(PerformanceMonitorService monitor)
+        private char[] GetMeanFpsString(out int start, out int length)
         {
-            averageFps.text = $"Average FPS: {1f / monitor.MeanFrameTime:0} ({monitor.MeanFrameTime * 1000:0.0}ms)";
-        }
+            const string prefix = "Average FPS: ";
 
-        private void UpdateGraphHints()
-        {
-            var mid = graph.GetFrametimeAtStep(1);
-            var top = graph.GetFrametimeAtStep(2);
+            var buffer = FormatUtility.TempBuffer;
 
-            graphMidHint.text = $"FPS:{1f / mid:0}({(mid) * 1000:0.0}ms)";
-            graphTopHint.text = $"FPS:{1f / top:0}({(top) * 1000:0.0}ms)";
+            start = 0;
+            length = 0;
+
+            FormatUtility.Copy(prefix, buffer, ref length);
+            FormatUtility.FrametimeToReadableString(PerformanceMonitorService.Instance.MeanFrameTime, false, buffer, ref length);
+
+            return buffer;
         }
     }
 }

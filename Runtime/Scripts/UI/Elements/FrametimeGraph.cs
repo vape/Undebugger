@@ -186,7 +186,7 @@ namespace Undebugger.UI.Elements
             for (int i = 0; i < count; ++i)
             {
                 ref var frame = ref GetFrame(offset + i);
-
+                
                 var dtlog2 = Mathf.Log(frame.Time, 2);
                 var factor = Mathf.Clamp01((dtlog2 - dtminlog2) / (dtmaxlog2 - dtminlog2));
                 var color = TimeToColor(frame.Time);

@@ -1,43 +1,72 @@
 ﻿using Undebugger.UI.Elements;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Status.Performance
 {
     internal class MemoryUsageMonitor : MonoBehaviour
     {
-        public const float UpdateFrequency = 0.5f;
+        const string Separator = " / ";
 
         [SerializeField]
-        private Text totalInfo;
+        private FastText totalInfo;
         [SerializeField]
-        private Text monoInfo;
+        private FastText monoInfo;
         [SerializeField]
         private HorizontalBar totalUsageBar;
         [SerializeField]
         private HorizontalBar monoUsageBar;
 
-        private float nextUpdate;
+        private void OnEnable()
+        {
+            totalInfo.SetTextGetter(GetTotalMemoryUsageString);
+            monoInfo.SetTextGetter(GetMonoMemoryUsageString);
+        }
+
+        private void OnDisable()
+        {
+            totalInfo.SetTextGetter(null);
+            monoInfo.SetTextGetter(null);
+        }
 
         private void Update()
         {
-            if (Time.realtimeSinceStartup > nextUpdate)
-            {
-                Refresh();
-                nextUpdate = Time.realtimeSinceStartup + UpdateFrequency;
-            }
-        }
-
-        private void Refresh()
-        {
             var monitor = Services.Performance.PerformanceMonitorService.Instance;
 
-            totalInfo.text = 
-                $"{UIUtility.ConvertBytesSizeToReadableString(monitor.AllocatedMemory)} / {UIUtility.ConvertBytesSizeToReadableString(monitor.ReservedMemory)}";
-            monoInfo.text = 
-                $"{UIUtility.ConvertBytesSizeToReadableString(monitor.MonoUsageMemory)} / {UIUtility.ConvertBytesSizeToReadableString(monitor.MonoHeapSize)}";
+            totalInfo.UpdateText();
+            monoInfo.UpdateText();
+
             totalUsageBar.Value = monitor.AllocatedMemory / (float)monitor.ReservedMemory;
             monoUsageBar.Value = monitor.MonoUsageMemory / (float)monitor.MonoHeapSize;
+        }
+
+        private char[] GetTotalMemoryUsageString(out int start, out int length)
+        {
+            var monitor = Services.Performance.PerformanceMonitorService.Instance;
+            var buffer = FormatUtility.TempBuffer;
+
+            start = 0;
+            length = 0;
+
+            FormatUtility.BytesToReadableString(monitor.AllocatedMemory, buffer, ref length);
+            FormatUtility.Copy(Separator, buffer, ref length);
+            FormatUtility.BytesToReadableString(monitor.ReservedMemory, buffer, ref length);
+
+            return buffer;
+        }
+
+        private char[] GetMonoMemoryUsageString(out int start, out int length)
+        {
+            var monitor = Services.Performance.PerformanceMonitorService.Instance;
+            var buffer = FormatUtility.TempBuffer;
+
+            start = 0;
+            length = 0;
+
+            FormatUtility.BytesToReadableString(monitor.MonoUsageMemory, buffer, ref length);
+            FormatUtility.Copy(Separator, buffer, ref length);
+            FormatUtility.BytesToReadableString(monitor.MonoHeapSize, buffer, ref length);
+
+            return buffer;
         }
     }
 }
