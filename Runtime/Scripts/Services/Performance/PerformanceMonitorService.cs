@@ -22,7 +22,7 @@ namespace Undebugger.Services.Performance
     internal class PerformanceMonitorService : MonoBehaviour
     {
         public const int FrameBufferSize = 210;
-        public const int MeanOverNFrames = FrameBufferSize / 2;
+        public const int MeanOverNFrames = 60;
         public const int SmoothOverNFrames = 20;
 
         public static PerformanceMonitorService Instance
