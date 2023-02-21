@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Undebugger.UI.Menu.Status.Performance
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     internal class MemoryUsageMonitor : MonoBehaviour
     {
         const string Separator = " / ";

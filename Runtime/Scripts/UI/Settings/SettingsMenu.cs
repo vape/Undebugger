@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Undebugger.UI.Settings
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     internal class SettingsMenu : MonoBehaviour
     {
         [SerializeField]

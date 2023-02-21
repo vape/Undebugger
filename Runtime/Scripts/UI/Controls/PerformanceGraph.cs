@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace Undebugger.UI.Controls
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     internal class PerformanceGraph : MonoBehaviour
     {
         [SerializeField]

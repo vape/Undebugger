@@ -6,7 +6,10 @@ using UnityEngine;
 
 namespace Undebugger.UI.Menu.Logs
 {
-    public class LogGroupView : GroupView
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
+    internal class LogGroupView : GroupView
     {
         public override string GroupName => "Log";
 

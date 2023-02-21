@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Logs
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     internal class MaskCounterView : MonoBehaviour
     {
         [SerializeField]

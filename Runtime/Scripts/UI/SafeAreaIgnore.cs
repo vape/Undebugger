@@ -1,9 +1,12 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Undebugger.UI.Layout
+namespace Undebugger.UI
 {
-    public class SafeAreaIgnore : MonoBehaviour
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
+    internal class SafeAreaIgnore : MonoBehaviour
     {
         [Flags]
         public enum Side : int

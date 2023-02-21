@@ -5,6 +5,9 @@ using UnityEngine;
 
 namespace Undebugger.UI.Widgets.Performance
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     internal class PerformanceWidget : Widget
     {
         [SerializeField]

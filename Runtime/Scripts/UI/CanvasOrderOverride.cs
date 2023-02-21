@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Undebugger.UI
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     internal class CanvasOrderOverride : MonoBehaviour
     {
         [SerializeField]

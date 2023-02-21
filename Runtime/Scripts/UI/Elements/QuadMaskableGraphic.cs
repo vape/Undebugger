@@ -3,7 +3,10 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Elements
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     [RequireComponent(typeof(CanvasRenderer))]
-    public class QuadMaskableGraphic : MaskableGraphic
+    internal class QuadMaskableGraphic : MaskableGraphic
     { }
 }

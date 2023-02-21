@@ -6,8 +6,11 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Logs
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     [RequireComponent(typeof(RectTransform))]
-    internal class MessagesListView : LayoutRoot, IPoolHandler
+    internal class MessagesListView : ULayoutRoot, IPoolHandler
     {
         private const int InitialCapacity = 48;
 
@@ -230,9 +233,9 @@ namespace Undebugger.UI.Menu.Logs
             }
         }
 
-        public override void DoLayout()
+        protected override void OnLayout()
         {
-            base.DoLayout();
+            base.OnLayout();
 
             for (int i = visibleMinIndex; i < visibleMaxIndex; ++i)
             {

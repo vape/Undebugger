@@ -16,6 +16,7 @@ namespace Undebugger.Services.UI
 {
 #if UNDEBUGGER_ENABLED
 
+    [AddComponentMenu("")]
     internal class UIService : MonoBehaviour
     {
         public const int CanvasOrder = 32000;

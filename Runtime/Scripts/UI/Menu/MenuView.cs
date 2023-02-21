@@ -6,7 +6,10 @@ using UnityEngine;
 
 namespace Undebugger.UI.Menu
 {
-    public class MenuView : MonoBehaviour
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
+    internal class MenuView : MonoBehaviour
     {
         [SerializeField]
         private GroupButton groupButtonTemplate;
@@ -83,7 +86,7 @@ namespace Undebugger.UI.Menu
                 groupButtons[i].SetSelected(i == group);
             }
 
-            LayoutUtility.SetLayoutDirty(groupContainer, LayoutDirtyFlag.All | LayoutDirtyFlag.DoubleLayoutUpdate);
+            ULayoutHelper.SetDirty(transform, ULayoutDirtyFlag.All);
         }
 
         private void InitializeGroupButtons()
@@ -112,7 +115,7 @@ namespace Undebugger.UI.Menu
                 groupButtons[i].Clicked += GroupButtonClickedHandler;
             }
 
-            LayoutUtility.SetLayoutDirty(groupButtonContainer, LayoutDirtyFlag.All);
+            ULayoutHelper.SetDirty(transform, ULayoutDirtyFlag.All);
         }
 
         private void GroupButtonClickedHandler(int index)

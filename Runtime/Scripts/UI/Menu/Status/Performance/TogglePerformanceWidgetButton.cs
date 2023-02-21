@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Status.Performance
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     internal class TogglePerformanceWidgetButton : MonoBehaviour
     {
         [SerializeField]

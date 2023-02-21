@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 
-namespace Undebugger.UI.Layout
+namespace Undebugger.UI
 {
-    public class SafeArea : MonoBehaviour
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
+    internal class SafeArea : MonoBehaviour
     {
         public delegate void DimentionsChangedDelegate(SafeArea safeArea);
 

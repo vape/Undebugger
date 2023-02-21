@@ -5,29 +5,34 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Status
 {
-    public class StatusSegmentView : MonoBehaviour, ILayoutResizeHandler
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
+    internal class StatusSegmentView : MonoBehaviour, IULayoutElement
     {
+        bool IULayoutElement.Ignore => false;
+        float IULayoutElement.MinHeight => minHeight;
+        float IULayoutElement.MinWidth => minWidth;
+
         [SerializeField]
         private Text title;
         [SerializeField]
         private Text text;
         [SerializeField]
-        private LayoutRoot layout;
-        [SerializeField]
-        private LayoutElement layoutElement;
-        [SerializeField]
         private Button foldButton;
         [SerializeField]
         private Button unfoldButton;
+        [SerializeField]
+        private float titleSize = 55;
+        [SerializeField]
+        private float minWidth = 750;
 
         private bool folded;
         private IStatusSegmentDriver driver;
-        private bool resizing;
+        private float minHeight;
 
         private void OnEnable()
         {
-            layout.LayoutChanged += LayoutChangedHandler;
-
             if (driver != null)
             {
                 driver.Changed += DriverChangedHandler;
@@ -36,8 +41,6 @@ namespace Undebugger.UI.Menu.Status
 
         private void OnDisable()
         {
-            layout.LayoutChanged -= LayoutChangedHandler;
-            
             if (driver != null)
             {
                 driver.Changed -= DriverChangedHandler;
@@ -47,11 +50,7 @@ namespace Undebugger.UI.Menu.Status
         private void DriverChangedHandler()
         {
             RefreshText();
-        }
-
-        private void LayoutChangedHandler()
-        {
-            layoutElement.minHeight = GetComponent<RectTransform>().rect.size.y;
+            UpdateSize();
         }
 
         public void Init(IStatusSegmentDriver driver)
@@ -66,10 +65,6 @@ namespace Undebugger.UI.Menu.Status
             this.driver.Changed += DriverChangedHandler;
 
             RefreshText();
-
-            var dimensionsTracker = text.gameObject.AddComponent<RectTransformDimensionsTracker>();
-            dimensionsTracker.DimensionsChanged += TextDimensionsChanged;
-
             SetFoldout(Preferences.GetStatusSegmentFoldout(driver.PersistentId, defaultValue: false));
         }
 
@@ -77,17 +72,7 @@ namespace Undebugger.UI.Menu.Status
         {
             folded = value;
 
-            if (folded)
-            {
-                text.gameObject.SetActive(false);
-                SetLayoutHierarchyDirty();
-            }
-            else
-            {
-                text.gameObject.SetActive(true);
-                SetLayoutHierarchyDirty();
-            }
-
+            text.gameObject.SetActive(!folded);
             foldButton.gameObject.SetActive(!folded);
             unfoldButton.gameObject.SetActive(folded);
 
@@ -95,48 +80,22 @@ namespace Undebugger.UI.Menu.Status
             {
                 Preferences.SetStatusSegmentFoldout(driver.PersistentId, value);
             }
+
+            UpdateSize();
+        }
+
+        private void UpdateSize()
+        {
+            var textHeight = folded ? 0 : text.preferredHeight;
+            text.rectTransform.sizeDelta = new Vector2(text.rectTransform.sizeDelta.x, textHeight);
+            minHeight = titleSize + textHeight;
+            ULayoutHelper.SetDirty(transform, ULayoutDirtyFlag.Layout);
         }
 
         private void RefreshText()
         {
             title.text = driver.Title;
             text.text = driver.Text;
-        }
-
-        private void TextDimensionsChanged()
-        {
-            if (!resizing)
-            {
-                SetLayoutDirty();
-            }
-        }
-
-        private void OnRectTransformDimensionsChange()
-        {
-            if (!resizing)
-            {
-                SetLayoutDirty();
-            }
-        }
-
-        private void SetLayoutDirty()
-        {
-            Layout.LayoutUtility.SetLayoutDirty(transform, LayoutDirtyFlag.Layout);
-        }
-
-        private void SetLayoutHierarchyDirty()
-        {
-            Layout.LayoutUtility.SetLayoutDirty(transform, LayoutDirtyFlag.Layout | LayoutDirtyFlag.Hierarchy);
-        }
-
-        public void OnBeforeSizeChanged()
-        {
-            resizing = true;
-        }
-
-        public void OnAfterSizeChanged()
-        {
-            resizing = false;
         }
     }
 }

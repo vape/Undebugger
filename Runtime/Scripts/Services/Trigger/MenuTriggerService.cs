@@ -23,6 +23,7 @@ namespace Undebugger.Services.Trigger
 
 #if UNDEBUGGER_ENABLED
 
+    [AddComponentMenu("")]
     public class MenuTriggerService : MonoBehaviour
     {
         public static MenuTriggerService Instance

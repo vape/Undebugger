@@ -4,7 +4,10 @@ using UnityEngine;
 
 namespace Undebugger.UI.Menu.Status
 {
-    public class StatusGroupView : GroupView
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
+    internal class StatusGroupView : GroupView
     {
         public override string GroupName => "Status";
 

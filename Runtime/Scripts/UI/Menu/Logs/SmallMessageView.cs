@@ -5,8 +5,11 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Logs
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     [RequireComponent(typeof(RectTransform))]
-    public class SmallMessageView : MonoBehaviour
+    internal class SmallMessageView : MonoBehaviour
     {
         public delegate void MessageClickedDelegate(int messageId);
 

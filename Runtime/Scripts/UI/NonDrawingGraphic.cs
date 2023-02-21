@@ -3,8 +3,11 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     [RequireComponent(typeof(CanvasRenderer))]
-    public class NonDrawingGraphic : Graphic
+    internal class NonDrawingGraphic : Graphic
     {
         public override void SetMaterialDirty() { return; }
         public override void SetVerticesDirty() { return; }
@@ -24,7 +27,7 @@ namespace Undebugger.UI.Editor
     using UnityEditor.UI;
 
     [CanEditMultipleObjects, CustomEditor(typeof(NonDrawingGraphic), false)]
-    public class NonDrawingGraphicEditor : GraphicEditor
+    internal class NonDrawingGraphicEditor : GraphicEditor
     {
         public override void OnInspectorGUI()
         {

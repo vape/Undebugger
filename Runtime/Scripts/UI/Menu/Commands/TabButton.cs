@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Commands
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     internal class TabButton : MonoBehaviour
     {
         public delegate void ClickedDelegate(PageModel model);

@@ -5,7 +5,10 @@ using UnityEngine;
 
 namespace Undebugger.UI.Menu.Commands
 {
-    public class CommandsGroupView : GroupView
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
+    internal class CommandsGroupView : GroupView
     {
         public override string GroupName => "Commands";
 
@@ -65,7 +68,7 @@ namespace Undebugger.UI.Menu.Commands
                 tabButtons[i].Selected = i == page;
             }
 
-            LayoutUtility.SetLayoutDirty(transform, LayoutDirtyFlag.All);
+            ULayoutHelper.SetDirty(transform, ULayoutDirtyFlag.All);
         }
 
         private void CreateTabButtons()

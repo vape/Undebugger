@@ -5,6 +5,9 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Widgets
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     internal class ErrorNotificationWidget : Widget, IDebugMenuHandler
     {
         [SerializeField]

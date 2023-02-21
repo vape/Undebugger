@@ -4,6 +4,9 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Elements
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     [ExecuteAlways]
     [RequireComponent(typeof(CanvasRenderer))]
     internal class FastText : Graphic

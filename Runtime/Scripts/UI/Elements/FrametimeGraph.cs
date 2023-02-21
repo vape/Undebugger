@@ -1,13 +1,15 @@
-﻿using System;
-using Undebugger.Services.Performance;
+﻿using Undebugger.Services.Performance;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Undebugger.UI.Elements
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     [RequireComponent(typeof(CanvasRenderer))]
     [ExecuteAlways]
-    public class FrametimeGraph : Graphic
+    internal class FrametimeGraph : Graphic
     {
         private static readonly float[] steps = new float[]
         {

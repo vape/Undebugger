@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3272233030544562312}
   - component: {fileID: 3272233030544562313}
-  - component: {fileID: 3272233030544562314}
+  - component: {fileID: 2357919870057034944}
   m_Layer: 5
   m_Name: Segment View
   m_TagString: Untagged
@@ -28,7 +28,6 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3459869252879216538}
   m_Father: {fileID: 0}
@@ -53,8 +52,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 3901962502193509081}
   container: {fileID: 3272233030544562312}
-  layout: {fileID: 3272233030544562314}
---- !u!114 &3272233030544562314
+  layout: {fileID: 0}
+--- !u!114 &2357919870057034944
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -63,7 +62,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 3272233030544562319}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce99b8a9598578545bdb5180177e72b8, type: 3}
+  m_Script: {fileID: 11500000, guid: 102f4e02abf403742988b9524ed9eeae, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   padding:
@@ -74,7 +73,6 @@ MonoBehaviour:
   spacing:
     Horizontal: 5
     Vertical: 5
-  autoSize: 2
 --- !u!1 &6785848444682776259
 GameObject:
   m_ObjectHideFlags: 0
@@ -86,7 +84,7 @@ GameObject:
   - component: {fileID: 3459869252879216538}
   - component: {fileID: 2617625266308783152}
   - component: {fileID: 3901962502193509081}
-  - component: {fileID: 3793863477030067833}
+  - component: {fileID: 4599046539401061999}
   m_Layer: 5
   m_Name: Name
   m_TagString: Untagged
@@ -104,7 +102,6 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3272233030544562312}
   m_RootOrder: 0
@@ -156,7 +153,7 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: Segment Name
---- !u!114 &3793863477030067833
+--- !u!114 &4599046539401061999
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -165,14 +162,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6785848444682776259}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306cc8c2b49d7114eaa3623786fc2126, type: 3}
+  m_Script: {fileID: 11500000, guid: 22e9e58ccf7d26e4783260b62ea5ff93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IgnoreLayout: 1
-  m_MinWidth: -1
-  m_MinHeight: -1
-  m_PreferredWidth: -1
-  m_PreferredHeight: -1
-  m_FlexibleWidth: -1
-  m_FlexibleHeight: -1
-  m_LayoutPriority: 1
+  ignore: 1
+  minWidth: 0
+  minHeight: 0

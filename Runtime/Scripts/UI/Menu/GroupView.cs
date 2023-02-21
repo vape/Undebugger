@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Undebugger.UI.Menu
 {
-    public abstract class GroupView : MonoBehaviour, IPoolable, IPoolHandler
+    internal abstract class GroupView : MonoBehaviour, IPoolable, IPoolHandler
     {
         public abstract string GroupName { get; }
 

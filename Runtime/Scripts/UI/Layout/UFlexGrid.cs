@@ -1,12 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Undebugger.UI.Layout
 {
-    [RequireComponent(typeof(RectTransform))]
-    internal class FlexibleGrid : LayoutRoot
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
+    internal class UFlexGrid : UBasicLayout
     {
         [Serializable]
         public struct RectSpacing
@@ -15,7 +16,7 @@ namespace Undebugger.UI.Layout
             public float Vertical;
         }
 
-        private struct GridElement
+        public struct GridElement
         {
             public RectTransform Rect;
             public float X;
@@ -28,61 +29,27 @@ namespace Undebugger.UI.Layout
         private RectOffset padding;
         [SerializeField]
         private RectSpacing spacing;
-        [SerializeField]
-        private LayoutAxis autoSize;
 
-        private GridElement[] layout;
-        private Vector2 size;
-        private List<RectChild> childrens;
-
-        public override void BuildHierarchyCache()
+        protected override void OnBuildLayout()
         {
-            base.BuildHierarchyCache();
+            base.OnBuildLayout();
 
-            childrens = LayoutUtility.FindChildrens(self);
+            var elements = UListPool<GridElement>.Get(childrens.Count);
+            var size = CreateLayout(elements, childrens, padding, spacing, Self);
+
+            Self.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
+
+            for (int i = 0; i < elements.Count; ++i)
+            {
+                elements[i].Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, elements[i].X, elements[i].W);
+                elements[i].Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, elements[i].Y, elements[i].H);
+            }
+
+            UListPool<GridElement>.Return(elements);
         }
 
-        public override void ResetHierarchyCache()
+        public static Vector2 CreateLayout(List<GridElement> layout, List<RectChild> rects, RectOffset padding, RectSpacing spacing, RectTransform self)
         {
-            base.ResetHierarchyCache();
-
-            childrens = null;
-        }
-
-        public override void DoLayout()
-        {
-            base.DoLayout();
-
-            BuildLayout(childrens, self);
-            OnBeginResize();
-
-            if ((autoSize & LayoutAxis.Vertical) > 0)
-            {
-                self.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, size.y);
-            }
-
-            if ((autoSize & LayoutAxis.Horizontal) > 0)
-            {
-                self.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, size.x);
-            }
-
-            for (int i = 0; i < childrens.Count; ++i)
-            {
-                layout[i].Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Left, layout[i].X, layout[i].W);
-                layout[i].Rect.SetInsetAndSizeFromParentEdge(RectTransform.Edge.Top, layout[i].Y, layout[i].H);
-            }
-
-            OnEndResize();
-            OnLayoutChanged();
-        }
-
-        private void BuildLayout(List<RectChild> rects, RectTransform self)
-        {
-            if (layout == null || rects.Count != layout.Length)
-            {
-                layout = new GridElement[rects.Count];
-            }
-
             var maxWidth = self.rect.width - padding.horizontal;
             var currentRowWidth = 0f;
             var currentRowHeight = 0f;
@@ -95,7 +62,7 @@ namespace Undebugger.UI.Layout
                 // add horizontal spacing here to compensate extra space added to the end of a row
                 var extraWidth = maxWidth - currentRowWidth + spacing.Horizontal;
                 var offset = 0f;
-                
+
                 if (extraWidth <= 0)
                 {
                     return;
@@ -105,9 +72,11 @@ namespace Undebugger.UI.Layout
                 {
                     var extraElementWidth = ((layout[i].W + spacing.Horizontal) / currentRowWidth) * extraWidth;
 
-                    layout[i].H = currentRowHeight;
-                    layout[i].W += extraElementWidth;
-                    layout[i].X += offset;
+                    var gridElement = layout[i];
+                    gridElement.H = currentRowHeight;
+                    gridElement.W += extraElementWidth;
+                    gridElement.X += offset;
+                    layout[i] = gridElement;
 
                     offset += extraElementWidth;
                 }
@@ -122,7 +91,7 @@ namespace Undebugger.UI.Layout
                 currentRowWidth = 0;
                 currentRowHeight = 0;
             }
-            
+
             for (int i = 0; i < rects.Count; i++)
             {
                 if (currentElementsInRow > 0 && currentRowWidth + rects[i].MinWidth > maxWidth)
@@ -145,14 +114,14 @@ namespace Undebugger.UI.Layout
                     width = maxWidth;
                 }
 
-                layout[i] = new GridElement()
+                layout.Add(new GridElement()
                 {
                     Rect = rects[i].Rect,
                     W = width,
                     H = height,
                     X = padding.left + currentRowWidth,
                     Y = currentTopOffset
-                };
+                });
 
                 currentElementsInRow++;
                 currentRowWidth += layout[i].W + spacing.Horizontal;
@@ -160,7 +129,7 @@ namespace Undebugger.UI.Layout
 
             adjustRowDimensions(rects.Count, currentElementsInRow);
 
-            size = new Vector2(maxWidth, currentTopOffset + currentRowHeight + padding.bottom);
+            return new Vector2(maxWidth, currentTopOffset + currentRowHeight + padding.bottom);
         }
     }
 }

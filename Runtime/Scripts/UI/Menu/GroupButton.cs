@@ -3,6 +3,9 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     internal class GroupButton : MonoBehaviour
     {
         public delegate void ClickedDelegate(int index);

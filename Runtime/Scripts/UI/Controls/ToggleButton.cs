@@ -8,6 +8,9 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Controls
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     [RequireComponent(typeof(Button))]
     internal class ToggleButton : MonoBehaviour
     {

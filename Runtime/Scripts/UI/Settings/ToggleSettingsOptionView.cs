@@ -3,6 +3,9 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Settings
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     internal class ToggleSettingsOptionView : SettingsOptionView
     {
         [SerializeField]

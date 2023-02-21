@@ -1,11 +1,13 @@
-﻿using System;
-using Undebugger.Services.Performance;
+﻿using Undebugger.Services.Performance;
 using Undebugger.UI.Elements;
 using UnityEngine;
 
 namespace Undebugger.UI.Menu.Status.Performance
 {
-    public class PerformanceMonitor : MonoBehaviour
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
+    internal class PerformanceMonitor : MonoBehaviour
     {
         [SerializeField]
         private FastText meanFpsText;

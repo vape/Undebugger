@@ -3,6 +3,9 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Elements
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     internal class PointerQuad : Graphic
     {
         private static readonly Vector2 uv = new Vector2(0, 0);

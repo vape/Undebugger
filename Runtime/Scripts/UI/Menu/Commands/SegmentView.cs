@@ -1,19 +1,19 @@
 using System.Collections.Generic;
 using Undebugger.Model.Commands;
-using Undebugger.UI.Layout;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Commands
 {
-    public class SegmentView : MonoBehaviour, IPoolable, IPoolHandler
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
+    internal class SegmentView : MonoBehaviour, IPoolable, IPoolHandler
     {
         [SerializeField]
         private Text nameText;
         [SerializeField]
         private RectTransform container;
-        [SerializeField]
-        private FlexibleGrid layout;
 
         private List<CommandView> commands;
         private MenuPool pool;

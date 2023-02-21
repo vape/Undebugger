@@ -5,14 +5,15 @@ using UnityEngine;
 
 namespace Undebugger.UI.Menu.Commands
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     internal class PageView : MonoBehaviour, IPoolable, IPoolHandler
     {
         [SerializeField]
         private RectTransform container;
         [SerializeField]
         private SegmentView segmentTemplate;
-        [SerializeField]
-        private VerticalListLayout layout;
 
         private List<SegmentView> segments;
         private MenuPool pool;
@@ -44,7 +45,7 @@ namespace Undebugger.UI.Menu.Commands
                 segments.Add(segment);
             }
 
-            LayoutUtility.SetLayoutDirty(transform, LayoutDirtyFlag.All);
+            ULayoutHelper.SetDirty(transform, ULayoutDirtyFlag.All);
         }
 
         private void Deinit()

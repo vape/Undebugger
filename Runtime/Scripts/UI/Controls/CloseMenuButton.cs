@@ -3,6 +3,9 @@ using UnityEngine;
 
 namespace Undebugger.UI.Controls
 {
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
     public class CloseMenuButton : MonoBehaviour
     {
         public void TryClose()

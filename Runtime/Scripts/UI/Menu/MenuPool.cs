@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace Undebugger.UI.Menu
 {
-    public interface IPoolHandler
+    internal interface IPoolHandler
     {
         void UsePool(MenuPool pool);
     }
 
-    public interface IPoolable
+    internal interface IPoolable
     {
         void AddingToPool();
     }
@@ -53,7 +53,10 @@ namespace Undebugger.UI.Menu
         }
     }
 
-    public class MenuPool : MonoBehaviour
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
+    internal class MenuPool : MonoBehaviour
     {
         public bool IsDestroyed
         { get; private set; }

@@ -18,6 +18,7 @@ namespace Undebugger.Services.Performance
 {
 #if UNDEBUGGER_ENABLED
 
+    [AddComponentMenu("")]
     internal class PerformanceMonitorService : MonoBehaviour
     {
         public const int FrameBufferSize = 210;

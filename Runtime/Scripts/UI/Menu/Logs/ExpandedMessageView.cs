@@ -5,7 +5,10 @@ using UnityEngine.UI;
 
 namespace Undebugger.UI.Menu.Logs
 {
-    public class ExpandedMessageView : MonoBehaviour
+#if !UNDEBUGGER_INTERNAL
+    [AddComponentMenu("")]
+#endif
+    internal class ExpandedMessageView : MonoBehaviour
     {
         public Action CloseClicked;
 
