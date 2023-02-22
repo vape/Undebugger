@@ -30,6 +30,7 @@ namespace Undebugger.UI.Menu.Commands
                 title.text = model.Title;
             }
 
+            inputField.text = model.DefaultStringValue ?? string.Empty;
             inputField.contentType = model.ContentType;
         }
 

@@ -5,6 +5,9 @@ namespace Undebugger.Model.Commands.Builtin
 {
     public abstract class BaseTextCommandModel : CommandModel
     {
+        public abstract string DefaultStringValue
+        { get; }
+
         public NameTag Title 
         { get; private set; }
         public InputField.ContentType ContentType
@@ -21,12 +24,18 @@ namespace Undebugger.Model.Commands.Builtin
 
     public abstract class BaseTextCommandModel<T> : BaseTextCommandModel
     {
-        private Action<T> onApply;
+        public override string DefaultStringValue => DefaultValue?.ToString();
 
-        public BaseTextCommandModel(NameTag name, Action<T> onApply, InputField.ContentType contentType)
+        public T DefaultValue => defaultValue;
+
+        private Action<T> onApply;
+        private T defaultValue;
+
+        public BaseTextCommandModel(NameTag name, Action<T> onApply, InputField.ContentType contentType, T defaultValue = default)
             : base(name, contentType)
         {
             this.onApply = onApply;
+            this.defaultValue = defaultValue;
         }
 
         protected abstract bool TryConvert(string data, out T value);
@@ -46,8 +55,8 @@ namespace Undebugger.Model.Commands.Builtin
             : base(default, onApply, InputField.ContentType.Standard)
         { }
 
-        public TextCommandModel(NameTag name, Action<string> onApply) 
-            : base(name, onApply, InputField.ContentType.Standard)
+        public TextCommandModel(NameTag name, Action<string> onApply, string defaultValue = default) 
+            : base(name, onApply, InputField.ContentType.Standard, defaultValue)
         { }
 
         protected override bool TryConvert(string data, out string value)
@@ -63,8 +72,8 @@ namespace Undebugger.Model.Commands.Builtin
             : base(default, onApply, InputField.ContentType.IntegerNumber)
         { }
 
-        public IntTextCommandModel(NameTag name, Action<int> onApply)
-            : base(name, onApply, InputField.ContentType.IntegerNumber)
+        public IntTextCommandModel(NameTag name, Action<int> onApply, int defaultValue = default)
+            : base(name, onApply, InputField.ContentType.IntegerNumber, defaultValue)
         { }
 
         protected override bool TryConvert(string data, out int value)
