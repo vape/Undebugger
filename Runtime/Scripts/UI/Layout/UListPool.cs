@@ -43,13 +43,9 @@ namespace Undebugger.UI.Layout
         private static List<T> Remove(int index)
         {
             var list = pool[index];
-
-            if (pool.Count > 1)
-            {
-                var last = pool.Count - 1;
-                pool[index] = pool[last];
-                pool.RemoveAt(last);
-            }
+            var last = pool.Count - 1;
+            pool[index] = pool[last];
+            pool.RemoveAt(last);
 
             return list;
         }
