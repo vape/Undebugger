@@ -18,18 +18,18 @@ namespace Undebugger.UI.Menu.Commands
         {
             get
             {
-                return toggleButton.Selected;
+                return toggle.IsOn;
             }
             set
             {
-                toggleButton.Selected = value;
+                toggle.IsOn = value;
             }
         }
 
         [SerializeField]
         private Text nameText;
         [SerializeField]
-        private ToggleButton toggleButton;
+        private UndebuggerToggle toggle;
 
         private PageModel model;
 

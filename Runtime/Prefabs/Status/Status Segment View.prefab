@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 924892864765301882}
   - component: {fileID: 1043660628485936065}
-  - component: {fileID: 1888402030549500472}
+  - component: {fileID: 3880181173687756401}
   m_Layer: 5
   m_Name: FoldButton
   m_TagString: Untagged
@@ -48,7 +48,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 77010695034216800}
   m_CullTransparentMesh: 1
---- !u!114 &1888402030549500472
+--- !u!114 &3880181173687756401
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -57,39 +57,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 77010695034216800}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: d92e658a7e583d843a4d38a3e062daef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 0
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 6573785561232187884}
-  m_OnClick:
+  targetGraphic: {fileID: 6573785561232187884}
+  colorScheme: 0
+  onClick:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1968447751965294365}
@@ -114,7 +87,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8828838148606087870}
   - component: {fileID: 4799698652755094491}
-  - component: {fileID: 7061962415146016570}
+  - component: {fileID: 1134290567800811154}
   m_Layer: 5
   m_Name: UnfoldButton
   m_TagString: Untagged
@@ -152,7 +125,7 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 199119941158248417}
   m_CullTransparentMesh: 1
---- !u!114 &7061962415146016570
+--- !u!114 &1134290567800811154
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -161,39 +134,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 199119941158248417}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Script: {fileID: 11500000, guid: d92e658a7e583d843a4d38a3e062daef, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Navigation:
-    m_Mode: 3
-    m_WrapAround: 0
-    m_SelectOnUp: {fileID: 0}
-    m_SelectOnDown: {fileID: 0}
-    m_SelectOnLeft: {fileID: 0}
-    m_SelectOnRight: {fileID: 0}
-  m_Transition: 0
-  m_Colors:
-    m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
-    m_ColorMultiplier: 1
-    m_FadeDuration: 0.1
-  m_SpriteState:
-    m_HighlightedSprite: {fileID: 0}
-    m_PressedSprite: {fileID: 0}
-    m_SelectedSprite: {fileID: 0}
-    m_DisabledSprite: {fileID: 0}
-  m_AnimationTriggers:
-    m_NormalTrigger: Normal
-    m_HighlightedTrigger: Highlighted
-    m_PressedTrigger: Pressed
-    m_SelectedTrigger: Selected
-    m_DisabledTrigger: Disabled
-  m_Interactable: 1
-  m_TargetGraphic: {fileID: 3042613506639972534}
-  m_OnClick:
+  targetGraphic: {fileID: 3042613506639972534}
+  colorScheme: 0
+  onClick:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1968447751965294365}
@@ -687,8 +633,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   title: {fileID: 5069920484486332804}
   text: {fileID: 1298288220837141602}
-  foldButton: {fileID: 1888402030549500472}
-  unfoldButton: {fileID: 7061962415146016570}
+  foldButton: {fileID: 77010695034216800}
+  unfoldButton: {fileID: 199119941158248417}
   titleSize: 55
   minWidth: 750
 --- !u!1 &8689581221360055346

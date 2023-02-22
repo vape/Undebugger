@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Undebugger.UI.Controls;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Undebugger.UI.Settings
@@ -9,7 +10,7 @@ namespace Undebugger.UI.Settings
     internal class ToggleSettingsOptionView : SettingsOptionView
     {
         [SerializeField]
-        private Toggle toggle;
+        private UndebuggerToggle toggle;
         [SerializeField]
         private Text text;
 
@@ -20,12 +21,13 @@ namespace Undebugger.UI.Settings
             this.option = option;
 
             text.text = option.Name;
-            toggle.isOn = option.GetValue();
+            toggle.IsOn = option.GetValue();
         }
 
         public void OnValueChanged(bool value)
         {
             option.SetValue(value);
+            toggle.IsOn = option.GetValue();
         }
 
         public override void Refresh()
@@ -34,7 +36,7 @@ namespace Undebugger.UI.Settings
 
             if (option != null)
             {
-                toggle.isOn = option.GetValue();
+                toggle.IsOn = option.GetValue();
             }
         }
     }

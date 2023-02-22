@@ -14,11 +14,11 @@ namespace Undebugger.UI.Menu.Logs
         public override string GroupName => "Log";
 
         [SerializeField]
-        private ToggleButton infoToggle;
+        private UndebuggerToggle infoToggle;
         [SerializeField]
-        private ToggleButton warningToggle;
+        private UndebuggerToggle warningToggle;
         [SerializeField]
-        private ToggleButton errorToggle;
+        private UndebuggerToggle errorToggle;
         [SerializeField]
         private MessagesListView messagesList;
         [SerializeField]
@@ -66,9 +66,9 @@ namespace Undebugger.UI.Menu.Logs
         {
             var mask = messagesList.GetMask();
 
-            infoToggle.Selected = (mask & LogTypeMask.Info) > 0;
-            warningToggle.Selected = (mask & LogTypeMask.Warning) > 0;
-            errorToggle.Selected = (mask & LogTypeMask.Error) > 0;
+            infoToggle.IsOn = (mask & LogTypeMask.Info) > 0;
+            warningToggle.IsOn = (mask & LogTypeMask.Warning) > 0;
+            errorToggle.IsOn = (mask & LogTypeMask.Error) > 0;
         }
     }
 }

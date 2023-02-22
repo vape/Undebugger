@@ -19,9 +19,9 @@ namespace Undebugger.UI.Menu.Status
         [SerializeField]
         private Text text;
         [SerializeField]
-        private Button foldButton;
+        private GameObject foldButton;
         [SerializeField]
-        private Button unfoldButton;
+        private GameObject unfoldButton;
         [SerializeField]
         private float titleSize = 55;
         [SerializeField]
@@ -73,8 +73,8 @@ namespace Undebugger.UI.Menu.Status
             folded = value;
 
             text.gameObject.SetActive(!folded);
-            foldButton.gameObject.SetActive(!folded);
-            unfoldButton.gameObject.SetActive(folded);
+            foldButton.SetActive(!folded);
+            unfoldButton.SetActive(folded);
 
             if (driver != null)
             {
