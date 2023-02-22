@@ -1,4 +1,5 @@
-﻿using Undebugger.Model;
+﻿using System.Collections.Generic;
+using Undebugger.Model;
 using Undebugger.Model.Commands;
 using Undebugger.UI.Layout;
 using UnityEngine;
@@ -24,17 +25,22 @@ namespace Undebugger.UI.Menu.Commands
         [SerializeField]
         private CommandView[] commandTemplates;
 
-        private TabButton[] tabButtons;
+        private List<TabButton> tabButtons;
         private CommandsGroupModel model;
         private CommandViewFactory commandViewFactory;
         private PageView pageView;
+
+        private void Awake()
+        {
+            commandViewFactory = new CommandViewFactory(commandTemplates);
+            tabButtons = new List<TabButton>(capacity: 8);
+        }
 
         public override void Load(MenuModel menuModel)
         {
             base.Load(menuModel);
 
             model = menuModel.Commands;
-            commandViewFactory = new CommandViewFactory(commandTemplates);
 
             CreateTabButtons();
             SetPage(0);
@@ -63,7 +69,7 @@ namespace Undebugger.UI.Menu.Commands
                 pageView.Init(model.Pages[page], commandViewFactory);
             }
 
-            for (int i = 0; i < tabButtons.Length; ++i)
+            for (int i = 0; i < tabButtons.Count; ++i)
             {
                 tabButtons[i].Selected = i == page;
             }
@@ -75,7 +81,7 @@ namespace Undebugger.UI.Menu.Commands
         {
             if (tabButtons != null)
             {
-                for (int i = 0; i < tabButtons.Length; ++i)
+                for (int i = 0; i < tabButtons.Count; ++i)
                 {
                     if (tabButtons[i] != null)
                     {
@@ -83,18 +89,17 @@ namespace Undebugger.UI.Menu.Commands
                         pool.AddOrDestroy(tabButtons[i]);
                     }
                 }
-            }
 
-            if (tabButtons == null || tabButtons.Length != model.Pages.Count)
-            {
-                tabButtons = new TabButton[model.Pages.Count];
+                tabButtons.Clear();
             }
 
             for (int i = 0; i < model.Pages.Count; ++i)
             {
-                tabButtons[i] = pool.GetOrInstantiate(tabButtonTemplate, tabButtonsContainer);
-                tabButtons[i].Init(model.Pages[i]);
-                tabButtons[i].Clicked += TabButtonClickedHandler;
+                var tabButton = pool.GetOrInstantiate(tabButtonTemplate, tabButtonsContainer);
+                tabButton.Init(model.Pages[i]);
+                tabButton.Clicked += TabButtonClickedHandler;
+
+                tabButtons.Add(tabButton);
             }
         }
 
