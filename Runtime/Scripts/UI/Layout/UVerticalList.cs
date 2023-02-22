@@ -10,9 +10,9 @@ namespace Undebugger.UI.Layout
         [SerializeField]
         private RectOffset padding;
 
-        protected override void OnBuildLayout()
+        protected override void OnLayout()
         {
-            base.OnBuildLayout();
+            base.OnLayout();
 
             var offset = 0f;
             var width = Self.rect.width;

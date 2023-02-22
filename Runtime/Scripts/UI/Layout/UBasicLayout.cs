@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using UnityEngine;
 
 namespace Undebugger.UI.Layout
 {
@@ -8,7 +7,6 @@ namespace Undebugger.UI.Layout
 #endif
     internal class UBasicLayout : ULayoutRoot
     {
-        protected bool resizing;
         protected List<RectChild> childrens;
 
         protected override void OnDisable()
@@ -33,28 +31,6 @@ namespace Undebugger.UI.Layout
 
             childrens.Clear();
             ULayoutHelper.FindRectChildrens(transform, childrens);
-        }
-
-        protected sealed override void OnLayout()
-        {
-            base.OnLayout();
-
-            resizing = true;
-            OnBuildLayout();
-            resizing = false;
-        }
-
-        protected virtual void OnBuildLayout()
-        {
-            resizing = true;
-        }
-
-        private void OnRectTransformDimensionsChange()
-        {
-            if (!resizing)
-            {
-                SetDirty(ULayoutDirtyFlag.Layout);
-            }
         }
     }
 }

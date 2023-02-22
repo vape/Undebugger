@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Undebugger.UI.Layout
 {
@@ -50,6 +51,7 @@ namespace Undebugger.UI.Layout
         
         private RectTransform self;
         private List<List<ULayoutRoot>> hierarchy;
+        private bool isResizing;
 
         protected virtual void OnDisable()
         {
@@ -82,17 +84,25 @@ namespace Undebugger.UI.Layout
         protected virtual void OnLayout()
         { }
 
+        protected virtual void OnRectTransformDimensionsChange()
+        {
+            if (!isResizing && (enabled && gameObject.activeInHierarchy && gameObject.activeSelf))
+            {
+                SetDirty(ULayoutDirtyFlag.Layout);
+            }
+        }
+
         protected virtual void ProcessDirtyFlag()
         {
             if (dirtyFlag != ULayoutDirtyFlag.None)
             {
-                if ((dirtyFlag & ULayoutDirtyFlag.Hierarchy) != 0)
+                if ((dirtyFlag & ULayoutDirtyFlag.Hierarchy) != 0 || hierarchy == null)
                 {
                     RebuildHierarchy();
                     OnHierarchyRebuild();
                 }
 
-                if ((dirtyFlag & ULayoutDirtyFlag.Layout) != 0 && hierarchy != null)
+                if ((dirtyFlag & ULayoutDirtyFlag.Layout) != 0)
                 {
                     RebuildLayout();
                 }
@@ -111,7 +121,11 @@ namespace Undebugger.UI.Layout
                 }
             }
 
+            isResizing = true;
+
             OnLayout();
+
+            isResizing = false;
         }
 
         private void ClearHierarchy()

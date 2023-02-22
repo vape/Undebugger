@@ -30,9 +30,9 @@ namespace Undebugger.UI.Layout
         [SerializeField]
         private RectSpacing spacing;
 
-        protected override void OnBuildLayout()
+        protected override void OnLayout()
         {
-            base.OnBuildLayout();
+            base.OnLayout();
 
             var elements = UListPool<GridElement>.Get(childrens.Count);
             var size = CreateLayout(elements, childrens, padding, spacing, Self);
