@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using Undebugger.Model.Commands.Builtin;
+using Undebugger.UI.Controls;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -11,9 +12,9 @@ namespace Undebugger.UI.Menu.Commands
         [SerializeField]
         private Text title;
         [SerializeField]
-        private Dropdown dropdown;
-        [SerializeField]
         private RectTransform content;
+        [SerializeField]
+        private UndebuggerDropdown dropdown;
 
         protected override void Setup(DropdownCommandModel model)
         {
@@ -31,13 +32,13 @@ namespace Undebugger.UI.Menu.Commands
                 title.text = model.Title;
             }
 
-            dropdown.options = model.Values.Select(v => new Dropdown.OptionData(v.ToString())).ToList();
+            dropdown.SetOptions(model.Values.Select(v => v.ToString()).ToArray());
             RefreshValue();
         }
 
         private void RefreshValue()
         {
-            dropdown.value = model.Index;
+            dropdown.SetSelected(model.Index);
         }
 
         public void OnChanged(int index)

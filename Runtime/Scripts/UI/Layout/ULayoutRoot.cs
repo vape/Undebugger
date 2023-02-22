@@ -117,7 +117,10 @@ namespace Undebugger.UI.Layout
             {
                 for (int j = 0; j < hierarchy[i].Count; ++j)
                 {
-                    hierarchy[i][j].OnLayout();
+                    if (hierarchy[i][j].isActiveAndEnabled)
+                    {
+                        hierarchy[i][j].OnLayout();
+                    }
                 }
             }
 
