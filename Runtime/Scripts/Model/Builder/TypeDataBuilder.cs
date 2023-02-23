@@ -3,6 +3,7 @@
 #endif
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
@@ -38,23 +39,41 @@ namespace Undebugger.Model.Builder
                 if (actionAttribute != null)
                 {
 #if UNDEBUGGER_MODEL_BUILDER_VALIDATION
-                    if (!ValidateActionSignature(methods[i]))
+                    if (!Validate(methods[i], typeof(void)))
                     {
                         continue;
                     }
 #endif
-
                     EnsureMethodsCollection(ref data);
+                    AddMethod(data.Methods, methods[i], MethodType.Action);
+                    continue;
+                }
 
-                    var methodData = new MethodData()
+                var textActionAttribute = methods[i].GetCustomAttribute<UndebuggerTextActionAttribute>();
+                if (textActionAttribute != null)
+                {
+#if UNDEBUGGER_MODEL_BUILDER_VALIDATION
+                    if (!Validate(methods[i], typeof(void), typeof(string)))
                     {
-                        Info = methods[i],
-                        Type = MethodType.Action,
-                        NameAttribute = methods[i].GetCustomAttribute<UndebuggerNameAttribute>(),
-                        PriorityAttribute = methods[i].GetCustomAttribute<UndebuggerPriorityAttribute>()
-                    };
+                        continue;
+                    }
+#endif
+                    EnsureMethodsCollection(ref data);
+                    AddMethod(data.Methods, methods[i], MethodType.TextAction);
+                    continue;
+                }
 
-                    data.Methods.Add(methodData);
+                var intActionAttribute = methods[i].GetCustomAttribute<UndebuggerIntActionAttribute>();
+                if (intActionAttribute != null)
+                {
+#if UNDEBUGGER_MODEL_BUILDER_VALIDATION
+                    if (!Validate(methods[i], typeof(void), typeof(int)))
+                    {
+                        continue;
+                    }
+#endif
+                    EnsureMethodsCollection(ref data);
+                    AddMethod(data.Methods, methods[i], MethodType.IntAction);
                     continue;
                 }
 
@@ -62,23 +81,14 @@ namespace Undebugger.Model.Builder
                 if (handlerAttribute != null)
                 {
 #if UNDEBUGGER_MODEL_BUILDER_VALIDATION
-                    if (!ValidateHandlerMethodSignature(methods[i]))
+                    if (!Validate(methods[i], typeof(void), typeof(MenuModel)))
                     {
                         continue;
                     }
 #endif
 
                     EnsureMethodsCollection(ref data);
-
-                    var methodData = new MethodData()
-                    {
-                        Info = methods[i],
-                        Type = MethodType.Handler,
-                        NameAttribute = methods[i].GetCustomAttribute<UndebuggerNameAttribute>(),
-                        PriorityAttribute = methods[i].GetCustomAttribute<UndebuggerPriorityAttribute>()
-                    };
-
-                    data.Methods.Add(methodData);
+                    AddMethod(data.Methods, methods[i], MethodType.Handler);
                     continue;
                 }
             }
@@ -90,71 +100,44 @@ namespace Undebugger.Model.Builder
                 if (toggleAttribute != null)
                 {
 #if UNDEBUGGER_MODEL_BUILDER_VALIDATION
-                    if (!ValidateToggleSignature(properties[i]))
+                    if (!Validate(properties[i], typeof(bool), readable: true, writable: true))
                     {
                         continue;
                     }
 #endif
 
                     EnsurePropertiesCollection(ref data);
-
-                    var propertyData = new PropertyData()
-                    {
-                        Info = properties[i],
-                        NameAttribute = properties[i].GetCustomAttribute<UndebuggerNameAttribute>(),
-                        PriorityAttribute = properties[i].GetCustomAttribute<UndebuggerPriorityAttribute>(),
-                        Type = PropertyType.Toggle
-                    };
-
-                    data.Properties.Add(propertyData);
+                    AddProperty(data.Properties, properties[i], PropertyType.Toggle, null);
                 }
 
                 var dropdownAttribute = properties[i].GetCustomAttribute<UndebuggerDropdownAttribute>();
                 if (dropdownAttribute != null)
                 {
 #if UNDEBUGGER_MODEL_BUILDER_VALIDATION
-                    if (!ValidateDropdownSignature(properties[i]))
+                    if (!Validate(properties[i], readable: true, writable: true))
                     {
                         continue;
                     }
 #endif
 
                     EnsurePropertiesCollection(ref data);
-
-                    var propertyData = new PropertyData()
-                    {
-                        Info = properties[i],
-                        NameAttribute = properties[i].GetCustomAttribute<UndebuggerNameAttribute>(),
-                        PriorityAttribute = properties[i].GetCustomAttribute<UndebuggerPriorityAttribute>(),
-                        Type = PropertyType.Dropdown,
-                        Values = dropdownAttribute.Values
-                    };
-
-                    data.Properties.Add(propertyData);
+                    AddProperty(data.Properties, properties[i], PropertyType.Dropdown, dropdownAttribute.Values);
+                    continue;
                 }
 
-                var carouselAttribute = properties[i].GetCustomAttribute<UndebuggerDropdownAttribute>();
+                var carouselAttribute = properties[i].GetCustomAttribute<UndebuggerCarouselAttribute>();
                 if (carouselAttribute != null)
                 {
 #if UNDEBUGGER_MODEL_BUILDER_VALIDATION
-                    if (!ValidateDropdownSignature(properties[i]))
+                    if (!Validate(properties[i], readable: true, writable: true))
                     {
                         continue;
                     }
 #endif
 
                     EnsurePropertiesCollection(ref data);
-
-                    var propertyData = new PropertyData()
-                    {
-                        Info = properties[i],
-                        NameAttribute = properties[i].GetCustomAttribute<UndebuggerNameAttribute>(),
-                        PriorityAttribute = properties[i].GetCustomAttribute<UndebuggerPriorityAttribute>(),
-                        Type = PropertyType.Carousel,
-                        Values = carouselAttribute.Values
-                    };
-
-                    data.Properties.Add(propertyData);
+                    AddProperty(data.Properties, properties[i], PropertyType.Carousel, carouselAttribute.Values);
+                    continue;
                 }
             }
 
@@ -165,7 +148,7 @@ namespace Undebugger.Model.Builder
         {
             if (typeData.Methods == null)
             {
-                typeData.Methods = new System.Collections.Generic.List<MethodData>();
+                typeData.Methods = new List<MethodData>();
                 typeData.IsDebugTarget = true;
             }
         }
@@ -174,70 +157,92 @@ namespace Undebugger.Model.Builder
         {
             if (typeData.Properties == null)
             {
-                typeData.Properties = new System.Collections.Generic.List<PropertyData>();
+                typeData.Properties = new List<PropertyData>();
                 typeData.IsDebugTarget = true;
             }
         }
 
-#if UNDEBUGGER_MODEL_BUILDER_VALIDATION
-        private static bool ValidateHandlerMethodSignature(MethodInfo method)
+        private static void AddProperty(List<PropertyData> properties, PropertyInfo info, PropertyType type, object[] values)
         {
-            if (method.ReturnType != typeof(void))
+            var property = new PropertyData()
             {
-                Debug.LogError($"Invalid return type of {method}, must be void");
+                Info = info,
+                NameAttribute = info.GetCustomAttribute<UndebuggerNameAttribute>(),
+                PriorityAttribute = info.GetCustomAttribute<UndebuggerPriorityAttribute>(),
+                DefaultValueAttribute = info.GetCustomAttribute<UndebuggerDefaultValueAttribute>(),
+                Type = type,
+                Values = values
+            };
+
+            properties.Add(property);
+        }
+
+        private static void AddMethod(List<MethodData> methods, MethodInfo info, MethodType type)
+        {
+            var data = new MethodData()
+            {
+                Info = info,
+                Type = type,
+                NameAttribute = info.GetCustomAttribute<UndebuggerNameAttribute>(),
+                PriorityAttribute = info.GetCustomAttribute<UndebuggerPriorityAttribute>(),
+                DefaultValueAttribute = info.GetCustomAttribute<UndebuggerDefaultValueAttribute>()
+            };
+
+            methods.Add(data);
+        }
+
+#if UNDEBUGGER_MODEL_BUILDER_VALIDATION
+        private static bool Validate(PropertyInfo property, bool? readable, bool? writable)
+        {
+            if (readable != null && property.CanRead != readable)
+            {
+                Debug.LogError($"Property {property} must be readable");
+                return false;
+            }
+
+            if (writable != null && property.CanWrite != writable)
+            {
+                Debug.LogError($"Property {property} must be writable");
+                return false;
+            }
+
+            return true;
+        }
+
+        private static bool Validate(PropertyInfo property, Type type, bool? readable, bool? writable)
+        {
+            if (property.PropertyType != type)
+            {
+                Debug.LogError($"Invalid property {property} type, must be {type}, got {property.PropertyType} instead");
+                return false;
+            }
+
+            return Validate(property, readable, writable);
+        }
+
+        private static bool Validate(MethodInfo method, Type returnType, params Type[] paramTypes)
+        {
+            if (method.ReturnType != returnType)
+            {
+                Debug.LogError($"Invalid return type of {method}, must be {returnType}");
                 return false;
             }
 
             var parameters = method.GetParameters();
-            if (parameters.Length != 1 || parameters[0].ParameterType != typeof(MenuModel))
+            if (parameters.Length != paramTypes.Length)
             {
-                Debug.LogError($"Invalid number of parameters for {method}, must be single parameter of type {typeof(MenuModel)}");
+                Debug.LogError($"Invalid number of parameters for {method}, must be {paramTypes.Length}, got {parameters.Length} instead");
                 return false;
             }
 
-            return true;
-        }
-
-        private static bool ValidateActionSignature(MethodInfo method)
-        {
-            if (method.ReturnType != typeof(void))
+            for (int i = 0; i < paramTypes.Length; ++i)
             {
-                Debug.LogError($"Invalid return type of {method}, must be void");
-                return false;
-            }
-
-            if (method.GetParameters().Length != 0)
-            {
-                Debug.LogError($"Invalid number of parameters for {method}, must be zero");
-                return false;
-            }
-
-            return true;
-        }
-
-        private static bool ValidateToggleSignature(PropertyInfo property)
-        {
-            if (property.PropertyType != typeof(bool))
-            {
-                Debug.LogError($"Property {property} must be of type 'bool'");
-                return false;
-            }
-
-            if (!property.CanWrite || !property.CanRead)
-            {
-                Debug.LogError($"Property {property} must be both readable and writable");
-                return false;
-            }
-
-            return true;
-        }
-
-        private static bool ValidateDropdownSignature(PropertyInfo property)
-        {
-            if (!property.CanWrite || !property.CanRead)
-            {
-                Debug.LogError($"Property {property} must be both readable and writable");
-                return false;
+                var type = parameters[i].ParameterType;
+                if (type != paramTypes[i])
+                {
+                    Debug.LogError($"Invalid parameter type at {i}, must be {paramTypes[i]}, got {type} instead");
+                    return false;
+                }
             }
 
             return true;

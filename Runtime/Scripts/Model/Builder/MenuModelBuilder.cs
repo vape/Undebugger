@@ -141,6 +141,16 @@ namespace Undebugger.Model.Builder
                             segment.Commands.Add(CreateAction(method, instance));
                             break;
 
+                        case MethodType.TextAction:
+                            EnsureSegment();
+                            segment.Commands.Add(CreateTextActionCommand(method, instance, method.DefaultValueAttribute?.Value?.ToString()));
+                            break;
+
+                        case MethodType.IntAction:
+                            EnsureSegment();
+                            segment.Commands.Add(CreateIntActionCommand(method, instance, method.DefaultValueAttribute?.Value == null ? 0 : (int)method.DefaultValueAttribute.Value));
+                            break;
+
                         case MethodType.Handler:
                             method.Info?.Invoke(instance, handlerParam);
                             break;
@@ -237,6 +247,16 @@ namespace Undebugger.Model.Builder
         private static ActionCommandModel CreateAction(MethodData method, object instance)
         {
             return new ActionCommandModel(method.NameAttribute?.Name ?? method.Info.Name, () => { method.Info.Invoke(instance, null); });
+        }
+
+        private static TextCommandModel CreateTextActionCommand(MethodData method, object instance, string defaultValue)
+        {
+            return new TextCommandModel(method.NameAttribute?.Name ?? method.Info.Name, (str) => { method.Info.Invoke(instance, new object[] { str }); }, defaultValue);
+        }
+
+        private static IntTextCommandModel CreateIntActionCommand(MethodData method, object instance, int defaultValue)
+        {
+            return new IntTextCommandModel(method.NameAttribute?.Name ?? method.Info.Name, (str) => { method.Info.Invoke(instance, new object[] { str }); }, defaultValue);
         }
 
         private static DropdownCommandModel CreateDropdown(PropertyData property, object instance)

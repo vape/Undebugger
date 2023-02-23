@@ -7,7 +7,9 @@ namespace Undebugger.Model.Builder
     internal enum MethodType
     {
         Action,
-        Handler
+        Handler,
+        TextAction,
+        IntAction
     }
 
     internal enum PropertyType
@@ -22,6 +24,7 @@ namespace Undebugger.Model.Builder
         public MethodType Type;
         public UndebuggerNameAttribute NameAttribute;
         public UndebuggerPriorityAttribute PriorityAttribute;
+        public UndebuggerDefaultValueAttribute DefaultValueAttribute;
         public MethodInfo Info;
     }
 
@@ -30,6 +33,7 @@ namespace Undebugger.Model.Builder
         public PropertyType Type;
         public UndebuggerNameAttribute NameAttribute;
         public UndebuggerPriorityAttribute PriorityAttribute;
+        public UndebuggerDefaultValueAttribute DefaultValueAttribute;
         public object[] Values;
         public PropertyInfo Info;
     }
