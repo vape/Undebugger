@@ -38,6 +38,11 @@ namespace Undebugger.UI.Menu.Logs
                 Name = "Error notifications",
                 GetValue = () => UIService.Instance.ErrorNotificationWidgetEnabled,
                 SetValue = (value) => UIService.Instance.ErrorNotificationWidgetEnabled = value
+            },
+            new ButtonSettingsOption()
+            {
+                Name = "Clear",
+                Action = LogStorageService.Instance.Clear
             });
         }
 

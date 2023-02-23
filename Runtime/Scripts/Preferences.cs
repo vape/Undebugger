@@ -7,6 +7,21 @@ namespace Undebugger
         private const string errorNotificationKey = "undebugger.ui.error_notification";
         private const int errorNotificationDefaultValue = 1; // enabled
 
+        private const string autoCloseKey = "undebugger.commands.autoclose";
+        private const int autoCloseDefaultValue = 1; // enabled
+
+        public static bool AutoCloseEnabled
+        {
+            get
+            {
+                return PlayerPrefs.GetInt(autoCloseKey, autoCloseDefaultValue) > 0;
+            }
+            set
+            {
+                PlayerPrefs.SetInt(autoCloseKey, value ? 1 : 0);
+            }
+        }
+
         public static bool ErrorNotificationEnabled
         {
             get

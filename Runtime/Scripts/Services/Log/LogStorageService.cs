@@ -165,6 +165,18 @@ namespace Undebugger.Services.Log
                     return LogTypeMask.Info;
             }
         }
+
+        public void Clear()
+        {
+            for (int i = 0; i < buffers.Length; ++i)
+            {
+                buffers[i].Clear();
+            }
+
+            totalInfo = 0;
+            totalErrors = 0;
+            totalWarnings = 0;
+        }
     }
 
 #else

@@ -45,6 +45,7 @@ namespace Undebugger.UI.Menu.Commands
         {
             model.Set(index);
             RefreshValue();
+            OnAfterAction();
         }
     }
 }

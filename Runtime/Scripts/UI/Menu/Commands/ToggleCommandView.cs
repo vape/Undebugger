@@ -25,6 +25,7 @@ namespace Undebugger.UI.Menu.Commands
         {
             model.Reference.Set(value);
             toggle.IsOn = model.Reference.Value;
+            OnAfterAction();
         }
     }
 }

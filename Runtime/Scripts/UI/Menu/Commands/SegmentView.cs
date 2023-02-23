@@ -28,7 +28,7 @@ namespace Undebugger.UI.Menu.Commands
             Deinit();
         }
 
-        public void Init(SegmentModel model, CommandViewFactory optionViewFactory)
+        public void Init(ICommandsGroupContext context, SegmentModel model, CommandViewFactory optionViewFactory)
         {
             Deinit();
 
@@ -48,7 +48,7 @@ namespace Undebugger.UI.Menu.Commands
                     commandView = Instantiate(template, container);
                 }
 
-                commandView.Setup(model.Commands[i]);
+                commandView.Setup(context, model.Commands[i]);
                 commands.Add(commandView);
             }
         }

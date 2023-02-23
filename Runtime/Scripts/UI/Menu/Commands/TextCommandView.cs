@@ -37,6 +37,7 @@ namespace Undebugger.UI.Menu.Commands
         public void OnClick()
         {
             model.Apply(inputField.text);
+            OnAfterAction();
         }
     }
 }

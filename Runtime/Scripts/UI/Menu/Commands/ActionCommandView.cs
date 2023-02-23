@@ -20,6 +20,7 @@ namespace Undebugger.UI.Menu.Commands
         public void OnClick()
         {
             model.Activate();
+            OnAfterAction();
         }
     }
 }

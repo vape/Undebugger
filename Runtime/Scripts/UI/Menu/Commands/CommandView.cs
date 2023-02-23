@@ -18,18 +18,32 @@ namespace Undebugger.UI.Menu.Commands
 
     public abstract class CommandView : MonoBehaviour
     {
-        public virtual void Setup(CommandModel model)
-        { }
+        protected ICommandsGroupContext context;
+        protected CommandModel model;
+
+        public virtual void Setup(ICommandsGroupContext context, CommandModel model)
+        {
+            this.context = context;
+            this.model = model;
+        }
+
+        protected virtual void OnAfterAction()
+        {
+            if (model?.CloseMenuOnAction ?? false)
+            {
+                context.TryCloseOnAction();
+            }
+        }
     }
 
     public abstract class CommandView<TModel> : CommandView
         where TModel : CommandModel
     {
-        protected TModel model;
+        protected new TModel model;
 
-        public sealed override void Setup(CommandModel model)
+        public sealed override void Setup(ICommandsGroupContext context, CommandModel model)
         {
-            base.Setup(model);
+            base.Setup(context, model);
 
             this.model = model as TModel;
             Setup(this.model);

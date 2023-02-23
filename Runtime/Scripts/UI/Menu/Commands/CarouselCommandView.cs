@@ -42,12 +42,14 @@ namespace Undebugger.UI.Menu.Commands
         {
             model.Set(model.Index + 1);
             RefreshValue();
+            OnAfterAction();
         }
 
         public void PrevClick()
         {
             model.Set(model.Index - 1);
             RefreshValue();
+            OnAfterAction();
         }
     }
 }

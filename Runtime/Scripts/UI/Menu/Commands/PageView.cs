@@ -28,7 +28,7 @@ namespace Undebugger.UI.Menu.Commands
             Deinit();
         }
 
-        public void Init( PageModel model, CommandViewFactory optionViewFactory)
+        public void Init(ICommandsGroupContext context, PageModel model, CommandViewFactory optionViewFactory)
         {
             Deinit();
 
@@ -40,7 +40,7 @@ namespace Undebugger.UI.Menu.Commands
             for (int i = 0; i < model.Segments.Count; i++)
             {
                 var segment = pool.GetOrInstantiate(segmentTemplate, container);
-                segment.Init(model.Segments[i], optionViewFactory);
+                segment.Init(context, model.Segments[i], optionViewFactory);
 
                 segments.Add(segment);
             }

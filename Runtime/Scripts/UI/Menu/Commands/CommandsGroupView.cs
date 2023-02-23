@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using Undebugger.Model;
 using Undebugger.Model.Commands;
+using Undebugger.Services.UI;
 using Undebugger.UI.Layout;
+using Undebugger.UI.Settings;
 using UnityEngine;
 
 namespace Undebugger.UI.Menu.Commands
@@ -9,7 +11,7 @@ namespace Undebugger.UI.Menu.Commands
 #if !UNDEBUGGER_INTERNAL
     [AddComponentMenu("")]
 #endif
-    internal class CommandsGroupView : GroupView
+    internal class CommandsGroupView : GroupView, ICommandsGroupContext
     {
         public override string GroupName => "Commands";
 
@@ -24,6 +26,8 @@ namespace Undebugger.UI.Menu.Commands
         private RectTransform pageContainer;
         [SerializeField]
         private CommandView[] commandTemplates;
+        [SerializeField]
+        private SettingsMenu settings;
 
         private List<TabButton> tabButtons;
         private CommandsGroupModel model;
@@ -34,6 +38,13 @@ namespace Undebugger.UI.Menu.Commands
         {
             commandViewFactory = new CommandViewFactory(commandTemplates);
             tabButtons = new List<TabButton>(capacity: 8);
+
+            settings.Setup(new ToggleSettingsOption()
+            {
+                Name = "Enable auto close",
+                GetValue = () => Preferences.AutoCloseEnabled,
+                SetValue = (value) => Preferences.AutoCloseEnabled = value
+            });
         }
 
         public override void Load(MenuModel menuModel)
@@ -66,7 +77,7 @@ namespace Undebugger.UI.Menu.Commands
             if (page >= 0 && page < model.Pages.Count)
             {
                 pageView = pool.GetOrInstantiate(pageTemplate, pageContainer);
-                pageView.Init(model.Pages[page], commandViewFactory);
+                pageView.Init(this, model.Pages[page], commandViewFactory);
             }
 
             for (int i = 0; i < tabButtons.Count; ++i)
@@ -106,6 +117,16 @@ namespace Undebugger.UI.Menu.Commands
         private void TabButtonClickedHandler(PageModel model)
         {
             SetPage(model);
+        }
+
+        void ICommandsGroupContext.TryCloseOnAction()
+        {
+            if (!Preferences.AutoCloseEnabled)
+            {
+                return;
+            }
+
+            UIService.Instance.CloseMenu();
         }
     }
 }

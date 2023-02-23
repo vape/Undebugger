@@ -18,6 +18,12 @@
             data = new T[capacity];
         }
 
+        public void Clear()
+        {
+            head = 0;
+            count = 0;
+        }
+
         public void PushBack(T value)
         {
             head = (head - 1) % Capacity;

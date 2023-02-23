@@ -16,6 +16,8 @@ namespace Undebugger.UI.Settings
         private RectTransform optionsContainer;
         [SerializeField]
         private ToggleSettingsOptionView toggleTemplate;
+        [SerializeField]
+        private ButtonSettingsOptionView buttonTemplate;
 
         private List<SettingsOptionView> optionViews = new List<SettingsOptionView>(capacity: 4);
         private bool shown;
@@ -47,6 +49,14 @@ namespace Undebugger.UI.Settings
                         {
                             var instance = Instantiate(toggleTemplate, optionsContainer);
                             instance.Setup(toggleOption);
+                            optionViews.Add(instance);
+                        }
+                        break;
+
+                    case ButtonSettingsOption buttonOption:
+                        {
+                            var instance = Instantiate(buttonTemplate, optionsContainer);
+                            instance.Setup(buttonOption);
                             optionViews.Add(instance);
                         }
                         break;
