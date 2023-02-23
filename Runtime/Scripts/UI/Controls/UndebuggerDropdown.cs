@@ -21,7 +21,7 @@ namespace Undebugger.UI.Controls
         [SerializeField]
         private UndebuggerDropdownOption template;
         [SerializeField]
-        private ULayoutRoot layout;
+        private ULayoutNode layout;
         [SerializeField]
         private UnityEvent<int> selectionChanged;
 
@@ -39,8 +39,6 @@ namespace Undebugger.UI.Controls
 
         public void Show()
         {
-            var wasOptionsDirty = optionsDirty;
-
             if (optionsDirty)
             {
                 RebuildOptionViews();
@@ -57,8 +55,8 @@ namespace Undebugger.UI.Controls
 
                 container.AddComponent<GraphicRaycaster>();
             }
-            
-            layout.SetDirty(wasOptionsDirty ? ULayoutDirtyFlag.All : ULayoutDirtyFlag.Layout);
+
+            ULayoutHelper.SetDirty(transform, ULayoutDirtyFlag.All);
             shown = true;
         }
 

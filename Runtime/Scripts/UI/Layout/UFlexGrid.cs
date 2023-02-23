@@ -7,7 +7,7 @@ namespace Undebugger.UI.Layout
 #if !UNDEBUGGER_INTERNAL
     [AddComponentMenu("")]
 #endif
-    internal class UFlexGrid : UBasicLayout
+    internal class UFlexGrid : ULayoutNode
     {
         [Serializable]
         public struct RectSpacing

@@ -10,9 +10,11 @@ namespace Undebugger.UI.Menu.Logs
     [AddComponentMenu("")]
 #endif
     [RequireComponent(typeof(RectTransform))]
-    internal class MessagesListView : ULayoutRoot, IPoolHandler
+    internal class MessagesListView : MonoBehaviour, IULayoutNode, IPoolHandler
     {
         private const int InitialCapacity = 48;
+
+        bool IULayoutNode.IsActive => isActiveAndEnabled;
 
         [SerializeField]
         private RectTransform viewport;
@@ -233,10 +235,11 @@ namespace Undebugger.UI.Menu.Logs
             }
         }
 
-        protected override void OnLayout()
-        {
-            base.OnLayout();
+        void IULayoutNode.OnHierarchyRebuild()
+        { }
 
+        void IULayoutNode.OnLayoutRebuild()
+        {
             for (int i = visibleMinIndex; i < visibleMaxIndex; ++i)
             {
                 ref var message = ref LogStorageService.Instance.GetMessage(mask, i);

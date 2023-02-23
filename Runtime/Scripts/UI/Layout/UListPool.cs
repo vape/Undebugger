@@ -7,6 +7,19 @@ namespace Undebugger.UI.Layout
     {
         private static List<List<T>> pool = new List<List<T>>(capacity: 32);
 
+        public static List<T> GetExact(int capacity)
+        {
+            for (int i = 0; i < pool.Count; i++)
+            {
+                if (pool[i].Capacity == capacity)
+                {
+                    return Remove(i);
+                }
+            }
+
+            return new List<T>(capacity: capacity);
+        }
+
         public static List<T> Get(int capacity)
         {
             int maxCapacity = 0;

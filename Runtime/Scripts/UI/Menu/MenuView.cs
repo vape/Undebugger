@@ -86,7 +86,7 @@ namespace Undebugger.UI.Menu
                 groupButtons[i].SetSelected(i == group);
             }
 
-            ULayoutHelper.SetDirty(transform, ULayoutDirtyFlag.All);
+            ULayoutHelper.SetDirty(activeGroupView.transform, ULayoutDirtyFlag.All);
         }
 
         private void InitializeGroupButtons()

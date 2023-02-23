@@ -335,6 +335,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3829374466373750533}
   - component: {fileID: 3829374466373750534}
+  - component: {fileID: 2557057133806232919}
   m_Layer: 5
   m_Name: Undebugger Menu View
   m_TagString: Untagged
@@ -394,6 +395,18 @@ MonoBehaviour:
   widgets:
   - {fileID: 2133623272275128834, guid: b66aa0e888aad9046b3b4b79a0252b8d, type: 3}
   - {fileID: 710171181656503848, guid: 4a63ef0060a730f4e87cdd0f44aeeb46, type: 3}
+--- !u!114 &2557057133806232919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3829374466373750532}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf00df6148a39444ad944d2d257b925, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3829374466553632867
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,6 +608,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5084036466930080757}
+  - component: {fileID: 721527680712739080}
   m_Layer: 5
   m_Name: Container
   m_TagString: Untagged
@@ -622,6 +636,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: -35}
   m_SizeDelta: {x: 0, y: -70}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &721527680712739080
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5907250052804371147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf00df6148a39444ad944d2d257b925, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6719685130252169112
 GameObject:
   m_ObjectHideFlags: 0

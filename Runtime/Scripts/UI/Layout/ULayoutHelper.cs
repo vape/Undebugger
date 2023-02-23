@@ -17,72 +17,15 @@ namespace Undebugger.UI.Layout
     {
         public static void SetDirty(Transform source, ULayoutDirtyFlag flag)
         {
-            if (!TrySetDirtyForParentRoot(source, flag))
-            {
-                TrySetDirtyForChildRoots(source, flag);
-            }
-        }
-
-        private static bool TrySetDirtyForParentRoot(Transform source, ULayoutDirtyFlag flag)
-        {
-            ULayoutRoot root = null;
-
             while (source != null)
             {
-                if (source.TryGetComponent<ULayoutRoot>(out var _root) && _root.isActiveAndEnabled)
+                if (source.TryGetComponent<ULayoutMaster>(out var master) && master.isActiveAndEnabled)
                 {
-                    root = _root;
+                    master.SetDirty(flag);
+                    return;
                 }
 
                 source = source.parent;
-            }
-
-            if (root != null)
-            {
-                root.SetDirty(flag);
-                return true;
-            }
-
-            return false;
-        }
-
-        private static void TrySetDirtyForChildRoots(Transform source, ULayoutDirtyFlag flag)
-        {
-            if (source.TryGetComponent<ULayoutRoot>(out var layoutRoot))
-            {
-                layoutRoot.SetDirty(flag);
-                return;
-            }
-
-            var childsCount = source.childCount;
-
-            for (int i = 0; i < childsCount; ++i)
-            {
-                TrySetDirtyForChildRoots(source.GetChild(i), flag);
-            }
-        }
-
-        public static void FindRectChildrens(Transform root, List<RectChild> list)
-        {
-            var count = root.childCount;
-
-            for (int i = 0; i < count; ++i)
-            {
-                var child = root.GetChild(i);
-                if (child.TryGetComponent<RectTransform>(out var rect))
-                {
-                    child.TryGetComponent<IULayoutElement>(out var layoutElement);
-                    if (layoutElement != null && layoutElement.Ignore)
-                    {
-                        continue;
-                    }
-
-                    list.Add(new RectChild()
-                    {
-                        Rect = rect,
-                        LayoutElement = layoutElement
-                    });
-                }
             }
         }
     }

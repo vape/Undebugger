@@ -5,7 +5,7 @@ namespace Undebugger.UI.Layout
 #if !UNDEBUGGER_INTERNAL
     [AddComponentMenu("")]
 #endif
-    internal class UHorizontalList : UBasicLayout
+    internal class UHorizontalList : ULayoutNode
     {
         [SerializeField]
         private RectOffset padding;

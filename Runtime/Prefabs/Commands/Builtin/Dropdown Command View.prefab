@@ -466,6 +466,7 @@ GameObject:
   - component: {fileID: 3926971308746980424}
   - component: {fileID: 8108576346947065746}
   - component: {fileID: 5348052415921895947}
+  - component: {fileID: 3442184552447775239}
   m_Layer: 5
   m_Name: Dropdown Command View
   m_TagString: Untagged
@@ -526,6 +527,18 @@ MonoBehaviour:
   ignore: 0
   minWidth: 350
   minHeight: 125
+--- !u!114 &3442184552447775239
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3926971308746980425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf00df6148a39444ad944d2d257b925, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4252064961628969163
 GameObject:
   m_ObjectHideFlags: 0

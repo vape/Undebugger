@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Undebugger.UI.Layout;
 using UnityEngine;
 
 namespace Undebugger.UI.Settings
@@ -79,6 +80,8 @@ namespace Undebugger.UI.Settings
             {
                 option.Refresh();
             }
+
+            ULayoutHelper.SetDirty(transform, ULayoutDirtyFlag.All);
         }
 
         public void Hide()

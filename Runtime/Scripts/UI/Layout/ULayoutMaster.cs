@@ -1,68 +1,51 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Undebugger.UI.Layout
 {
-#if !UNDEBUGGER_INTERNAL
-    [AddComponentMenu("")]
-#endif
-    [RequireComponent(typeof(RectTransform))]
-    internal class ULayoutRoot : MonoBehaviour
+    internal class ULayoutMaster : MonoBehaviour
     {
-        protected static void BuildHierarchy(Transform root, List<List<ULayoutRoot>> layers)
+        protected static void BuildHierarchy(Transform root, List<List<IULayoutNode>> layers)
         {
             var childCount = root.childCount;
-            List<ULayoutRoot> roots = null;
+            List<IULayoutNode> nodes = null;
 
             while (childCount-- > 0)
             {
                 var child = root.GetChild(childCount);
-                if (child.TryGetComponent<ULayoutRoot>(out var childLayoutRoot))
+
+                if (child.TryGetComponent<IULayoutNode>(out var childNode))
                 {
-                    if (roots == null)
+                    if (nodes == null)
                     {
-                        roots = UListPool<ULayoutRoot>.Get(capacity: 8);
-                        layers.Add(roots);
+                        nodes = UListPool<IULayoutNode>.Get(capacity: 8);
+                        layers.Add(nodes);
                     }
 
-                    childLayoutRoot.OnHierarchyRebuild();
-                    roots.Add(childLayoutRoot);
+                    childNode.OnHierarchyRebuild();
+                    nodes.Add(childNode);
                 }
 
-                BuildHierarchy(child, layers);
-            }
-        }
-
-        protected RectTransform Self
-        {
-            get
-            {
-                if (self == null)
+                if (!child.TryGetComponent<ULayoutMaster>(out _))
                 {
-                    TryGetComponent(out self);
+                    BuildHierarchy(child, layers);
                 }
-
-                return self;
             }
         }
 
-        protected ULayoutDirtyFlag dirtyFlag;
-        
-        private RectTransform self;
-        private List<List<ULayoutRoot>> hierarchy;
-        private bool isResizing;
+        private ULayoutDirtyFlag dirtyFlag;
+        private List<List<IULayoutNode>> hierarchy;
 
         protected virtual void OnDisable()
         {
             if (hierarchy != null)
             {
                 ClearHierarchy();
-                UListPool<List<ULayoutRoot>>.Return(hierarchy);
+                UListPool<List<IULayoutNode>>.Return(hierarchy);
                 hierarchy = null;
             }
         }
-        
+
         protected virtual void Update()
         {
             ProcessDirtyFlag();
@@ -78,15 +61,9 @@ namespace Undebugger.UI.Layout
             ProcessDirtyFlag();
         }
 
-        protected virtual void OnHierarchyRebuild()
-        { }
-
-        protected virtual void OnLayout()
-        { }
-
         protected virtual void OnRectTransformDimensionsChange()
         {
-            if (!isResizing && (enabled && gameObject.activeInHierarchy && gameObject.activeSelf))
+            if (enabled && gameObject.activeInHierarchy && gameObject.activeSelf)
             {
                 SetDirty(ULayoutDirtyFlag.Layout);
             }
@@ -96,18 +73,18 @@ namespace Undebugger.UI.Layout
         {
             if (dirtyFlag != ULayoutDirtyFlag.None)
             {
-                if ((dirtyFlag & ULayoutDirtyFlag.Hierarchy) != 0 || hierarchy == null)
+                var _flag = dirtyFlag;
+                dirtyFlag = ULayoutDirtyFlag.None;
+
+                if ((_flag & ULayoutDirtyFlag.Hierarchy) != 0 || hierarchy == null)
                 {
                     RebuildHierarchy();
-                    OnHierarchyRebuild();
                 }
 
-                if ((dirtyFlag & ULayoutDirtyFlag.Layout) != 0)
+                if ((_flag & ULayoutDirtyFlag.Layout) != 0)
                 {
                     RebuildLayout();
                 }
-
-                dirtyFlag = ULayoutDirtyFlag.None;
             }
         }
 
@@ -117,25 +94,19 @@ namespace Undebugger.UI.Layout
             {
                 for (int j = 0; j < hierarchy[i].Count; ++j)
                 {
-                    if (hierarchy[i][j].isActiveAndEnabled)
+                    if (hierarchy[i][j].IsActive)
                     {
-                        hierarchy[i][j].OnLayout();
+                        hierarchy[i][j].OnLayoutRebuild();
                     }
                 }
             }
-
-            isResizing = true;
-
-            OnLayout();
-
-            isResizing = false;
         }
 
         private void ClearHierarchy()
         {
             for (int i = 0; i < hierarchy.Count; ++i)
             {
-                UListPool<ULayoutRoot>.Return(hierarchy[i]);
+                UListPool<IULayoutNode>.Return(hierarchy[i]);
             }
 
             hierarchy.Clear();
@@ -145,11 +116,17 @@ namespace Undebugger.UI.Layout
         {
             if (hierarchy == null)
             {
-                hierarchy = UListPool<List<ULayoutRoot>>.Get(16);
+                hierarchy = UListPool<List<IULayoutNode>>.Get(16);
             }
             else
             {
                 ClearHierarchy();
+            }
+
+            if (TryGetComponent<IULayoutNode>(out var selfLayoutNode))
+            {
+                var list = UListPool<IULayoutNode>.GetExact(1);
+                list.Add(selfLayoutNode);
             }
 
             BuildHierarchy(transform, hierarchy);
