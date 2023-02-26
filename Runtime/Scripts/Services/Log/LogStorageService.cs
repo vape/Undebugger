@@ -212,6 +212,9 @@ namespace Undebugger.Services.Log
             message = default;
             return false;
         }
+
+        public void Clear()
+        { }
     }
 
 #endif
