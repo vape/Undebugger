@@ -1,4 +1,6 @@
-﻿using Undebugger.UI.Elements;
+﻿using System;
+using System.Runtime;
+using Undebugger.UI.Elements;
 using UnityEngine;
 
 namespace Undebugger.UI.Menu.Status.Performance
@@ -40,6 +42,12 @@ namespace Undebugger.UI.Menu.Status.Performance
 
             totalUsageBar.Value = monitor.AllocatedMemory / (float)monitor.ReservedMemory;
             monoUsageBar.Value = monitor.MonoUsageMemory / (float)monitor.MonoHeapSize;
+        }
+
+        public void RunGCCollect()
+        {
+            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
+            GC.Collect();
         }
 
         private char[] GetTotalMemoryUsageString(out int start, out int length)
