@@ -65,6 +65,7 @@ namespace Undebugger.Services.UI
         private Canvas canvas;
         private SafeArea safeArea;
         private List<Widget> activeWidgets;
+        private EventSystem eventSystem;
 
         private void Start()
         {
@@ -141,6 +142,12 @@ namespace Undebugger.Services.UI
                 {
                     view.gameObject.SetActive(true);
                 }
+
+                var eventSystem = GameObject.FindObjectOfType<EventSystem>();
+                if (eventSystem == null)
+                {
+                    this.eventSystem = CreateEventSystem(transform);
+                }
             }
 
             view.Load(model);
@@ -154,6 +161,11 @@ namespace Undebugger.Services.UI
             }
 
             view.gameObject.SetActive(false);
+
+            if (eventSystem != null)
+            {
+                Destroy(eventSystem.gameObject);
+            }
         }
 
         private void EnsureInitialized()
@@ -211,12 +223,6 @@ namespace Undebugger.Services.UI
             safeArea = safeAreaObject.AddComponent<SafeArea>();
 
             canvasObject.AddComponent<GraphicRaycaster>();
-
-            var activeEventSystem = GameObject.FindObjectOfType<EventSystem>();
-            if (activeEventSystem == null)
-            {
-                CreateEventSystem(parent);
-            }
         }
     }
 
