@@ -216,7 +216,7 @@ namespace Undebugger.Model.Builder
                 {
                     var type = types[j];
 
-                    if ((type.Attributes & staticClassAttributes) == 0)
+                    if ((type.Attributes & staticClassAttributes) != staticClassAttributes)
                     {
                         continue;
                     }
